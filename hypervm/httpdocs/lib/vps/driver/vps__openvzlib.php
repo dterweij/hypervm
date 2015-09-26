@@ -690,13 +690,16 @@ class vps__openvz extends Lxdriverclass {
 	
 	function setMemoryUsage()
 	{
-	    $memory = $this->main->priv->memory_usage;
+	    $memory = $this->main->priv->memory_usage . "M";
+        $memorylimit = ($this->main->priv->memory_usage + 64) . "M";
 
 		if (is_unlimited($this->main->priv->memory_usage)) {
 			$memory = "unlimited";
+            $memorylimit = "unlimited";
 		}
 
-        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--privvmpages", $memory ."M", "--save");
+        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--privvmpages", $memory .":" . $memorylimit , "--save");
+        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--ram", $memory,  "--save");
 
        }
 
@@ -781,7 +784,7 @@ class vps__openvz extends Lxdriverclass {
 			$memory = $this->main->priv->guarmem_usage;
 		}
 	
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--physpages", "0:" . $memory . "M", "--shmpages", "{$memory}M:{$memory}M", "--oomguarpages", "{$memory}M", "--vmguarpages", "{$memory}M", "--save");
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--physpages", "0:" . $memory . "M", "--shmpages", $memory . "M:" . $memory ."M", "--oomguarpages", $memory . "M", "--vmguarpages", $memory ."M", "--save");
 
 		$tcp = round(($memory * 1024)/5, 0);
 		$process = $this->main->priv->process_usage;
@@ -828,7 +831,7 @@ class vps__openvz extends Lxdriverclass {
             $diskinodes = $this->main->priv->disk_usage;
 		}
 
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--diskspace", $diskusage, "--diskinodes", round($diskinodes/2));
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--diskspace", $diskusage, "--diskinodes", round($diskinodes * 2));
 	}
 
 	// Added by Semir @ 2011 march 14
