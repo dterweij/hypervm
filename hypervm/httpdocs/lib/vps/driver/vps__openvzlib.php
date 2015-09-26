@@ -1,5 +1,8 @@
-<?php 
+<?php
 
+/**
+ * Class vps__openvz
+ */
 class vps__openvz extends Lxdriverclass {
 
     /**
@@ -26,7 +29,10 @@ class vps__openvz extends Lxdriverclass {
 		}
 	}
 
-	static function find_cpuusage()
+    /**
+     *
+     */
+    static function find_cpuusage()
 	{
 		$list = lfile("/proc/vz/vestat");
 		foreach($list as $l) {
@@ -45,7 +51,10 @@ class vps__openvz extends Lxdriverclass {
 		}
 	}
 
-	static function find_traffic()
+    /**
+     *
+     */
+    static function find_traffic()
 	{
 		global $global_dontlogshell;
 	
@@ -150,7 +159,10 @@ class vps__openvz extends Lxdriverclass {
                 lxshell_return("iptables", "-Z", "FORWARD");
 	}
 
-        static function iptraffic_main_v6()
+    /**
+     * @return array
+     */
+    static function iptraffic_main_v6()
         {
                 global $global_dontlogshell;
 
@@ -251,7 +263,11 @@ class vps__openvz extends Lxdriverclass {
         }
 
 
-	static function get_vpsid_from_ipaddress($ip)
+    /**
+     * @param $ip
+     * @return int
+     */
+    static function get_vpsid_from_ipaddress($ip)
 	{
 		static $res;
 	
@@ -271,7 +287,12 @@ class vps__openvz extends Lxdriverclass {
 		return 0;
 	}
 
-	static function execCommand($vpsid, $command)
+    /**
+     * @param $vpsid
+     * @param $command
+     * @return array
+     */
+    static function execCommand($vpsid, $command)
 	{
 		global $global_shell_error, $global_shell_ret;
 		$out = lxshell_output("/usr/sbin/vzctl", "exec", $vpsid, $command);
@@ -281,7 +302,13 @@ class vps__openvz extends Lxdriverclass {
 		return array('output' => $out, 'error' => $global_shell_error);
 	}
 
-	static function getStatus($vpsid, $rootdir)
+    /**
+     * @param $vpsid
+     * @param $rootdir
+     * @return string
+     * @throws lxException
+     */
+    static function getStatus($vpsid, $rootdir)
 	{
 	
 		self::checkIfVzOK();
@@ -314,7 +341,11 @@ class vps__openvz extends Lxdriverclass {
 		return 'off';
 	}
 
-	static function vpsInfo($vpsid)
+    /**
+     * @param $vpsid
+     * @return mixed
+     */
+    static function vpsInfo($vpsid)
 	{
 		global $global_dontlogshell;
 		$global_dontlogshell = true;
@@ -411,7 +442,10 @@ class vps__openvz extends Lxdriverclass {
 		return $ret;
 	}
 
-	static function checkIfVzOK()
+    /**
+     * @throws lxException
+     */
+    static function checkIfVzOK()
 	{
 		global $global_dontlogshell;
 	
@@ -430,7 +464,11 @@ class vps__openvz extends Lxdriverclass {
 		$global_dontlogshell = $v;
 	}
 
-	function dbactionAdd()
+    /**
+     * @return array|null
+     * @throws lxException
+     */
+    function dbactionAdd()
 	{
 		global $gbl, $sgbl, $login, $ghtml; 
 	
@@ -480,7 +518,10 @@ class vps__openvz extends Lxdriverclass {
 	
 	}
 
-	function doRealCreate()
+    /**
+     * @throws lxException
+     */
+    function doRealCreate()
 	{
 		global $global_shell_error, $global_shell_ret;
 	
@@ -540,19 +581,29 @@ class vps__openvz extends Lxdriverclass {
 		$this->postCreate();
 	}
 
-	function postCreate()
+    /**
+     *
+     */
+    function postCreate()
 	{
 		if ($this->main->__var_custom_exec) {
 			lxshell_direct($this->main->__var_custom_exec);
 		}
 	}
 
-	function dropQuota()
+    /**
+     *
+     */
+    function dropQuota()
 	{
 		lxshell_return("vzquota", "drop", $this->main->vpsid);
 	}
 
-	function changeLocation()
+    /**
+     * @return array|void
+     * @throws lxException
+     */
+    function changeLocation()
 	{
 		$this->stop();
 		$this->dropQuota();
@@ -575,7 +626,10 @@ class vps__openvz extends Lxdriverclass {
 		return $ret;
 	}
 
-	function setMainIpaddress()
+    /**
+     *
+     */
+    function setMainIpaddress()
 	{
 		$ret = lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--ipdel", "all", "--save");
 	
@@ -591,7 +645,13 @@ class vps__openvz extends Lxdriverclass {
 		}
 	}
 
-	function setIpaddress($list, $vpsflag)
+    /**
+     * @param $list
+     * @param $vpsflag
+     * @return mixed
+     * @throws lxException
+     */
+    function setIpaddress($list, $vpsflag)
 	{
 		foreach($list as $ip) {
 			if ($vpsflag) {
@@ -610,7 +670,12 @@ class vps__openvz extends Lxdriverclass {
 		return $ret;
 	}
 
-	function deleteIpaddress($list, $vpsflag)
+    /**
+     * @param $list
+     * @param $vpsflag
+     * @throws lxException
+     */
+    function deleteIpaddress($list, $vpsflag)
 	{
 		foreach($list as $ip) {
 			if ($vpsflag) {
@@ -628,7 +693,10 @@ class vps__openvz extends Lxdriverclass {
 		}
 	}
 
-	function dbactionDelete()
+    /**
+     *
+     */
+    function dbactionDelete()
 	{
 		try {
 			$this->stop();
@@ -653,7 +721,10 @@ class vps__openvz extends Lxdriverclass {
 		$this->setUplinkUsage();
 	}
 
-	function toggleStatus()
+    /**
+     * @throws lxException
+     */
+    function toggleStatus()
 	{
 		global $global_shell_out, $global_shell_error, $global_shell_ret;
 
@@ -673,12 +744,18 @@ class vps__openvz extends Lxdriverclass {
 			log_message($ret);
 	}
 
-	function setRootPassword()
+    /**
+     *
+     */
+    function setRootPassword()
 	{
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--userpasswd", "root:{$this->main->rootpassword}");
 	}
 
-	function setTurnkey()
+    /**
+     *
+     */
+    function setTurnkey()
 	{
 		$string  = "HUB_APIKEY=SKIP\n"
 			."ROOT_PASS={$this->main->rootpassword}\n"
@@ -687,8 +764,11 @@ class vps__openvz extends Lxdriverclass {
 			."APP_PASS={$this->main->rootpassword}\n";
 		lfile_put_contents("{$this->main->corerootdir}/{$this->main->vpsid}/etc/inithooks.conf", $string);
 	}
-	
-	function setMemoryUsage()
+
+    /**
+     *
+     */
+    function setMemoryUsage()
 	{
 	    $memory = $this->main->priv->memory_usage . "M";
         $memorylimit = ($this->main->priv->memory_usage + 64) . "M";
@@ -703,7 +783,11 @@ class vps__openvz extends Lxdriverclass {
 
        }
 
-	function do_backup()
+    /**
+     * @return array
+     * @throws lxException
+     */
+    function do_backup()
 	{
 		if ($this->main->isOn('__var_bc_backupextra_stopvpsflag')) {
 			$this->stop();
@@ -719,7 +803,10 @@ class vps__openvz extends Lxdriverclass {
 		return array("{$this->main->corerootdir}/{$this->main->vpsid}", $list);
 	}
 
-	function do_backup_cleanup($list)
+    /**
+     * @param $list
+     */
+    function do_backup_cleanup($list)
 	{
 
 		if ($this->main->isOn('__var_bc_backupextra_stopvpsflag')) {
@@ -727,7 +814,11 @@ class vps__openvz extends Lxdriverclass {
 		}
 	}
 
-	function do_restore($docd)
+    /**
+     * @param $docd
+     * @throws lxException
+     */
+    function do_restore($docd)
 	{
 		global $gbl, $sgbl, $login, $ghtml;
 	
@@ -766,7 +857,11 @@ class vps__openvz extends Lxdriverclass {
 		$this->start();
 	}
 
-	function do_restore_old($docd)
+    /**
+     * @param $docd
+     * @throws lxException
+     */
+    function do_restore_old($docd)
 	{
 		global $gbl, $sgbl, $login, $ghtml;
 	
@@ -775,7 +870,10 @@ class vps__openvz extends Lxdriverclass {
 		lunlink("{$this->main->corerootdir}/{$this->main->vpsid}.conf");
 	}
 
-	function setGuarMemoryUsage()
+    /**
+     *
+     */
+    function setGuarMemoryUsage()
 	{
 	
 		if (is_unlimited($this->main->priv->guarmem_usage)) {
@@ -800,7 +898,10 @@ class vps__openvz extends Lxdriverclass {
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--tcpsndbuf", $tcp, "--tcprcvbuf", $tcp, "--othersockbuf", $tcp, "--dgramrcvbuf", $tcp);
 	}
 
-	function createBaseConf()
+    /**
+     *
+     */
+    function createBaseConf()
 	{
 		lxfile_cp("__path_program_root/file/sysfile/openvz/base-openvz.conf", "/etc/vz/conf/{$this->main->vpsid}.conf");
 		$this->changeConf("OSTEMPLATE", $this->main->ostemplate);
@@ -810,7 +911,10 @@ class vps__openvz extends Lxdriverclass {
 
     }
 
-	function setCpuUsage()
+    /**
+     *
+     */
+    function setCpuUsage()
 	{
 		if (is_unlimited($this->main->priv->cpu_usage)) {
 			$cpu = "100" * os_getCpuNum();
@@ -821,7 +925,10 @@ class vps__openvz extends Lxdriverclass {
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--cpulimit", $cpu);
 	}
 
-	function setDiskUsage()
+    /**
+     *
+     */
+    function setDiskUsage()
 	{
 		if (is_unlimited($this->main->priv->disk_usage)) {
 			$diskusage  = "unlimited";
@@ -836,7 +943,10 @@ class vps__openvz extends Lxdriverclass {
 
 	// Added by Semir @ 2011 march 14
 	// changed by Danny @ sep 2015
-	function setSwapUsage()
+    /**
+     *
+     */
+    function setSwapUsage()
 	{
 			if($this->main->priv->isOn('vswap_flag')) {
 
@@ -851,7 +961,10 @@ class vps__openvz extends Lxdriverclass {
 	    }
 }
 
-	function setProcessUsage()
+    /**
+     *
+     */
+    function setProcessUsage()
 	{
 		if (is_unlimited($this->main->priv->process_usage)) {
 			$process = 999999;
@@ -885,19 +998,30 @@ class vps__openvz extends Lxdriverclass {
 	
 	}
 
-	function limitMaxMemory($value)
+    /**
+     * @param $value
+     * @return int
+     */
+    function limitMaxMemory($value)
 	{
 		if ($value > PHP_INT_MAX-1) { $value = PHP_INT_MAX-1; }
 		return $value;
 	}
 
-	function limitNumber($value)
+    /**
+     * @param $value
+     * @return int
+     */
+    function limitNumber($value)
 	{
 		if ($value > 214748364) { $value = 214748364; }
 		return $value;
 	}
 
-	function reboot()
+    /**
+     * @throws lxException
+     */
+    function reboot()
 	{
 		if (!$this->main->isOn('reboot_confirm_f')) {
 			throw new lxException("need_confirm_reboot", 'reboot_confirm_f');
@@ -915,7 +1039,12 @@ class vps__openvz extends Lxdriverclass {
 	}
 
 	// temproary version without quotes...
-public static function staticChangeConf($file, $var, $val)
+    /**
+     * @param $file
+     * @param $var
+     * @param $val
+     */
+    public static function staticChangeConf($file, $var, $val)
 	{
 		$list = lfile_trim($file);
 		$match = false;
@@ -988,7 +1117,10 @@ public static function staticChangeConf($file, $var, $val)
 		lfile_put_contents("/etc/vz/conf/{$this->main->vpsid}.conf", implode("\n", $list));
 	}
 
-	function recoverVps()
+    /**
+     * @throws lxException
+     */
+    function recoverVps()
 	{
 		if (!$this->main->isOn('recover_confirm_f')) {
 			throw new lxException("need_confirm_recover", 'recover_confirm_f');
@@ -999,7 +1131,10 @@ public static function staticChangeConf($file, $var, $val)
 		$this->start();
 	}
 
-	function rebuild()
+    /**
+     * @throws lxException
+     */
+    function rebuild()
 	{
 		if (!$this->main->isOn('rebuild_confirm_f')) {
 			throw new lxException("need_confirm_rebuild", 'rebuild_confirm_f');
@@ -1052,12 +1187,18 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	function installkloxo()
+    /**
+     * @throws lxException
+     */
+    function installkloxo()
 	{
 		$this->rebuild();
 	}
 
-	function oldinstallkloxo()
+    /**
+     * @throws lxException
+     */
+    function oldinstallkloxo()
 	{
 	    //TODO: Remove?
 		$ret = lxshell_return("/usr/sbin/vzctl", "exec2", $this->main->vpsid, "ping -n -c 1 -w 5 lxlabs.com");
@@ -1080,7 +1221,10 @@ public static function staticChangeConf($file, $var, $val)
 		lxshell_return("/usr/sbin/vzctl", "exec", $this->main->vpsid, "sh ./kloxo-install-$type.sh > hyperVm-kloxo_install.log 2>&1 &");
 	}
 
-	function setInformation()
+    /**
+     *
+     */
+    function setInformation()
 	{
 		if ($this->main->hostname) {
 			lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--hostname", $this->main->hostname, "--save");
@@ -1092,7 +1236,10 @@ public static function staticChangeConf($file, $var, $val)
 		lxfile_cp("/usr/share/zoneinfo/{$this->main->timezone}", "{$this->main->corerootdir}/{$this->main->vpsid}/etc/localtime");
 	}
 
-	static function getOsTemplatelist()
+    /**
+     * @return mixed
+     */
+    static function getOsTemplatelist()
 	{
 		$list = lscandir_without_dot("/vz/template/cache/");
 	
@@ -1257,7 +1404,10 @@ public static function staticChangeConf($file, $var, $val)
 		$this->setRestUsage();
 	}
 
-	function setRestUsage()
+    /**
+     *
+     */
+    function setRestUsage()
 	{
 		static $once;
 	
@@ -1265,7 +1415,7 @@ public static function staticChangeConf($file, $var, $val)
 	
 		dprint("Execing\n");
 		$once = true;
-	
+	    $cpun = 1; // Default
 		if (is_unlimited($this->main->priv->ncpu_usage)) {
 			$cpun = os_getCpuNum();
 		} else {
@@ -1293,18 +1443,28 @@ public static function staticChangeConf($file, $var, $val)
         }
 	}
 
-	function setVpsParam($name, $value)
+    /**
+     * @param $name
+     * @param $value
+     */
+    function setVpsParam($name, $value)
 	{
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--$name", $value, "--save");
 	}
 
-	function setIptables()
+    /**
+     * @return null
+     */
+    function setIptables()
 	{
 		$this->removeConf("IPTABLES");
 		return null;
 	}
-	
-	function enableSecondLevelQuota()
+
+    /**
+     *
+     */
+    function enableSecondLevelQuota()
 	{
 		if ($this->main->priv->isOn('secondlevelquota_flag')) {
 			lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--quotaugidlimit", "10000", "--save");
@@ -1313,7 +1473,10 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	function setUplinkUsage()
+    /**
+     * @throws lxException
+     */
+    function setUplinkUsage()
 	{
 		$dev = os_get_default_ethernet();
 	
@@ -1390,7 +1553,10 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	function dosyncToSystemPost()
+    /**
+     *
+     */
+    function dosyncToSystemPost()
 	{
 		// For add, it is done in dorealcreate.
 	
@@ -1400,7 +1566,10 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	function fixdev()
+    /**
+     * @throws lxException
+     */
+    function fixdev()
 	{
 		if (!$this->main->isOn('fixdev_confirm_f')) {
 			throw new lxException("need_to_confirm_fix_dev");
@@ -1415,7 +1584,10 @@ public static function staticChangeConf($file, $var, $val)
 		lxshell_return("/usr/sbin/vzctl", "exec", $this->main->vpsid, "/sbin/MAKEDEV", "pty");
 	}
 
-	function changevpsid()
+    /**
+     * @throws lxException
+     */
+    function changevpsid()
 	{
 	
 		if (lxfile_exists("/etc/vz/conf/{$this->main->vpsid}.conf")) {
@@ -1434,7 +1606,12 @@ public static function staticChangeConf($file, $var, $val)
 		$this->changeConf("VE_ROOT", "/vz/root/\$VEID");
 	}
 
-	function dbactionUpdate($subaction)
+    /**
+     * @param $subaction
+     * @return mixed|void
+     * @throws lxException
+     */
+    function dbactionUpdate($subaction)
 	{
 	
 		global $global_shell_error;
@@ -1610,7 +1787,10 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	static function get_list_of_vps()
+    /**
+     * @return array
+     */
+    static function get_list_of_vps()
 	{
 		$res = lxshell_output('vzlist', '-1');
 		$list = explode("\n", $res);
@@ -1624,7 +1804,11 @@ public static function staticChangeConf($file, $var, $val)
 		return $nlist;
 	}
 
-	static function importIpaddress($vpsobject, $val)
+    /**
+     * @param $vpsobject
+     * @param $val
+     */
+    static function importIpaddress($vpsobject, $val)
 	{
 		$list = explode(" ", $val);
 		foreach($list as $l) {
@@ -1633,7 +1817,11 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	static function importOnboot($vpsobject, $val)
+    /**
+     * @param $vpsobject
+     * @param $val
+     */
+    static function importOnboot($vpsobject, $val)
 	{
 		if ($val === 'no')  {
 			$vpsobject->status = 'off';
@@ -1642,7 +1830,12 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	static function importLimitVar($vpsobject, $var, $val)
+    /**
+     * @param $vpsobject
+     * @param $var
+     * @param $val
+     */
+    static function importLimitVar($vpsobject, $var, $val)
 	{
 		if ($var === 'CPULIMIT') {
 			$rval = $val;
@@ -1675,17 +1868,30 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	static function importOStemplate($vpsobject, $val)
+    /**
+     * @param $vpsobject
+     * @param $val
+     */
+    static function importOStemplate($vpsobject, $val)
 	{
 		$vpsobject->ostemplate = $val;
 	}
-	
-	static function importLocation($vpsobject, $val)
+
+    /**
+     * @param $vpsobject
+     * @param $val
+     */
+    static function importLocation($vpsobject, $val)
 	{
 		$vpsobject->corerootdir = dirname($val);
 	}
 
-	static function createVpsObject($servername, $file)
+    /**
+     * @param $servername
+     * @param $file
+     * @return Vps
+     */
+    static function createVpsObject($servername, $file)
 	{
 		$vpsid = strtil($file, ".conf");
 	
@@ -1763,7 +1969,11 @@ public static function staticChangeConf($file, $var, $val)
 		return $vpsobject;
 	}
 
-	static function getCompleteStatus($list)
+    /**
+     * @param $list
+     * @return mixed
+     */
+    static function getCompleteStatus($list)
 	{
 		foreach($list as $l) {
 			$r['status'] = self::getStatus($l['vpsid'], $l['corerootdir']);
@@ -1774,8 +1984,12 @@ public static function staticChangeConf($file, $var, $val)
 		}
 		return $res;
 	}
-        
-        static function checkIfVswapEnabled($vpsid)
+
+    /**
+     * @param $vpsid
+     * @return bool
+     */
+    static function checkIfVswapEnabled($vpsid)
         {
 
                 $data = `/usr/sbin/vzctl exec $vpsid cat /proc/user_beancounters`;
