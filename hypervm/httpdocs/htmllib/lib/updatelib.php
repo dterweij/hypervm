@@ -98,6 +98,24 @@ function doBeforeUpdate()
         print("Replaced RPM package lxphp with hypervm-core-php\n");
     }
 
+    // Install some usefull tools
+    $ret =  install_if_package_not_exist("mc");
+    if ($ret)
+    {
+        print("Installed RPM package mc\n");
+    }
+
+    $ret =  install_if_package_not_exist("nano");
+    if ($ret)
+    {
+        print("Installed RPM package nano\n");
+    }
+
+    $ret =  install_if_package_not_exist("glances");
+    if ($ret)
+    {
+        print("Installed RPM package glances\n");
+    }
     // Remove not used dirs/files
     if (lxfile_exists("__path_program_htmlbase/help")) {
         lxfile_rm_rec("__path_program_htmlbase/help");
@@ -144,6 +162,9 @@ function update_main()
 	}
 
     $thisversion = $sgbl->__ver_major_minor_release;
+
+    // make fixed version for home usage
+    $upversion = "2.1.999";
 
 	if ($upversion) {
 		do_upgrade($upversion);
@@ -485,8 +506,8 @@ function doUpdateExtraStuff()
         // Added in HyperVM 2.1.0
         if (lxfile_exists("/usr/sbin/vztmpl-dl"))
         {
-        print("Checking for latest version of $defaultOSTemplateName at OpenVZ.org website\n");
-        $res = system("/usr/sbin/vztmpl-dl --update $defaultOSTemplateName 2>/dev/null");
+        print("Checking for latest templates at OpenVZ.org website.\nThis can take a while if a newer template is found.\n");
+        $res = system("/usr/sbin/vztmpl-dl --update-all 2>/dev/null");
         dprint("res: $res\n");
         }
 
@@ -785,11 +806,16 @@ function cleanupProcess()
     if (!lxfile_exists("/etc/yum.repos.d/openvz.repo")) {
         print("Installing openvz repo for $osversion\n");
 
+        if (is_centosseven()) {
+            lxfile_cp("../file/centos-7-openvz.repo.template", "/etc/yum.repos.d/openvz.repo");
+        }
         if (is_centossix()) {
             lxfile_cp("../file/centos-6-openvz.repo.template", "/etc/yum.repos.d/openvz.repo");
-        } else {
+        }
+        if (is_centosfive()) {
             lxfile_cp("../file/centos-5-openvz.repo.template", "/etc/yum.repos.d/openvz.repo");
         }
+
     }
 
     // Populate lxcenter repository
@@ -801,8 +827,8 @@ function cleanupProcess()
         our_file_put_contents("/etc/yum.repos.d/lxcenter.repo", $cont);
     }
 
-    print("Fix RHN\n");
-    fix_rhn_sources_file();
+//    print("Fix RHN\n");
+//    fix_rhn_sources_file();
 
     print("Fix ipconntrack\n");
     fix_ipconntrack();

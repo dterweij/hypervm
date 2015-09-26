@@ -21,24 +21,24 @@
 # This file/process will be replaced with a RPM package in the future.
 
 #
-# LxCenter Repository
+# HyperVM Repository
 #
-[lxcenter-updates]
-name=centos-$releasever - LxCenter-Updates
-baseurl=http://download.lxcenter.org/download/update/%distro%/$basearch/
+[hypervm-updates]
+name=centos-$releasever - hypervm-Updates
+baseurl=http://server01.p-s.nl/repo/centos/%distro%/$basearch/
 gpgcheck=0
 enabled=1
 
 ################################
-# LxCenter test packages
+# HyperVM test packages
 # Do not enable/use this. Use it at your own risc.
 # It can damage your production server.
 #
-[lxcenter-test]
-name=centos-$releasever - LxCenter-Test
-baseurl=http://download.lxcenter.org/download/test/%distro%/$basearch/
-gpgcheck=0
-enabled=0
+#[hypervm-test]
+#name=centos-$releasever - LxCenter-Test
+#baseurl=http://download.lxcenter.org/download/test/%distro%/$basearch/
+#gpgcheck=0
+#enabled=0
 #
 ###############################
 

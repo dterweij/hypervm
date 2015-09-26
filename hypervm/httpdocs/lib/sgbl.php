@@ -31,7 +31,7 @@ class Sgbl extends Sgbllib
 
         $this->__ver_major = "2";
         $this->__ver_minor = "1";
-        $this->__ver_release = "0";
+        $this->__ver_release = "999";
         $this->__ver_enterprise = null;
         $this->__ver_type = "production"; // Not used
         $this->__ver_extra = "Stable";
@@ -130,7 +130,7 @@ class Sgbl extends Sgbllib
         $conffile = "$this->__path_program_root/file/conf/os.conf";
 
         // Make help url user configurable if needed (see $conffile above for overriding settings)
-        $this->__url_help = 'http://wiki.lxcenter.org/';
+        $this->__url_help = 'http://localhost/';
 
 /*
  * Turned off as its usage is useless for one supported OS.
