@@ -697,9 +697,7 @@ class vps__openvz extends Lxdriverclass {
 			$memory = "unlimited";
 		}
 
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--privvmpages", $memory ."M");
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--meminfo", "pages:$memory" . "M");
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--ram", $memory . "M");
+        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--ram", $memory . "M", "--meminfo", "pages:$memory" . "M", "--privvmpages", $memory ."M", "--save");
 
        }
 
@@ -788,16 +786,12 @@ class vps__openvz extends Lxdriverclass {
 	{
 	
 		if (is_unlimited($this->main->priv->guarmem_usage)) {
-			$memory = 512;
+			$memory = "512M";
 		} else {
 			$memory = $this->main->priv->guarmem_usage;
 		}
 	
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--vmguarpages", "{$memory}M");
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--oomguarpages", "{$memory}M");
-
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--shmpages", "{$memory}M:{$memory}M");
-	    lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", "0:" . $memory . "M");
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--physpages", "0:" . $memory . "M", "--shmpages", "{$memory}M:{$memory}M", "--oomguarpages", "{$memory}M", "--vmguarpages", "{$memory}M", "--save");
 
 		$tcp = round(($memory * 1024)/5, 0);
 		$process = $this->main->priv->process_usage;
@@ -819,6 +813,7 @@ class vps__openvz extends Lxdriverclass {
 		$this->changeConf("OSTEMPLATE", $this->main->ostemplate);
 		$this->changeConf("VE_PRIVATE", "{$this->main->corerootdir}/\$VEID");
         $this->changeConf("CONFIGFILE", "vps.basic");
+        $this->changeConf("VE_LAYOUT", "simfs");
 
     }
 
