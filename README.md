@@ -1,29 +1,5 @@
 # HyperVM
-A complete virtualization manager. Some of the features:
-
-* OpenVZ and Xen virtualization support
-* Cross Datacenter Deployment
-* Distributed management via single console
-* Hierarchical client system
-* Web based graphic user interface
-* Intelligent IP handling
-* Traffic Shaping and Network management
-* Built in messaging system
-* Complete, stable API
-
-and much, much more.
-
-# Install
-
-Just follow this simple guide:
-
-http://lxcenter.org/software/hypervm/hypervm-installation
-
-# Contributing
-
-Please have a look at LxCenter's [Coding Standards](http://project.lxcenter.org/projects/kloxo/wiki/Coding_Standards) and [Issue Tracker](http://project.lxcenter.org).
-
-And don't forget our [forums](http://forum.lxcenter.org)!
+Special Home version for own usage do not use it.
 
 # Licensing - AGPLv3
 
