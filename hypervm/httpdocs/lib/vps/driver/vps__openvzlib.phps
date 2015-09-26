@@ -698,7 +698,10 @@ class vps__openvz extends Lxdriverclass {
 		if (is_unlimited($this->main->priv->memory_usage)) {
 			$memory = "unlimited";
 		}
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--ram", $memory . "m");
+	               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--privvmpages", $memory . "M");
+                   lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--meminfo", "pages:$memory ."M");
+
+               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--ram", $memory . "M");
        }
 
 	function do_backup()
@@ -793,10 +796,10 @@ class vps__openvz extends Lxdriverclass {
 	
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--vmguarpages", "{$memory}M");
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--oomguarpages", "{$memory}M");
+eturn("/usr/sbin/vzctl", "set", $th
 
-
-		//lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--shmpages", "{$memory}M:{$memory}M");
-	  //lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", "0:".PHP_INT_MAX);
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--shmpages", "{$memory}M:{$memory}M");
+	    lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", "0:".PHP_INT_MAX);
 
 		$tcp = round(($memory * 1024)/5, 0);
 		$process = $this->main->priv->process_usage;
