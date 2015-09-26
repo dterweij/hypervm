@@ -528,13 +528,15 @@ class vps__openvz extends Lxdriverclass {
 		$this->main->doKloxoInit("{$this->main->corerootdir}/{$this->main->vpsid}");
 		// It appears sometimes they don't setup the ostemplate properly.
 		$this->changeConf("OSTEMPLATE", $this->main->ostemplate);
-                // What is this stop here? it has never been started. was it?                 
-		$this->stop();
 		$this->start();
                 // 20130918 OA - This can only be run on a running vps. Perhaps we would need to wait for it to boot. 
                 sleep(10);
                 $this->setRootPassword();
-		lunlink("__path_program_root/tmp/$vpsid.create");
+                sleep(4);
+        // restart for proper reading and setting all the VPS data from vpsid.conf
+        $this->stop();
+        $this->start();
+        lunlink("__path_program_root/tmp/$vpsid.create");
 		$this->postCreate();
 	}
 
@@ -662,9 +664,6 @@ class vps__openvz extends Lxdriverclass {
 			}
 			$ret = lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--onboot", "yes", "--save");
 		} else {
-//			if (!$this->main->isOn('poweroff_confirm_f')) {
-//				throw new lxException("need_confirm_poweroff", 'poweroff_confirm_f');
-//			}
 
 			$ret = $this->stop();
 			$ret = lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--onboot", "no", "--save");
@@ -743,18 +742,10 @@ class vps__openvz extends Lxdriverclass {
 		} else {
 			lxshell_unzip_with_throw("{$this->main->corerootdir}/{$this->main->vpsid}", $docd);
 		}
-	
-		//lxshell_return("tar", "-C", "{$this->main->corerootdir}/{$this->main->vpsid}/dev", "-xzf", "__path_program_root/file/vps-dev.tgz");
-	
+
 		if ($this->main->__old_driver !== 'openvz') {
 			log_restore("Restoring {$this->main->nname} from a different driver {$this->main->__old_driver} to openvz");
 			lxfile_cp("__path_program_root/file/sysfile/openvz/fstab", "$mountpoint/etc/fstab");
-	
-			//if (!lxfile_exists("/vz/template/cache/{$this->main->ostemplate}.tar.gz")) {
-				//throw new lxException("migrating_from_{$this->main->__old_driver}_needs_osImage");
-			//}
-			//lxshell_return("tar", "-C", $mountpoint, "-xzf", "__path_program_home/xen/template/{$this->main->ostemplate}.tar.gz", "etc/rc.d", "sbin", "etc/hotplug.d", "etc/dev.d", "etc/udev", "lib", "usr", "bin", "etc/inittab", "etc/sysconfig");
-			//lxshell_return("tar", "-C", $mountpoint, "-xzf", "/vz/template/cache/{$this->main->ostemplate}.tar.gz", "etc/rc.d", "sbin", "lib", "usr", "bin", "etc/inittab");
 			lunlink("$mountpoint/etc/mtab");
 			lxfile_symlink("/proc/mounts", "$mountpoint/etc/mtab");
 		}
@@ -1253,18 +1244,28 @@ public static function staticChangeConf($file, $var, $val)
 		if (is_unlimited($this->main->priv->ncpu_usage)) {
 			$cpun = os_getCpuNum();
 		} else {
-			$cpun = $this->main->priv->ncpu_usage;
+            if ($cpun > os_getCpuNum()) {
+                $cpun = os_getCpuNum();
+            } else {
+                $cpun = $this->main->priv->ncpu_usage;
+            }
+
 		}
 	
 		$this->setVpsParam("cpus", $cpun);
 	
 		if ($this->main->priv->ioprio_usage >= 0) {
 			$this->setVpsParam("ioprio", $this->main->priv->ioprio_usage);
-		}
+		} else {
+            $this->setVpsParam("ioprio", "4");
+        }
 	
 		if ($this->main->priv->cpuunit_usage >= 0) {
 			$this->setVpsParam("cpuunits", $this->main->priv->cpuunit_usage);
-		}
+		} else {
+            $this->setVpsParam("cpuunits", "1000");
+
+        }
 	}
 
 	function setVpsParam($name, $value)
