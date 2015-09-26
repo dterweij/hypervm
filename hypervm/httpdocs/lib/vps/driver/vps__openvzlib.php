@@ -2,7 +2,10 @@
 
 class vps__openvz extends Lxdriverclass {
 
-	static function find_memoryusage()
+    /**
+     *
+     */
+    static function find_memoryusage()
 	{
 		$list = lfile("/proc/user_beancounters");
 		foreach($list as $l) {
@@ -203,11 +206,11 @@ class vps__openvz extends Lxdriverclass {
 
 
                 if (!$outgoing) {
-                        return;
+                        return true;
                 }
 
                 if (!isset($incoming)) {
-                        return;
+                        return true;
                 }
 
 
@@ -442,7 +445,7 @@ class vps__openvz extends Lxdriverclass {
 	
 		@ lunlink("__path_program_root/tmp/{$this->main->vpsid}.createfailed");
 		if ($this->main->dbaction === 'syncadd') {
-			$username = vps::create_user($this->main->username, $this->main->password, $this->main->vpsid, "/usr/bin/lxopenvz");
+			vps::create_user($this->main->username, $this->main->password, $this->main->vpsid, "/usr/bin/lxopenvz");
 			return null;
 		}
 	
@@ -460,13 +463,7 @@ class vps__openvz extends Lxdriverclass {
 		if (self::getStatus($vpsid, $this->main->corerootdir) !== 'deleted') {
 			throw new lxException("a_vps_with_the_same_id_exists", '', $vpsid);
 		}
-	
-		/*
-		if (!lxfile_exists("/vz/template/cache/{$this->main->ostemplate}.tar.gz")) {
-			throw new lxException("could_not_find_the_osimage");
-		}
-	*/
-	
+
 		$username = vps::create_user($this->main->username, $this->main->password, $this->main->vpsid, "/usr/bin/lxopenvz");
 			
                 // OA proposed patch to remove this and revert to foreground create
@@ -515,7 +512,7 @@ class vps__openvz extends Lxdriverclass {
 	
 		$this->setIpaddress($this->main->vmipaddress_a, true);
 		$this->enableSecondLevelQuota();
-		//lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--quotaugidlimit", "1000", "--save");
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--quotaugidlimit", "3000", "--save");
 		$this->setInformation();
 		$ret = lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--onboot", "yes", "--save");
 	
@@ -657,7 +654,7 @@ class vps__openvz extends Lxdriverclass {
 	function toggleStatus()
 	{
 		global $global_shell_out, $global_shell_error, $global_shell_ret;
-	
+
 		if ($this->main->isOn('status')) {
 			$ret = $this->start();
 			if ($ret) {
@@ -797,10 +794,9 @@ class vps__openvz extends Lxdriverclass {
 	
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--vmguarpages", "{$memory}M");
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--oomguarpages", "{$memory}M");
-eturn("/usr/sbin/vzctl", "set", $th
 
 		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--shmpages", "{$memory}M:{$memory}M");
-	    lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", "0:".PHP_INT_MAX);
+	    lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", "0:" . $memory . "M");
 
 		$tcp = round(($memory * 1024)/5, 0);
 		$process = $this->main->priv->process_usage;
@@ -950,17 +946,16 @@ public static function staticChangeConf($file, $var, $val)
 		lfile_put_contents($file, implode("\n", $list));
 	}
 
-	function removeConf($var)
+    /**
+     * @param $var
+     */
+    function removeConf($var)
 	{
 		$list = lfile_trim("/etc/vz/conf/{$this->main->vpsid}.conf");
 		$match = false;
 		foreach($list as $k => $__l) {
 			if (csb($__l, "$var=")) {
-				if ($val) {
-					//$list[$k] = "$var=\"$val\"";
-				} else {
 					unset($list[$k]);
-				}
 				$match = true;
 			}
 		}
@@ -972,7 +967,11 @@ public static function staticChangeConf($file, $var, $val)
 		lfile_put_contents("/etc/vz/conf/{$this->main->vpsid}.conf", implode("\n", $list));
 	}
 
-	function changeConf($var, $val)
+    /**
+     * @param $var
+     * @param $val
+     */
+    function changeConf($var, $val)
 	{
 		$list = lfile_trim("/etc/vz/conf/{$this->main->vpsid}.conf");
 		$match = false;
@@ -1115,7 +1114,11 @@ public static function staticChangeConf($file, $var, $val)
 		return $newlist;
 	}
 
-	function createTemplate()
+    /**
+     * @return array
+     * @throws lxException
+     */
+    function createTemplate()
 	{
 		$stem = explode("-", $this->main->ostemplate);
 		$name = "{$stem[0]}-{$stem[1]}-{$stem[2]}-";
