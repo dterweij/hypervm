@@ -696,13 +696,9 @@ class vps__openvz extends Lxdriverclass {
 	{
 	
 		if (is_unlimited($this->main->priv->memory_usage)) {
-			$memory = 999999 * 256;
-		} else {
-			$memory = $this->main->priv->memory_usage * 256;
+			$memory = "unlimited";
 		}
-
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--privvmpages", $memory);
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--meminfo", "pages:$memory");
+               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--ram", $memory . "m");
        }
 
 	function do_backup()
@@ -790,15 +786,18 @@ class vps__openvz extends Lxdriverclass {
 	{
 	
 		if (is_unlimited($this->main->priv->guarmem_usage)) {
-			$memory = 500;
+			$memory = 512;
 		} else {
 			$memory = $this->main->priv->guarmem_usage;
 		}
 	
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--vmguarpages", "{$memory}M:". PHP_INT_MAX);
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--oomguarpages", "{$memory}M:".PHP_INT_MAX);
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--shmpages", "{$memory}M:{$memory}M");
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", "0:".PHP_INT_MAX);
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--vmguarpages", "{$memory}M");
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--oomguarpages", "{$memory}M");
+
+
+		//lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--shmpages", "{$memory}M:{$memory}M");
+	  //lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", "0:".PHP_INT_MAX);
+
 		$tcp = round(($memory * 1024)/5, 0);
 		$process = $this->main->priv->process_usage;
 		if (is_unlimited($process) || $process > 5555) {
@@ -843,25 +842,20 @@ class vps__openvz extends Lxdriverclass {
 	}
 
 	// Added by Semir @ 2011 march 14
+	// changed by Danny @ sep 2015
 	function setSwapUsage()
 	{
+			if($this->main->priv->isOn('vswap_flag')) {
+
 	        if (is_unlimited($this->main->priv->swap_usage)) {   
 	                $memory = 2048;   
 	        } else {
 	                $memory = $this->main->priv->swap_usage;
 	        }
-	
-	    $memory = "0:" . $memory . "M";
-	
-	    lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--swappages", $memory);
-		
-		// If vswap is enabled we change physpages to privvmpages
-		if($this->main->priv->isOn('vswap_flag'))
-		    // multiply it with the block size
-		    lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", $this->main->priv->memory_usage * 256);
-		else 
-		    lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--physpages", 'unlimited');
-	}
+
+		  	    lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--swap", $memory . "m");
+	    }
+}
 
 	function setProcessUsage()
 	{

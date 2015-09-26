@@ -1325,17 +1325,18 @@ function postadd_openvz()
 	if ($gen->generalmisc_b->openvzincrement > 0) {
 		$increment = $gen->generalmisc_b->openvzincrement;
 	} else {
-		$increment = 10;
+		// Set default incremental number (110 - 111 - 112 etc etc)
+		$increment = 1; // Was 10
 	}
 
 	if (!$res) {
-		$this->vpsid = 110;
+		$this->vpsid = 100;
 	} else {
 		$this->vpsid = $res[0]['vpsid'] + $increment;
 	}
 
-	if ($this->vpsid == '10') {
-		$this->vpsid = 110;
+	if ($this->vpsid == '1') {
+		$this->vpsid = 100;
 	}
 
 	$this->iid = $this->vpsid;
