@@ -467,11 +467,11 @@ class vps__openvz extends Lxdriverclass {
 		$username = vps::create_user($this->main->username, $this->main->password, $this->main->vpsid, "/usr/bin/lxopenvz");
 			
                 // OA proposed patch to remove this and revert to foreground create
-		if ($sgbl->isDebug()) {
+//		if ($sgbl->isDebug()) {
 			$this->doRealCreate();
-		} else {
-			callObjectInBackground($this, "doRealCreate");
-		}
+//		} else {
+//			callObjectInBackground($this, "doRealCreate");
+//		}
 	
 		//$this->doRealCreate();
 		
@@ -696,7 +696,7 @@ class vps__openvz extends Lxdriverclass {
 			$memory = "unlimited";
 		}
 
-        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--ram", $memory . "M", "--meminfo", "pages:$memory" . "M", "--privvmpages", $memory ."M", "--save");
+        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--privvmpages", $memory ."M", "--save");
 
        }
 
@@ -718,8 +718,7 @@ class vps__openvz extends Lxdriverclass {
 
 	function do_backup_cleanup($list)
 	{
-		// I had commented out the starting of the vps after backup. I don't know why. Why is this not done.. The vps should be started after the backup is done.
-	
+
 		if ($this->main->isOn('__var_bc_backupextra_stopvpsflag')) {
 			$this->start();
 		}
@@ -822,12 +821,14 @@ class vps__openvz extends Lxdriverclass {
 	function setDiskUsage()
 	{
 		if (is_unlimited($this->main->priv->disk_usage)) {
-			$diskusage = 99999 * 1024;
+			$diskusage  = "unlimited";
+            $diskinodes = "999999";
 		} else {
-			$diskusage = $this->main->priv->disk_usage * 1024;
+			$diskusage  = $this->main->priv->disk_usage . "M";
+            $diskinodes = $this->main->priv->disk_usage;
 		}
-	
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--diskspace", $diskusage, "--diskinodes", round($diskusage/2));
+
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--diskspace", $diskusage, "--diskinodes", round($diskinodes/2));
 	}
 
 	// Added by Semir @ 2011 march 14
@@ -837,7 +838,8 @@ class vps__openvz extends Lxdriverclass {
 			if($this->main->priv->isOn('vswap_flag')) {
 
 	        if (is_unlimited($this->main->priv->swap_usage)) {   
-	                $memory = 2048;   
+	                $memory = 2048;
+	                // Fixed number
 	        } else {
 	                $memory = $this->main->priv->swap_usage;
 	        }
@@ -860,9 +862,8 @@ class vps__openvz extends Lxdriverclass {
 		$numfile = $sockets * 3;
 		$dcachesize = $numfile * 384;
 	
-		$kernelmem = 40 * 1024 * $avnumproc + $dcachesize *100;
-	
-		$kernelmem = 2147483646;
+	//	$kernelmem = 40 * 1024 * $avnumproc + $dcachesize *100;
+        $kernelmem = 2147483646;
 		$kernelmem = $this->limitMaxMemory($kernelmem);
 		$dcachesize = $this->limitMaxMemory($dcachesize);
 		$numfile = $this->limitNumber($numfile);
@@ -1124,7 +1125,10 @@ public static function staticChangeConf($file, $var, $val)
 		return $ret;
 	}
 
-	function stop()
+    /**
+     * @throws lxException
+     */
+    function stop()
 	{ 
 		global $gbl, $sgbl, $login, $ghtml; 
 	
@@ -1135,12 +1139,18 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	function dropOldQuota()
+    /**
+     *
+     */
+    function dropOldQuota()
 	{
 		lxshell_return("vzquota", "drop", $this->main->__var_oldvpsid);
 	}
 
-	function stopOldId()
+    /**
+     * @throws lxException
+     */
+    function stopOldId()
 	{ 
 		global $gbl, $sgbl, $login, $ghtml; 
 	
@@ -1151,7 +1161,10 @@ public static function staticChangeConf($file, $var, $val)
 		}
 	}
 
-	function start() 
+    /**
+     * @return null
+     */
+    function start()
 	{ 
 	
 		if (self::getStatus($this->main->vpsid, $this->main->corerootdir) === 'on') {
@@ -1160,14 +1173,20 @@ public static function staticChangeConf($file, $var, $val)
 		return lxshell_return("/usr/sbin/vzctl", "start", $this->main->vpsid); 
 	}
 
-	function changeUserPassword()
+    /**
+     *
+     */
+    function changeUserPassword()
 	{
 		dprint("hello\n");
 		$pass = $this->main->password;
 		lxshell_return("usermod", "-p", $pass, $this->main->username);
 	}
-	
-	function getBeancounter()
+
+    /**
+     * @return array
+     */
+    function getBeancounter()
 	{
 		$vpsid = $this->main->vpsid;
 		$path = "/proc/user_beancounters";
@@ -1217,16 +1236,19 @@ public static function staticChangeConf($file, $var, $val)
 	
 		return $ret;
 	}
-	
-	function setEveryThing()
+
+    /**
+     *
+     */
+    function setEveryThing()
 	{
 		$this->setDiskUsage();
 		$this->setCpuUsage();
 		$this->setMemoryUsage();
-		$this->setProcessUsage();
 		$this->setGuarMemoryUsage();
 		$this->setSwapUsage();
-		$this->setIptables();
+        $this->setProcessUsage();
+        $this->setIptables();
 		$this->setUplinkUsage();
 		$this->changeConf("OSTEMPLATE", $this->main->ostemplate);
 		$this->setRestUsage();
@@ -1587,7 +1609,7 @@ public static function staticChangeConf($file, $var, $val)
 
 	static function get_list_of_vps()
 	{
-		$res = lxshell_output('vzlist', '-H', '-o', 'vpsid');
+		$res = lxshell_output('vzlist', '-1');
 		$list = explode("\n", $res);
 		foreach($list as $l) {
 			$l = trim($l);

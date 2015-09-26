@@ -1433,10 +1433,6 @@ function isQuotaGreaterThan($used, $priv)
 
 /**
  * Checks if a resource is no limited.
- * 
- * @deprecated This function is a global function to remove and needs to be deprecated
- * and used by a general class as Resource::isUnlimited() or similar.
- * 
  * @author Anonymous <anonymous@lxcenter.org>
  * @author Ángel Guzmán Maeso <angel.guzman@lxcenter.org>
  * @param string $resource The name resource property to check
@@ -2389,7 +2385,7 @@ function create_name($word)
 }
 
 /**
-* @return void
+* @return
 * @param
 * @param
 * @desc  Remove unsavoury characters from a string so that it can be used as a variable.
@@ -2546,7 +2542,7 @@ function createZeroString($n)
 }
 
 /**
-* @return void
+* @return
 * @param
 * @param
 * @desc  Execs a method inside a class. Passes all the variables to it. See the use of 2 evals.. Check documentation for lx_redefine_func;
