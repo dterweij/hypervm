@@ -96,7 +96,7 @@ case $1 in
 		# Clone from GitHub the last version using git transport (no http or https)
 		echo "Installing branch hypervm/master"
 		mkdir -p ${HYPERVM_PATH}
-		git clone git://github.com/lxcenter/hypervm.git ${HYPERVM_PATH}
+		git clone git://github.com/dterweij/hypervm.git ${HYPERVM_PATH}
 		cd ${HYPERVM_PATH}
 		git checkout master
 		cd ${HYPERVM_PATH}/hypervm-install
@@ -108,9 +108,9 @@ case $1 in
 	dev )
 		# Clone from GitHub the last version using git transport (no http or https)
 		echo "Installing branch hypervm/dev"
-		git clone git://github.com/lxcenter/hypervm.git ${HYPERVM_PATH}
+		git clone git://github.com/dterweij/hypervm.git ${HYPERVM_PATH}
 		cd ${HYPERVM_PATH}
-		git checkout dev -f
+		git checkout dev-at-my-home -f
 		cd ${HYPERVM_PATH}/hypervm-install
 		sh ./make-distribution.sh
 		cd ${HYPERVM_PATH}/hypervm
