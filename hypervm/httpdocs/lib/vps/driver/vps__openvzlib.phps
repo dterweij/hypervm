@@ -698,10 +698,8 @@ class vps__openvz extends Lxdriverclass {
 		if (is_unlimited($this->main->priv->memory_usage)) {
 			$memory = "unlimited";
 		}
-	               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--privvmpages", $memory . "M");
-                   lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--meminfo", "pages:{$memory}" ."M");
-
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--ram", $memory . "M");
+        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--privvmpages", $memory . "M");
+        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--ram", $memory . "M");
        }
 
 	function do_backup()
