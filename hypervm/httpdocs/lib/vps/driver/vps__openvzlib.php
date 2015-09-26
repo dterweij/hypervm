@@ -691,13 +691,14 @@ class vps__openvz extends Lxdriverclass {
 	
 	function setMemoryUsage()
 	{
-	
+	    $memory = $this->main->priv->memory_usage;
+
 		if (is_unlimited($this->main->priv->memory_usage)) {
 			$memory = "unlimited";
 		}
 
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--privvmpages", $memory ."M");
-               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--meminfo", "pages:$memory" . "M");
+        //       lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--privvmpages", $memory ."M");
+        //       lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--meminfo", "pages:$memory" . "M");
                lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--ram", $memory . "M");
 
        }
@@ -817,7 +818,9 @@ class vps__openvz extends Lxdriverclass {
 		lxfile_cp("__path_program_root/file/sysfile/openvz/base-openvz.conf", "/etc/vz/conf/{$this->main->vpsid}.conf");
 		$this->changeConf("OSTEMPLATE", $this->main->ostemplate);
 		$this->changeConf("VE_PRIVATE", "{$this->main->corerootdir}/\$VEID");
-	}
+        $this->changeConf("CONFIGFILE", "vps.basic");
+
+    }
 
 	function setCpuUsage()
 	{
