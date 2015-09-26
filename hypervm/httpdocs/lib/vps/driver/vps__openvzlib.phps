@@ -699,7 +699,7 @@ class vps__openvz extends Lxdriverclass {
 			$memory = "unlimited";
 		}
 	               lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--privvmpages", $memory . "M");
-                   lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--meminfo", "pages:$memory" ."M");
+                   lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--meminfo", "pages:{$memory}" ."M");
 
                lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--ram", $memory . "M");
        }
