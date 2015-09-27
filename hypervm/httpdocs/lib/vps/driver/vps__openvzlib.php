@@ -931,7 +931,12 @@ class vps__openvz extends Lxdriverclass {
     function setDiskUsage()
 	{
 		if (is_unlimited($this->main->priv->disk_usage)) {
-			$diskusage  = "Unlimited";
+//			$diskusage  = "Unlimited";
+//          Argh! Unlimited is removed from vzctl v4.3.1+ .. why? pfff
+
+// ToDo:         should be hdd size of /vz
+            $diskusage  = "512G";
+
             $diskinodes = "9999999";
 		} else {
 			$diskusage  = $this->main->priv->disk_usage . "M";
