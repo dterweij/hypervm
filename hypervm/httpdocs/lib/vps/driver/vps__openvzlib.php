@@ -778,7 +778,7 @@ class vps__openvz extends Lxdriverclass {
             $memorylimit = "unlimited";
 		}
 
-        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--privvmpages", $memory .":" . $memorylimit , "--save");
+        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--physpages", "0:" . $memory, "--privvmpages", $memory .":" . $memorylimit , "--save");
         lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--ram", $memory ,  "--save");
 
        }
@@ -882,7 +882,7 @@ class vps__openvz extends Lxdriverclass {
 			$memory = $this->main->priv->guarmem_usage;
 		}
 	
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--physpages", "0:" . $memory . "M", "--shmpages", $memory . "M:" . $memory ."M", "--oomguarpages", $memory . "M", "--vmguarpages", $memory ."M", "--save");
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--shmpages", $memory . "M:" . $memory ."M", "--oomguarpages", $memory . "M", "--vmguarpages", $memory ."M", "--save");
 
 		$tcp = round(($memory * 1024)/5, 0);
 		$process = $this->main->priv->process_usage;
@@ -931,7 +931,7 @@ class vps__openvz extends Lxdriverclass {
     function setDiskUsage()
 	{
 		if (is_unlimited($this->main->priv->disk_usage)) {
-			$diskusage  = "unlimited";
+			$diskusage  = "Unlimited";
             $diskinodes = "999999";
 		} else {
 			$diskusage  = $this->main->priv->disk_usage . "M";
