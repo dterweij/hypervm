@@ -932,13 +932,13 @@ class vps__openvz extends Lxdriverclass {
 	{
 		if (is_unlimited($this->main->priv->disk_usage)) {
 			$diskusage  = "Unlimited";
-            $diskinodes = "999999";
+            $diskinodes = "9999999";
 		} else {
 			$diskusage  = $this->main->priv->disk_usage . "M";
             $diskinodes = $this->main->priv->disk_usage;
 		}
 
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--diskspace", $diskusage, "--diskinodes", round($diskinodes * 10));
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--diskspace", $diskusage, "--diskinodes", round($diskinodes * 100));
 	}
 
 	// Added by Semir @ 2011 march 14
