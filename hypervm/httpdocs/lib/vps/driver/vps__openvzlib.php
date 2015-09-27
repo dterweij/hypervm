@@ -938,7 +938,7 @@ class vps__openvz extends Lxdriverclass {
             $diskinodes = $this->main->priv->disk_usage;
 		}
 
-		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--diskspace", $diskusage, "--diskinodes", round($diskinodes * 2));
+		lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--diskspace", $diskusage, "--diskinodes", round($diskinodes * 10));
 	}
 
 	// Added by Semir @ 2011 march 14
