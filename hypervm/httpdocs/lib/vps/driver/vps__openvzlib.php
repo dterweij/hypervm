@@ -778,6 +778,11 @@ class vps__openvz extends Lxdriverclass {
             $memorylimit = "unlimited";
 		}
 
+    // Seems swap is required with newer vzctl versions? so set some by default; else
+    // it seems that memory is set at max of hardwarennode?!
+    // so set it first then do the other memory things...
+        lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--save", "--swap",  "64m");
+
         lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--physpages", "0:" . $memory, "--privvmpages", $memory .":" . $memorylimit , "--save");
         lxshell_return("/usr/sbin/vzctl", "set", $this->main->vpsid, "--ram", $memory ,  "--save");
 
