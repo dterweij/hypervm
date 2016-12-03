@@ -3,6 +3,7 @@
 #
 #    Copyright (C) 2000-2009	LxLabs
 #    Copyright (C) 2009-2014	LxCenter
+#    Copyright (C) 2014-2016	dterweij
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,6 +22,7 @@
 #
 #    Install and deploy a develoment version on a local enviroment
 #
+#    Version 0.5 Changed GIT URL and version
 #    Version 0.4 Added which, zip and unzip as requirement [ Danny Terweij <d.terweij@lxcenter.org> ]
 #    Version 0.3 Added perl-ExtUtils-MakeMaker as requirement to install_GIT [ Danny Terweij <d.terweij@lxcenter.org> ]
 #    Version 0.2 Changed git version [ Danny Terweij <d.terweij@lxcenter.org> ]
@@ -48,10 +50,10 @@ install_GIT()
 	fi
 	
 	# @todo Try to get the lastest version from some site. LATEST file?
-	GIT_VERSION='1.8.3.4'
+	GIT_VERSION='1.9.0'
 	
 	echo "Downloading and compiling GIT ${GIT_VERSION}"
-	wget http://git-core.googlecode.com/files/git-${GIT_VERSION}.tar.gz
+	wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/git-core/git-${GIT_VERSION}.tar.gz
 	tar xvfz git-*.tar.gz; cd git-*;
 	./configure --prefix=/usr --with-curl --with-expat
 	make all
