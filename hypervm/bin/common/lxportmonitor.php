@@ -219,13 +219,15 @@ function remote_http_exec_monitor($server, $port, $rmt)
 	global $global_remoteport;
 	global $global_remoteserver;
 
+    if (!$server || !$port || !$rmt) {
+        return false;
+    }
+    
 	$port = $global_remoteport;
 	$server = $global_remoteserver;
 	$var = base64_encode(serialize($rmt));
 	$data = send_to_some_http_server_monitor($server, "", $port, $var);
-
-	dprint($server);
-
+	
 	$res = unserialize(base64_decode($data));
 	
 	if (!$res) {
@@ -235,15 +237,13 @@ function remote_http_exec_monitor($server, $port, $rmt)
 	} else {
 		$global_failure = false;
 	}
-/*
- * seems a non-object call ? PHP Notice:  Trying to get property of non-object
+
+// seems a non-object call ? PHP Notice:  Trying to get property of non-object
 	if ($res->exception) {
 		throw $res->exception;
 	}
 
 	return $res->ddata;
-*/
-    return $res;
 }
 
 
