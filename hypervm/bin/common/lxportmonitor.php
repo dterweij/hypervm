@@ -227,9 +227,7 @@ function remote_http_exec_monitor($server, $port, $rmt)
 	dprint($server);
 
 	$res = unserialize(base64_decode($data));
-
-	dprintr($res);
-
+	
 	if (!$res) {
 		print("Got Nothing from server for command: $rmt->cmd\n");
 		print($data);
@@ -237,10 +235,12 @@ function remote_http_exec_monitor($server, $port, $rmt)
 	} else {
 		$global_failure = false;
 	}
-
+/*
+ * seems a non-object call ? PHP Notice:  Trying to get property of non-object
 	if ($res->exception) {
 		throw $res->exception;
 	}
+*/
 	return $res->ddata;
 }
 
