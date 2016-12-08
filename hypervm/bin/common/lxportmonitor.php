@@ -77,6 +77,7 @@ function monitor_main()
 
 	$maincount = 0;
 	while (1) {
+        log_portmonitor("Start loop",0);
 		$maincount++;
 		$serverhistlist = null;
 		$sendserverhistlist = null;
@@ -90,7 +91,7 @@ function monitor_main()
 					if (isset($portmonlist[$l['nname']][$p['nname']][2])) {
                         log_portmonitor("Socket Already exists...");
 						print("Socket Already exists... \n");
-                        dprint($portmonlist[$l['nname']][$p['nname']][2]);
+                        dprint("Socket: " . $portmonlist[$l['nname']][$p['nname']][2]);
 						socket_close($portmonlist[$l['nname']][$p['nname']][2]);
 					}
 					$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -108,7 +109,7 @@ function monitor_main()
 
 		$portmonlist = prepare_error_portmonlist($serverhistlist);
 
-		dprintr("Second try");
+		dprint("Second try");
 		dprintr($portmonlist);
 
 		sleep(1);
@@ -144,11 +145,9 @@ function monitor_main()
 		$timeleft = 60 - $endmaintime + $startmaintime;
 
 		if ($timeleft > 0) {
-			//print("Sleep for $timeleft\n");
+			dprint("Sleep for $timeleft");
 			sleep($timeleft);
-		} else {
-			//print("No sleep for $timeleft\n");
-		}
+		} 
 
 		if ($maincount === 10) {
 			$maincount = 1;
