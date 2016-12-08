@@ -30,7 +30,7 @@ function init_global()
 	$gbl->get();
 
 	// TODO needs otherway! check php.ini first
-    date_default_timezone_set("GMT+1");
+    date_default_timezone_set("Europe/Amsterdam");
 
 //
 // Turn on demo version by putting a empty file called demo in the etc dir.
