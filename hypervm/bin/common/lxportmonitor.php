@@ -368,7 +368,7 @@ function do_monitor_list($portmonlist, &$serverhistlist)
 	while (true) {
 		$count = 0;
 		$loopcount++;
-		if (is_array($portminlist)) {
+		if (is_array($portmonlist)) {
 			foreach ($portmonlist as $s => &$serv) {
 				foreach ($serv as $k => &$data) {
 					$nname = $k;
