@@ -380,10 +380,13 @@ function do_monitor_list($portmonlist, &$serverhistlist)
 			foreach ($portmonlist as $s => &$serv) {
 				foreach ($serv as $k => &$data) {
 					$nname = $k;
-					if ($data[4] === 'done') {
-						continue;
-					}
-
+                    if (isset($data[4])) {
+                        
+                        if ($data[4] === 'done') {
+                            continue;
+                        }
+                    }
+                    
 					if (isset($global_ip_array[$data[0]])) {
 						$ip = $global_ip_array[$data[0]];
 					} else {
