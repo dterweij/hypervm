@@ -305,6 +305,7 @@ function download_thirdparty()
         print("Development GIT version found. Skipping download from LxCenter.\n");
     } else {
         // Fixes #303 and #304
+        // ToDo MAKE THIS AS RPM PACKAGE
         $string = file_get_contents("http://download.lxcenter.org/download/thirdparty/$prgm-version.list");
         if ($string != "") {
             $string = trim($string);
@@ -386,6 +387,7 @@ function fixExtraDB()
 
     call_with_flag("convert_favorite");
 
+    // TODO what is $file ?
     lxfile_touch($file);
 
 }
@@ -463,9 +465,10 @@ function doUpdateExtraStuff()
         print("Fixed VM IP addresses in database\n");
     }
 
-    print("Checking HIB template\n");
-    get_kloxo_ostemplate();
-
+    // TODO Disabled old HIB package
+//   print("Checking HIB template\n");
+//   get_kloxo_ostemplate();
+//
     if (db_get_value("client", "admin", "contactemail"))
     {
         print("Set admin email\n");
@@ -495,6 +498,7 @@ function doUpdateExtraStuff()
             lxfile_mkdir($OSTemplateDir);
         }
 
+        // TODO get default template from openvzwebsite or via vztmpl-dl
         if (!lxfile_real("$OSTemplateDir/$defaultOSTemplate"))
         {
             lxfile_rm("$OSTemplateDir/$defaultOSTemplate");
@@ -546,6 +550,9 @@ function fix_ipaddress_column_type()
 
 function get_kloxo_ostemplate()
 {
+    // TODO not needed anymore
+    return;
+    
     $ver = getHIBversion();
     if (!$ver) {
         return;
