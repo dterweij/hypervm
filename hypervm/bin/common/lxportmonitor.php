@@ -485,7 +485,7 @@ function dprint($mess)
 	if ($debug_var >= 2) {
 		print($mess);
 	}
-
+log_portmonitor($mess, 2);
 }
 
 function dprintr($var)
@@ -494,6 +494,7 @@ function dprintr($var)
 	if ($debug_var >= 2) {
 		print_r($var);
 	}
+    log_portmonitor($var, 3);
 
 }
 
