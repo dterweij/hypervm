@@ -100,7 +100,7 @@ function monitor_main()
 					$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 					socket_set_nonblock($socket);
                     dprint($l['servername']);
-                    dprint($l['portnumber']);
+                    dprint($p['portnumber']);
                     $portmonlist[$l['nname']][$p['nname']] = array($l['servername'], $p['portnumber'], $socket);
 				}
 			}
@@ -138,7 +138,7 @@ function monitor_main()
 
 		$oldserverhistlist = $serverhistlist;
 		if ($sendserverhistlist) {
-			dprint("Sending Data\n");
+			dprint("Sending Data");
 			//print_r($sendserverhistlist);
 			dprintr($sendserverhistlist);
 			send_data_to_server($sendserverhistlist);
@@ -493,19 +493,26 @@ function dprint($mess)
 {
 	global $debug_var;
 
+    if (!$mess) {
+        return;
+    }
 	if ($debug_var >= 2) {
 		print($mess);
 	}
 log_portmonitor($mess, 2);
 }
 
-function dprintr($var)
+function dprintr($mess)
 {
 	global $debug_var;
+
+    if (!$mess) {
+        return;
+    }
 	if ($debug_var >= 2) {
-		print_r($var);
+		print_r($mess);
 	}
-    log_portmonitor($var, 3);
+    log_portmonitor($mess, 3);
 
 }
 
