@@ -75,12 +75,10 @@ function doBeforeUpdate()
     $program = $sgbl->__var_program_name;
 
     // Cleanup old lxlabs.repo file
-    print("Fixing Repo's\n");
     $oldRepoFile = "/etc/yum.repos.d/lxlabs.repo";
     if (lxfile_exists("/etc/yum.repos.d/lxcenter.repo")) {
-        print("- lxcenter.repo found (Good!)\n");
         if (lxfile_exists($oldRepoFile)) {
-            print("- lxlabs.repo found (rename it to lxlabs.lxsave)\n");
+            print("lxlabs.repo found (rename it to lxlabs.lxsave)\n");
             lxfile_mv($oldRepoFile, $oldRepoFile . ".lxsave");
             lxfile_rm($oldRepoFile);
         }
@@ -132,7 +130,8 @@ function doBeforeUpdate()
 
     // ToDo: Add here new database flag - DT
     // issue at github https://github.com/lxcenter/hypervm/issues/50
-
+    
+    print("Finished.\n");
 }
 
 function cp_dbfile()
