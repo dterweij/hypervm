@@ -141,11 +141,13 @@ function monitor_main()
 			send_data_to_server($sendserverhistlist);
 		}
 			
-			
-		$timeleft = 60 - $endmaintime + $startmaintime;
+		// ToDo make this configurable?
+        // Original: loop each 60 seconds
+        // changed to 30 minutes, no need for connection spam on targets	
+		$timeleft = 1800 - $endmaintime + $startmaintime;
 
 		if ($timeleft > 0) {
-			dprint("Sleep for $timeleft");
+			dprint("Sleep for $timeleft seconds");
 			sleep($timeleft);
 		} 
 
