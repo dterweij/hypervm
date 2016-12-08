@@ -240,8 +240,10 @@ function remote_http_exec_monitor($server, $port, $rmt)
 	if ($res->exception) {
 		throw $res->exception;
 	}
-*/
+
 	return $res->ddata;
+*/
+    return $res;
 }
 
 
