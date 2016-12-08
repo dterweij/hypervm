@@ -24,6 +24,8 @@ function monitor_main()
     
 	$list = parse_opt($argv);
 
+    log_portmonitor("ARGV: " . $list,5);
+    
 	if (isset($list['data-server'])) {
 		$global_remoteserver = $list['data-server'];
 		$global_remoteport = "8888";
@@ -63,11 +65,14 @@ function monitor_main()
 	if (!$list) {
 		print("No list from the server...\n");
 	}
-
-	dprintr($list);
-
-	getDnsesFirst($list);
-
+    
+    if ($list) {
+        dprintr($list);
+    }
+    
+    if ($list) {
+        getDnsesFirst($list);
+    }
 	$oldserverhistlist = null;
 
 
@@ -81,16 +86,22 @@ function monitor_main()
 
 		if (is_array($list)) { // check if $list is an array())
 			foreach ($list as $l) {
+                dprint($l);
 				$ports = $l['monitorport_l'];
 				$porthistlist = null;
 				foreach ($ports as $p) {
+                    dprint($p);
 					if (isset($portmonlist[$l['nname']][$p['nname']][2])) {
+                        log_portmonitor("Socket Already exists...");
 						print("Socket Already exists... \n");
+                        dprint($portmonlist[$l['nname']][$p['nname']][2]);
 						socket_close($portmonlist[$l['nname']][$p['nname']][2]);
 					}
 					$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 					socket_set_nonblock($socket);
-					$portmonlist[$l['nname']][$p['nname']] = array($l['servername'], $p['portnumber'], $socket);
+                    dprint($l['servername']);
+                    dprint($l['portnumber']);
+                    $portmonlist[$l['nname']][$p['nname']] = array($l['servername'], $p['portnumber'], $socket);
 				}
 			}
 		}
@@ -101,7 +112,7 @@ function monitor_main()
 
 		$portmonlist = prepare_error_portmonlist($serverhistlist);
 
-		dprintr("Second try\n\n");
+		dprintr("Second try");
 		dprintr($portmonlist);
 
 		sleep(1);
