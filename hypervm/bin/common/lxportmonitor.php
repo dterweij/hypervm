@@ -466,7 +466,7 @@ function set_global_debug()
     $file = "/usr/local/lxlabs/hypervm/httpdocs/commands.php";
     $debug_var = 0;
     
-    if (lfile_exists($file)) {
+    if (file_exists($file)) {
         $val = @ file_get_contents($file);
     }
 	if ($val === "2") {
