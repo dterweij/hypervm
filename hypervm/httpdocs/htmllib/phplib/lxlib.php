@@ -50,7 +50,7 @@ function init_global()
 // If file not exists, Production mode (-1)
 // If file exists it can have the following numbers to enable
 // 1  = Debug mode 1
-// 2  = Debug mode 2
+// 2  = Debug mode 2 = lxportmonitor.php data
 // 3  = Debug mode 3
 // 4  = Debug mode 4
 // 5  = Debug mode 5
@@ -136,7 +136,9 @@ function getAllOperatingSystemDetails()
 
 function findOperatingSystem($type = null)
 {
-	if (windowsOs()) {
+
+    /*
+    if (windowsOs()) {
 
 		$ret['os'] = 'windows';
 		try {
@@ -153,6 +155,7 @@ function findOperatingSystem($type = null)
 		}
 		return $ret;
 	}
+    */
 	if (file_exists("/etc/fedora-release")) {
 		$ret['os'] = 'fedora';
 		$ret['version'] = file_get_contents("/etc/fedora-release");

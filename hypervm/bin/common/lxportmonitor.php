@@ -19,9 +19,6 @@ function monitor_main()
 	global $global_remoteserver;
 	global $global_remoteport;
 
-	error_reporting(E_ALL);
-	
-
 	$list = parse_opt($argv);
 
 	if (isset($list['data-server'])) {
@@ -33,6 +30,7 @@ function monitor_main()
 	}
 
 
+	/*
 	if (false) {
 		if (function_exists("posix_getpwnam")) {
 			if (!isset($list['switch-user'])) {
@@ -50,7 +48,7 @@ function monitor_main()
 			posix_setgid($pw['gid']);
 		}
 	}
-
+*/
 
 
 	$sgbl->thisserver = get_my_name();
@@ -243,7 +241,7 @@ function send_to_some_http_server_monitor($raddress, $socket_type, $port, $var)
 
 	//print_time('server');
 
-	$ch = curl_init("http://$raddress:$port/htmllib/mibin/monitordata.php");
+	$ch = curl_init("http://$raddress:$port/htmllib/bin/monitordata.php");
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -464,12 +462,16 @@ function set_global_debug()
 {
 	global $debug_var;
 
-	$val = @ file_get_contents("commands.php");
+    $val = 0;
+    $file = "/usr/local/lxlabs/hypervm/httpdocs/commands.php";
+    $debug_var = 0;
+    
+    if (lfile_exists($file)) {
+        $val = @ file_get_contents($file);
+    }
 	if ($val === "2") {
-		$debug_var = 2;
-	} else {
-		$debug_var = 0;
-	}
+        $debug_var = 2;
+    }
 }
 function dprint($mess)
 {
