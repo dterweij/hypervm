@@ -341,12 +341,13 @@ function getDnsesFirst($list)
 {
 	global $global_ip_array;
 	$global_ip_array = null;
-
-	foreach($list as $l) {
-		if (!isset($global_ip_array[$l['servername']])) {
-			$ip = gethostbyname($l['servername']);
-			$global_ip_array[$l['servername']] = $ip;
-		} 
+	if (is_array($list)) {
+		foreach ($list as $l) {
+			if (!isset($global_ip_array[$l['servername']])) {
+				$ip = gethostbyname($l['servername']);
+				$global_ip_array[$l['servername']] = $ip;
+			}
+		}
 	}
 }
 
@@ -367,87 +368,88 @@ function do_monitor_list($portmonlist, &$serverhistlist)
 	while (true) {
 		$count = 0;
 		$loopcount++;
-		foreach($portmonlist as $s => &$serv) {
-			foreach($serv as $k => &$data) {
-				$nname = $k;
-				if ($data[4] === 'done') {
-					continue;
-				}
+		if (is_array($portminlist)) {
+			foreach ($portmonlist as $s => &$serv) {
+				foreach ($serv as $k => &$data) {
+					$nname = $k;
+					if ($data[4] === 'done') {
+						continue;
+					}
 
-				if (isset($global_ip_array[$data[0]])) {
-					$ip = $global_ip_array[$data[0]];
-				} else {
-					$ip = "Silly screwup. Can't find dns for {$data[0]}\n";
-				}
-
-
-				if (!validate_ipaddress($ip)) {
-					//print("failed Dns $ip for *{$data[0]}*\n");
-					$obj['portstatus'] = 'off';
-					//$obj['errornumber'] = 100;
-					$obj['errorstring'] = "DNS failed for $ip";
-					$obj['portnname'] = $nname;
-					$data[2] = null;
-					$data[4] = 'done';
-					$serverhistlist[$s][$k] = $obj;
-					socket_clear_error();
-					continue;
-				}
-
-				$ret = socket_connect($data[2], $ip, $data[1]);
-
-				$err = socket_last_error($data[2]);
-				if ($ret === true || $err === 10056 || $err === 0) {
-					fclose($data[2]);
-					$data[2] = null;
-					$data[4] = 'done';
-					$obj['portstatus'] = 'on';
-					$obj['errorstring'] = "SSS";
-					//	$obj['errornumber'] = 0;
-					$obj['portnname'] = $nname;
-					$serverhistlist[$s][$k] = $obj;
-					continue;
-				}
-
-
-				//print("$s: $k, $ret, $err $here\n");
-				if ($err === 115 || $err === 114 || $err === 10035 || $err === 10037) {
-					$data[4] = 'notdone';
-					$count++;
-					if ($loopcount < 14) {
-						//print("Timeout not reached ... " . time() . " $startmon\n");
+					if (isset($global_ip_array[$data[0]])) {
+						$ip = $global_ip_array[$data[0]];
 					} else {
+						$ip = "Silly screwup. Can't find dns for {$data[0]}\n";
+					}
+
+
+					if (!validate_ipaddress($ip)) {
+						//print("failed Dns $ip for *{$data[0]}*\n");
 						$obj['portstatus'] = 'off';
-						//$obj['errornumber'] = $err;
-						$obj['errorstring'] = "Timeout";
+						//$obj['errornumber'] = 100;
+						$obj['errorstring'] = "DNS failed for $ip";
 						$obj['portnname'] = $nname;
 						$data[2] = null;
 						$data[4] = 'done';
 						$serverhistlist[$s][$k] = $obj;
 						socket_clear_error();
+						continue;
 					}
-					continue;
-				}
+
+					$ret = socket_connect($data[2], $ip, $data[1]);
+
+					$err = socket_last_error($data[2]);
+					if ($ret === true || $err === 10056 || $err === 0) {
+						fclose($data[2]);
+						$data[2] = null;
+						$data[4] = 'done';
+						$obj['portstatus'] = 'on';
+						$obj['errorstring'] = "SSS";
+						//	$obj['errornumber'] = 0;
+						$obj['portnname'] = $nname;
+						$serverhistlist[$s][$k] = $obj;
+						continue;
+					}
 
 
-				//$obj['errornumber'] = $err;
-				$strerror = socket_strerror($err);
-				$vrttt = var_export($ret, true);
-				if (!$err || !$strerror || $strerror === "Success") {
-					$obj['errorstring'] = "Got NO error. Errno $err... ret was $vrttt";
-					$obj['portstatus'] = 'on';
-				} else {
-					$obj['errorstring'] = "($err) $strerror (ret: $vrttt)";
-					$obj['portstatus'] = 'off';
+					//print("$s: $k, $ret, $err $here\n");
+					if ($err === 115 || $err === 114 || $err === 10035 || $err === 10037) {
+						$data[4] = 'notdone';
+						$count++;
+						if ($loopcount < 14) {
+							//print("Timeout not reached ... " . time() . " $startmon\n");
+						} else {
+							$obj['portstatus'] = 'off';
+							//$obj['errornumber'] = $err;
+							$obj['errorstring'] = "Timeout";
+							$obj['portnname'] = $nname;
+							$data[2] = null;
+							$data[4] = 'done';
+							$serverhistlist[$s][$k] = $obj;
+							socket_clear_error();
+						}
+						continue;
+					}
+
+
+					//$obj['errornumber'] = $err;
+					$strerror = socket_strerror($err);
+					$vrttt = var_export($ret, true);
+					if (!$err || !$strerror || $strerror === "Success") {
+						$obj['errorstring'] = "Got NO error. Errno $err... ret was $vrttt";
+						$obj['portstatus'] = 'on';
+					} else {
+						$obj['errorstring'] = "($err) $strerror (ret: $vrttt)";
+						$obj['portstatus'] = 'off';
+					}
+					$obj['portnname'] = $nname;
+					$data[2] = null;
+					$data[4] = 'done';
+					$serverhistlist[$s][$k] = $obj;
+					socket_clear_error();
 				}
-				$obj['portnname'] = $nname;
-				$data[2] = null;
-				$data[4] = 'done';
-				$serverhistlist[$s][$k] = $obj;
-				socket_clear_error();
 			}
 		}
-
 		if ($count === 0) {
 			break;
 		}
@@ -490,17 +492,19 @@ function dprintr($var)
 
 function prepare_error_portmonlist($serverhistlist)
 {
-	foreach($serverhistlist as $k => $l) {
-		$servername = strtilfirst($k, "___");
-		foreach($l as $kk => $p) {
-			if ($p['portstatus'] === 'on') {
-				continue;
-			}
+	if (is_array($serverhistlist)) {
+		foreach ($serverhistlist as $k => $l) {
+			$servername = strtilfirst($k, "___");
+			foreach ($l as $kk => $p) {
+				if ($p['portstatus'] === 'on') {
+					continue;
+				}
 
-			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-			socket_set_nonblock($socket);
-			$portnumber = strtilfirst($kk, "___");
-			$portmonlist[$k][$kk] = array($servername, $portnumber, $socket);
+				$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+				socket_set_nonblock($socket);
+				$portnumber = strtilfirst($kk, "___");
+				$portmonlist[$k][$kk] = array($servername, $portnumber, $socket);
+			}
 		}
 	}
 	return $portmonlist;
