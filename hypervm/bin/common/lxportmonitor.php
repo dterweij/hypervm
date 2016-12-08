@@ -23,9 +23,7 @@ function monitor_main()
     log_portmonitor("Started");
     
 	$list = parse_opt($argv);
-
-    log_portmonitor("ARGV: " . $list,5);
-    
+        
 	if (isset($list['data-server'])) {
 		$global_remoteserver = $list['data-server'];
 		$global_remoteport = "8888";
@@ -85,12 +83,10 @@ function monitor_main()
 		$startmaintime = time();
 
 		if (is_array($list)) { // check if $list is an array())
-			foreach ($list as $l) {
-                dprint($l);
+			foreach ($list as $l) {                
 				$ports = $l['monitorport_l'];
-				$porthistlist = null;
-				foreach ($ports as $p) {
-                    dprint($p);
+                $porthistlist = null;
+				foreach ($ports as $p) {                   
 					if (isset($portmonlist[$l['nname']][$p['nname']][2])) {
                         log_portmonitor("Socket Already exists...");
 						print("Socket Already exists... \n");
@@ -99,8 +95,8 @@ function monitor_main()
 					}
 					$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 					socket_set_nonblock($socket);
-                    dprint($l['servername']);
-                    dprint($p['portnumber']);
+                    dprint("Server name: " . $l['servername']);
+                    dprint("Port number: ". $p['portnumber']);
                     $portmonlist[$l['nname']][$p['nname']] = array($l['servername'], $p['portnumber'], $socket);
 				}
 			}
@@ -357,6 +353,7 @@ function getDnsesFirst($list)
 		foreach ($list as $l) {
 			if (!isset($global_ip_array[$l['servername']])) {
 				$ip = gethostbyname($l['servername']);
+                dprint("IP from Hostname: " . $ip);
 				$global_ip_array[$l['servername']] = $ip;
 			}
 		}
@@ -414,7 +411,7 @@ function do_monitor_list($portmonlist, &$serverhistlist)
                     dprint($err);
 
 					if ($ret === true || $err === 10056 || $err === 0) {
-						fclose($data[2]);
+					//	fclose($data[2]);
 						$data[2] = null;
 						$data[4] = 'done';
 						$obj['portstatus'] = 'on';
@@ -512,7 +509,7 @@ function dprintr($mess)
 	if ($debug_var >= 2) {
 		print_r($mess);
 	}
-    log_portmonitor($mess, 3);
+  //  log_portmonitor($mess, 3);
 
 }
 
