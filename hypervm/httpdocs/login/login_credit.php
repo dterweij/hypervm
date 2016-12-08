@@ -33,10 +33,8 @@
     if (!empty($name) && !empty($url)) {
 ?>
 <br>
-<center>
-<div class="copy">
+<div class="copy central">
 LxCenter is proudly sponsored by <a href="<?php echo $url; ?>"><?php echo $name; ?></a>.
 </div>
-</center>
 <?php
     }
