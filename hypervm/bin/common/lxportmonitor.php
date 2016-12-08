@@ -253,7 +253,9 @@ function send_to_some_http_server_monitor($raddress, $socket_type, $port, $var)
 	global $gbl, $sgbl, $login, $ghtml; 
 
 	//print_time('server');
-
+    log_portmonitor("Send to: " . $raddress . ":" . $port, 9);
+    log_portmonitor("Send String" . $var, 9);
+    
 	$ch = curl_init("http://$raddress:$port/htmllib/bin/monitordata.php");
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
