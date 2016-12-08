@@ -78,17 +78,19 @@ function monitor_main()
 		$sendserverhistlist = null;
 		$startmaintime = time();
 
-		foreach($list as $l) {
-			$ports = $l['monitorport_l'];
-			$porthistlist = null;
-			foreach($ports as $p) {
-				if (isset($portmonlist[$l['nname']][$p['nname']][2])) {
-					print("Socket Already exists... \n");
-					socket_close($portmonlist[$l['nname']][$p['nname']][2]);
+		if (is_array($list)) { // check if $list is an array())
+			foreach ($list as $l) {
+				$ports = $l['monitorport_l'];
+				$porthistlist = null;
+				foreach ($ports as $p) {
+					if (isset($portmonlist[$l['nname']][$p['nname']][2])) {
+						print("Socket Already exists... \n");
+						socket_close($portmonlist[$l['nname']][$p['nname']][2]);
+					}
+					$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+					socket_set_nonblock($socket);
+					$portmonlist[$l['nname']][$p['nname']] = array($l['servername'], $p['portnumber'], $socket);
 				}
-				$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-				socket_set_nonblock($socket);
-				$portmonlist[$l['nname']][$p['nname']] = array($l['servername'], $p['portnumber'], $socket);
 			}
 		}
 
