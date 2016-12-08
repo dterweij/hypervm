@@ -122,7 +122,7 @@ function doBeforeUpdate()
     }
 
     // ToDo: Add here new database flag - DT
-    // issue at github
+    // issue at github https://github.com/lxcenter/hypervm/issues/50
 
 }
 
