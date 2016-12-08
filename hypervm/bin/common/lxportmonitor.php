@@ -1,5 +1,6 @@
 <?php 
 
+// this file is called by ???
 
 class Remote { }
 
@@ -19,6 +20,8 @@ function monitor_main()
 	global $global_remoteserver;
 	global $global_remoteport;
 
+    log_portmonitor("Started");
+    
 	$list = parse_opt($argv);
 
 	if (isset($list['data-server'])) {
@@ -397,6 +400,8 @@ function do_monitor_list($portmonlist, &$serverhistlist)
 					$ret = socket_connect($data[2], $ip, $data[1]);
 
 					$err = socket_last_error($data[2]);
+                    dprint($err);
+
 					if ($ret === true || $err === 10056 || $err === 0) {
 						fclose($data[2]);
 						$data[2] = null;
@@ -531,4 +536,12 @@ function strtilfirst($string, $needle)
 	}
 }
 
+function log_portmonitor($mess, $id = 1)
+{
+    global $gbl, $sgbl, $login, $ghtml;
+    
+    $mess = trim($mess);
+    $file = "/usr/local/lxlabs/hypervm/log/portmonitor";
+    file_put_contents($file, "$id: " . @date("H:i:s M/d/Y") . ": $mess\n", FILE_APPEND);
+}
 
