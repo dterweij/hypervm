@@ -98,6 +98,13 @@ function doBeforeUpdate()
         print("Replaced RPM package lxphp with hypervm-core-php\n");
     }
 
+    // Replace lxlighttpd package (New since HyperVM 2.1.0)
+    $ret =  replace_rpm_package("lxlighttpd", "hypervm-core-lighttpd");
+    if ($ret)
+    {
+        print("Replaced RPM package lxlighttpd with hypervm-core-lighttpd\n");
+    }
+    
     // Install some usefull tools
     $ret =  install_if_package_not_exist("mc");
     if ($ret)
