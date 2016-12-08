@@ -78,7 +78,9 @@ function doBeforeUpdate()
     print("Fixing Repo's\n");
     $oldRepoFile = "/etc/yum.repos.d/lxlabs.repo";
     if (lxfile_exists("/etc/yum.repos.d/lxcenter.repo")) {
+        print("- lxcenter.repo found (Good!)\n");
         if (lxfile_exists($oldRepoFile)) {
+            print("- lxlabs.repo found (rename it to lxlabs.lxsave)\n");
             lxfile_mv($oldRepoFile, $oldRepoFile . ".lxsave");
             lxfile_rm($oldRepoFile);
         }
@@ -832,7 +834,7 @@ function cleanupProcess()
 
     }
 
-    // Populate lxcenter repository
+    // Populate LxCenter repository
     // The repository files will be updated in the future with rpm package
     if (!lxfile_exists("/etc/yum.repos.d/lxcenter.repo")) {
         print("Installing lxcenter repo for $osversion\n");
