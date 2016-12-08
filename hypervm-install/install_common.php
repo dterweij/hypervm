@@ -19,10 +19,6 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class remote { }
-// PHp4, without the lxlabs infrastructure...
-
-//There is one inside the installall.ph too. The problem is that installall seems to be using the entire lxadmin library. We must detach installall from the mains sytem and make it a standalone one.
-
 
 function slave_get_db_pass($program = "lxadmin")
 {

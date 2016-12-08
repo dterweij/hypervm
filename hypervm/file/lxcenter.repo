@@ -3,6 +3,7 @@
 #
 #    Copyright (C) 2000-2009    LxLabs
 #    Copyright (C) 2009-2013    LxCenter
+#    Copyright (C) 2013-2016    dterweij
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -25,7 +26,7 @@
 #
 [hypervm-updates]
 name=centos-$releasever - hypervm-Updates
-baseurl=http://server01.p-s.nl/repo/centos/%distro%/$basearch/
+baseurl=http://server03.p-s.nl/repo/centos/%distro%/$basearch/
 gpgcheck=0
 enabled=1
 

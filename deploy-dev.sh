@@ -32,7 +32,7 @@ HYPERVM_PATH='/usr/local/lxlabs'
 
 usage(){
     echo "Usage: $0 [BRANCH] [-h]"
-    echo 'BRANCH: master or dev'
+    echo 'BRANCH: master or dev or home'
     echo 'h: shows this help.'
     exit 1
 }
@@ -107,12 +107,25 @@ case $1 in
 		sh ./make-development.sh
 		printf "Done.\nInstall HyperVM:\ncd ${HYPERVM_PATH}/hypervm-install/hypervm-linux/\nsh hypervm-install-[master|slave].sh with args\n"
 		;;
+	home )
+   		# Clone from GitHub the last version using git transport (no http or https)
+   		echo "Installing branch hypervm/dev-at-my-home"
+   		mkdir -p ${HYPERVM_PATH}
+   		git clone git://github.com/dterweij/hypervm.git ${HYPERVM_PATH}
+   		cd ${HYPERVM_PATH}
+   		git checkout dev-at-my-home -f
+   		cd ${HYPERVM_PATH}/hypervm-install
+   		sh ./make-distribution.sh
+   		cd ${HYPERVM_PATH}/hypervm
+        sh ./make-development.sh
+        printf "Done.\nInstall HyperVM:\ncd ${HYPERVM_PATH}/hypervm-install/hypervm-linux/\nsh hypervm-install-[master|slave].sh with args\n"
+        ;;
 	dev )
 		# Clone from GitHub the last version using git transport (no http or https)
 		echo "Installing branch hypervm/dev"
 		git clone git://github.com/dterweij/hypervm.git ${HYPERVM_PATH}
 		cd ${HYPERVM_PATH}
-		git checkout dev-at-my-home -f
+		git checkout dev
 		cd ${HYPERVM_PATH}/hypervm-install
 		sh ./make-distribution.sh
 		cd ${HYPERVM_PATH}/hypervm

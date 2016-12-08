@@ -93,7 +93,8 @@ function lxins_main()
     exec("useradd lxlabs -g lxlabs -s '/sbin/nologin'");
 
     // New since HyperVM 2.1.0 hypervm-core-php yum-plugin-replace
-    $list = array("which", "lxlighttpd", "zip", "unzip", "hypervm-core-php", "curl","yum-plugin-replace");
+    // New dev-at-home hypervm-core-lxlighttpd
+    $list = array("which", "hypervm-core-lxlighttpd", "zip", "unzip", "hypervm-core-php", "curl","yum-plugin-replace");
 
     if ($installtype !== 'slave') {
         $mysql = array("mysql", "mysql-server");
@@ -140,6 +141,7 @@ function lxins_main()
     if (file_exists('/usr/local/lxlabs/.git')) {
         echo 'Development GIT version found. Skipping download from LxCenter.';
     } else {
+        // TODO dev-at-home
         system("wget http://download.lxcenter.org/download/hypervm/production/hypervm/hypervm-current.zip");
     }
 

@@ -1,7 +1,7 @@
 # HyperVM
-Special Home version for own usage do not use it.
+- **Special Home version for own usage do not use it.**
 
-# Licensing - AGPLv3
+##### Licensing - AGPLv3
 
     HyperVM, Server Virtualization GUI for OpenVZ and Xen
 
