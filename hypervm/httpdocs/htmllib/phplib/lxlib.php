@@ -29,7 +29,8 @@ function init_global()
 	$gbl = new Gbl();
 	$gbl->get();
 
-    date_default_timezone_set("UTC");
+	// TODO needs otherway! check php.ini first
+    date_default_timezone_set("GMT+1");
 
 //
 // Turn on demo version by putting a empty file called demo in the etc dir.
@@ -81,12 +82,12 @@ function check_for_debug($file)
 	}
 
 	if ($sgbl->dbg > 0) {
-		ini_set("error_reporting", E_ALL & ~E_STRICT);
+		ini_set("error_reporting", E_ALL);
 		ini_set("display_errors", "On");
 		ini_set("log_errors", "On");
 	} else {
 		ini_set("error_reporting", E_ERROR);
-		ini_set("display_errors", "Off");
+		ini_set("display_errors", "On"); // temp on
 		ini_set("log_errors", "On");
 	}
     return null;
