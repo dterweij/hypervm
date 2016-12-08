@@ -3,6 +3,7 @@
 #
 #    Copyright (C) 2000-2009	LxLabs
 #    Copyright (C) 2009-2013	LxCenter
+#    Copyright (C) 2013-2016	dterweij
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,13 +22,13 @@
 #
 # This file creates hypervm-[version].[build] archive for distribution.
 #
-# Requires p7zip package from epel
-# Requires git package from epel
+# Requires p7zip package from EPEL repository
+# Requires git package from EPEL or WANdisco repository
 #
 # - read version
 # - compile c files
 # - create zip package
-# - create tar.gz package (not yet in use)
+# - create tar.gz package (for HyperVM RPM package)
 # - create 7z package (not yet in use)
 ######
 echo "################################"
@@ -95,7 +96,8 @@ if [ -f /usr/bin/7za ] ; then
         file=hypervm-$version.$build.7z
     fi
 
-# This requires RPMforge enabled (Centos 5.7 still not provide 7za binary)
+# This requires RPMforge enabled (CentOS 5 still not provide 7za binary)
+# This requires EPEL enabled (CentOS 6)
 # yum install p7zip
 7za a \
     -xr!?svn\* \
