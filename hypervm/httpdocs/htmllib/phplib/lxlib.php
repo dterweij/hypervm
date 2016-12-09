@@ -2533,6 +2533,7 @@ function delete_expired_ssessions()
 
 	$s_l = $login->getList("ssessionlist");
 
+    // ToDo: Gives PHP Warning:  Invalid argument supplied for foreach()
 	foreach ($s_l as $s) {
 		if (!is_object($s)) {
 			continue;
