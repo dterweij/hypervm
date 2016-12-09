@@ -1,5 +1,9 @@
-<?php 
-	
+<?php
+
+/**
+ * @param $name
+ * @return int
+ */
 function getNumForString($name)
 {
 	$num = 0;
@@ -11,12 +15,18 @@ function getNumForString($name)
 	return $num;
 }
 
+/**
+ * @return mixed
+ */
 function is_openvz()
 {
 	return lxfile_exists("/proc/user_beancounters");  
 }
 
 
+/**
+ *
+ */
 function auto_update()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -37,6 +47,9 @@ function auto_update()
 	
 }
 
+/**
+ *
+ */
 function print_head_image()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -65,6 +78,11 @@ function print_head_image()
 	print("</table> ");
 }
 
+/**
+ * @param $table
+ * @param $column
+ * @return mixed
+ */
 function getIncrementedValueFromTable($table, $column)
 {
 	$sq = new Sqlite(null, $table);
@@ -73,12 +91,20 @@ function getIncrementedValueFromTable($table, $column)
 	return $value;
 }
 
+/**
+ * @return bool
+ */
 function http_is_self_ssl()
 {
 	return (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on'));
 
 }
 
+/**
+ * @param $path
+ * @param $file
+ * @param $ver
+ */
 function core_installWithVersion($path, $file, $ver)
 {
     global $sgbl;
@@ -92,6 +118,11 @@ function core_installWithVersion($path, $file, $ver)
     }
 }
 
+/**
+ * @param $class
+ * @param $driverapp
+ * @return array|null
+ */
 function get_other_driver($class, $driverapp)
 {
 	include "../file/driver/rhel.inc";
@@ -106,6 +137,12 @@ function get_other_driver($class, $driverapp)
 	return $ret;
 
 }
+
+/**
+ * @param $string
+ * @param $ssl
+ * @return bool
+ */
 function csainlist($string, $ssl) 
 {
 	foreach($ssl as $ss) {
@@ -116,6 +153,14 @@ function csainlist($string, $ssl)
 	return false;
 }
 
+/**
+ * @param $stlist
+ * @param $endlist
+ * @param $startstring
+ * @param $endstring
+ * @param $file
+ * @param $string
+ */
 function file_put_between_comments($stlist, $endlist, $startstring, $endstring, $file, $string)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -163,6 +208,10 @@ function file_put_between_comments($stlist, $endlist, $startstring, $endstring, 
 }
 
 
+/**
+ * @param $src
+ * @param $dst
+ */
 function lxfile_cp_if_not_exists($src, $dst)
 {
 	if (!lxfile_exists($dst)) {
@@ -170,6 +219,12 @@ function lxfile_cp_if_not_exists($src, $dst)
 	}
 }
 
+/**
+ * @param $table
+ * @param $nname
+ * @param $var
+ * @return mixed
+ */
 function db_get_value($table, $nname, $var)
 {
 	$sql = new Sqlite(null, $table);
@@ -177,7 +232,10 @@ function db_get_value($table, $nname, $var)
 	return $row[0][$var];
 }
 
-function monitor_load()
+/**
+ * @desc Check the system load and send a mail if high loads
+ */
+function OS_System_Load()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 	$val = os_getLoadAvg(true);
@@ -207,6 +265,9 @@ function monitor_load()
 }
 
 
+/**
+ *
+ */
 function log_load()
 {
 
@@ -226,6 +287,10 @@ function log_load()
 	
 }
 
+/**
+ * @param $line
+ * @return mixed
+ */
 function lxGetTimeFromString($line)
 {
 	
@@ -236,8 +301,11 @@ function lxGetTimeFromString($line)
 }
 
 
-
-
+/**
+ * @param $dir
+ * @param $file
+ * @return null|string
+ */
 function recursively_get_file($dir, $file)
 {
 	if (lxfile_exists("$dir/$file")) {
@@ -256,6 +324,10 @@ function recursively_get_file($dir, $file)
 }
 
 
+/**
+ * @param $obj
+ * @return Remote
+ */
 function get_com_ob($obj)
 {
 	$ob = new Remote();
@@ -263,6 +335,10 @@ function get_com_ob($obj)
 	return $ob;
 }
 
+/**
+ * @param $dlist
+ * @return array
+ */
 function make_hidden_if_one($dlist)
 {
 	if (count($dlist) === 1) {
@@ -272,6 +348,10 @@ function make_hidden_if_one($dlist)
 	return array('s', $dlist);
 }
 
+/**
+ * @param $object
+ * @return mixed
+ */
 function get_quick_action_list($object)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -299,6 +379,11 @@ function get_quick_action_list($object)
 	return $nalist;
 }
 
+/**
+ * @param $class
+ * @return array|null
+ * @throws lxexception
+ */
 function get_favorite($class)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -358,6 +443,9 @@ function get_favorite($class)
 }
 
 
+/**
+ * @return null|string
+ */
 function print_favorites()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -378,6 +466,10 @@ function print_favorites()
 }
 
 
+/**
+ * @param $class
+ * @return null|string
+ */
 function print_quick_action($class)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -431,6 +523,10 @@ function print_quick_action($class)
 	
 }
 
+/**
+ * @param $request
+ * @param $ip
+ */
 function addtoEtcHost($request, $ip)
 {
 	//$iplist = os_get_allips();
@@ -439,6 +535,11 @@ function addtoEtcHost($request, $ip)
 	lfile_put_contents("/etc/hosts", "$ip $request #$comment\n", FILE_APPEND);
 }
 
+/**
+ * @param $string
+ * @param int $num
+ * @return string
+ */
 function fill_string($string, $num = 33)
 {
 	for($i = strlen($string); $i < $num; $i++) {
@@ -448,6 +549,9 @@ function fill_string($string, $num = 33)
 	return $string;
 }
 
+/**
+ * @param $request
+ */
 function removeFromEtcHost($request)
 {
 	$comment = "added by kloxo dnsless preview";
@@ -463,6 +567,9 @@ function removeFromEtcHost($request)
 	lfile_put_contents("/etc/hosts", "$out\n");
 }
 
+/**
+ * @return string
+ */
 function find_php_version()
 {
 	global $global_dontlogshell;
@@ -474,6 +581,11 @@ function find_php_version()
 }
 
 
+/**
+ * @param $object
+ * @param $sdir
+ * @param $list
+ */
 function createHtpasswordFile($object, $sdir, $list)
 {
 	$dir = "__path_httpd_root/{$object->main->getParentName()}/$sdir/";
@@ -496,10 +608,19 @@ function createHtpasswordFile($object, $sdir, $list)
 }
 
 
+/**
+ * @param $path
+ * @return mixed
+ */
 function get_file_from_path($path)
 {
 	return str_replace("/", "_", "slash_$path");
 }
+
+/**
+ * @param $dir
+ * @return int
+ */
 function get_total_files_in_directory($dir)
 {
 	dprint("$dir\n");
@@ -508,11 +629,18 @@ function get_total_files_in_directory($dir)
 	return count($list);
 }
 
+/**
+ *
+ */
 function convert_favorite()
 {
 	lxshell_php("../bin/common/favoriteconvert.php");
 }
 
+/**
+ * @param $v
+ * @return string
+ */
 function fix_meta_character($v)
 {
 
@@ -527,6 +655,11 @@ function fix_meta_character($v)
 	return implode("", $nv);
 }
 
+/**
+ * @param $server
+ * @param $class
+ * @param $pgm
+ */
 function changeDriver($server, $class, $pgm)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -553,6 +686,11 @@ function changeDriver($server, $class, $pgm)
 	print("Successfully changed Driver for $class to $pgm\n");
 }
 
+/**
+ * @param $server
+ * @param $class
+ * @param $pgm
+ */
 function changeDriverFunc($server, $class, $pgm)
 {
 
@@ -589,12 +727,19 @@ function changeDriverFunc($server, $class, $pgm)
 	print("Successfully changed driver to $pgm for class $class on server $server->nname\n");
 }
 
+/**
+ * @return mixed
+ */
 function slave_get_db_pass()
 {
 	$rmt = lfile_get_unserialize("../etc/slavedb/dbadmin");
 	return $rmt->data['mysql']['dbpassword'];
 }
 
+/**
+ * @param $class
+ * @return mixed
+ */
 function slave_get_driver($class)
 {
 
@@ -602,6 +747,9 @@ function slave_get_driver($class)
 	return $rmt->data[$class];
 }
 
+/**
+ * ToDo Remove this unused in hypervm ?
+ */
 function PrepareRoundCubeDb()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -620,7 +768,10 @@ function PrepareRoundCubeDb()
 }
 
 
-function run_mail_to_ticket()
+/**
+ * @desc Fetch mail for Tickets
+ */
+function TICKET_Fetch_Mail()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 
@@ -666,6 +817,9 @@ FTC;
 }
 
 
+/**
+ * @param $prog
+ */
 function send_system_monitor_message_to_admin($prog)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -681,10 +835,14 @@ function send_system_monitor_message_to_admin($prog)
 }
 
 
-function check_if_port_on($port)
+/**
+ * @param $port
+ * @return bool
+ * @Desc Check if a deamon port is reachable at localhost
+ */
+function OS_Check_Port($port)
 {
 	$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-	//socket_set_nonblock($socket);
 	$ret = socket_connect($socket, "127.0.0.1", $port);
 	socket_close($socket);
 	if (!$ret) { return false; }
@@ -692,6 +850,10 @@ function check_if_port_on($port)
 }
 
 
+/**
+ * @param $var
+ * @param $cmd
+ */
 function installAppPHP($var, $cmd)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -720,6 +882,10 @@ function installAppPHP($var, $cmd)
 }
 
 
+/**
+ * @param $name
+ * @throws lxException
+ */
 function validate_domain_name($name)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -743,6 +909,11 @@ function validate_domain_name($name)
 	}
 }
 
+/**
+ * @param $domain
+ * @param $appname
+ * @param $cmd
+ */
 function execinstallappPhp($domain, $appname, $cmd)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -767,12 +938,19 @@ function execinstallappPhp($domain, $appname, $cmd)
 }
 
 
+/**
+ *
+ */
 function update_self()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 	exec_with_all_closed("$sgbl->__path_php_path ../bin/update.php");
 }
 
+/**
+ * @param $name
+ * @return string
+ */
 function get_name_without_template($name)
 {
 	if (cse($name, "template")) {
@@ -782,12 +960,15 @@ function get_name_without_template($name)
 	}
 }
 
-function check_smtp_port()
+/**
+ *
+ */
+function OS_Check_SMTP()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 	if ($sgbl->is_this_slave()) { return; }
 	$sq = new Sqlite(null, 'client');
-	if (!check_if_port_on(25)) {
+	if (!OS_Check_Port(25)) {
 		$sq->rawQuery("update client set smtp_server_flag = 'off' where nname = 'admin'");
 	} else {
 		$sq->rawQuery("update client set smtp_server_flag = 'on' where nname = 'admin'");
@@ -795,6 +976,10 @@ function check_smtp_port()
 
 }
 
+/**
+ * @param $arg
+ * @return array|null
+ */
 function getRealPidlist($arg)
 {
 	global $global_dontlogshell;
@@ -837,6 +1022,10 @@ function getRealPidlist($arg)
 }
 
 
+/**
+ * @param $i
+ * @return string
+ */
 function get_double_hex($i)
 {
 	$hex = dechex($i);
@@ -847,6 +1036,11 @@ function get_double_hex($i)
 }
 
 
+/**
+ * @param $array
+ * @param $object
+ * @return array
+ */
 function merge_array_object_not_deleted($array, $object)
 {
 	foreach($array as $a) {
@@ -869,6 +1063,10 @@ function merge_array_object_not_deleted($array, $object)
 	return $ret;
 }
 
+/**
+ * @param $func
+ * @return bool
+ */
 function call_with_flag($func)
 {
 	$file = "__path_program_etc/flag/$func.flg";
@@ -881,6 +1079,10 @@ function call_with_flag($func)
 }
 
 
+/**
+ * @param $cgi_clientname
+ * @return bool
+ */
 function check_disable_admin($cgi_clientname)
 {
 	$sq = new Sqlite(null, 'general');
@@ -894,6 +1096,9 @@ function check_disable_admin($cgi_clientname)
 	return false;
 }
 
+/**
+ * @return bool
+ */
 function check_if_many_server()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -914,6 +1119,9 @@ function check_if_many_server()
 	return false;
 }
 
+/**
+ * @return array
+ */
 function get_all_client()
 {
 	$sql = new Sqlite(null, "client");
@@ -922,6 +1130,9 @@ function get_all_client()
 	return $rs;
 }
 
+/**
+ * @return array
+ */
 function get_all_pserver()
 {
 	$sql = new Sqlite(null, "pserver");
@@ -930,6 +1141,11 @@ function get_all_pserver()
 	return $rs;
 }
 
+/**
+ * @param $file
+ * @param $var
+ * @param $val
+ */
 function change_config($file, $var, $val)
 {
 	$list = lfile_trim($file);
@@ -948,6 +1164,10 @@ function change_config($file, $var, $val)
 	lfile_put_contents($file, implode("\n", $list));
 }
 
+/**
+ * @param $val
+ * @return string
+ */
 function removeQuotes($val)
 {
 	$val = strfrom($val, '"');
@@ -955,11 +1175,17 @@ function removeQuotes($val)
 	return $val;
 }
 
+/**
+ *
+ */
 function checkExistingUpdate()
 {
-	exit_if_another_instance_running();
+	OS_PID_Instance_Check();
 }
 
+/**
+ * @param $path
+ */
 function listFile($path)
 {
 	global $global_list_path;
@@ -974,6 +1200,13 @@ function listFile($path)
 	$global_list_path[] = $path;
 }
 
+/**
+ * @param $ob
+ * @param $func
+ * @param $exception
+ * @return null
+ * @throws lxException
+ */
 function execCom($ob, $func, $exception)
 {
 	try {
@@ -988,23 +1221,36 @@ function execCom($ob, $func, $exception)
 }
 
 
+/**
+ * @param $vgname
+ * @return string
+ */
 function fix_vgname($vgname)
 {
 	if (csa($vgname, "lvm:")) { $vgname = strfrom($vgname, "lvm:"); }
 	return $vgname;
 }
 
+/**
+ *
+ */
 function restart_mysql()
 {
 	exec_with_all_closed("service mysqld restart >/dev/null 2>&1");
 }
 
+/**
+ * @param $service
+ */
 function restart_service($service)
 {
 	exec_with_all_closed("service $service restart >/dev/null 2>&1");
 }
 
 
+/**
+ *
+ */
 function remove_old_serve_file()
 {
 	log_log("remove_oldfile", "Removing old files");
@@ -1014,6 +1260,10 @@ function remove_old_serve_file()
 	}
 }
 
+/**
+ * @param $table
+ * @param $flagvariable
+ */
 function fix_flag_variable($table, $flagvariable)
 {
 	$sq = new Sqlite(null, $table);
@@ -1021,11 +1271,24 @@ function fix_flag_variable($table, $flagvariable)
 
 }
 
+/**
+ * @param $dbtype
+ * @param $dbhost
+ * @param $dbuser
+ * @param $dbpassword
+ * @param $dbname
+ * @param $file
+ * @throws lxException
+ */
 function upload_file_to_db($dbtype, $dbhost, $dbuser, $dbpassword, $dbname, $file)
 {
 	mysql_upload_file_to_db($dbhost, $dbuser, $dbpassword, $dbname, $file);
 }
 
+/**
+ * @param $inout
+ * @return mixed
+ */
 function calculateRealTotal($inout)
 {
 	foreach($inout as $k => $v) {
@@ -1039,6 +1302,14 @@ function calculateRealTotal($inout)
 	return $realtotalinout;
 }
 
+/**
+ * @param $dbhost
+ * @param $dbuser
+ * @param $dbpassword
+ * @param $dbname
+ * @param $file
+ * @throws lxException
+ */
 function mysql_upload_file_to_db($dbhost, $dbuser, $dbpassword, $dbname, $file)
 {
     // TODO: REPLACE MYSQL_CONNECT
@@ -1058,6 +1329,9 @@ function mysql_upload_file_to_db($dbhost, $dbuser, $dbpassword, $dbname, $file)
 	}
 }
 
+/**
+ * @return bool
+ */
 function testAllServersWithMessage()
 {
 	print("Testing All servers.... ");
@@ -1073,6 +1347,9 @@ function testAllServersWithMessage()
 }
 
 
+/**
+ * @throws lxException
+ */
 function testAllServers()
 {
 	$sq = new Sqlite(null, 'pserver');
@@ -1093,6 +1370,10 @@ function testAllServers()
 	}
 
 }
+
+/**
+ * @param $cmd
+ */
 function exec_with_all_closed($cmd)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -1103,6 +1384,10 @@ function exec_with_all_closed($cmd)
 }
 
 
+/**
+ * @param $cmd
+ * @return string
+ */
 function exec_with_all_closed_output($cmd)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -1120,6 +1405,10 @@ function exec_with_all_closed_output($cmd)
 }
 
 // Convert Com to Php Array.
+/**
+ * @param $array
+ * @return array
+ */
 function convertCOMarray($array)
 {
 	foreach($array as $v) {
@@ -1128,6 +1417,10 @@ function convertCOMarray($array)
 	return $res;
 }
 
+/**
+ * @param $olist
+ * @return int
+ */
 function mycount($olist)
 {
 	$i = 0;
@@ -1140,7 +1433,11 @@ function mycount($olist)
 }
 
 
-
+/**
+ * @param $ip
+ * @param string $variable
+ * @throws lxException
+ */
 function full_validate_ipaddress($ip, $variable = 'ipaddress')
 {
 	// variable is nname or ipaddress
@@ -1167,6 +1464,12 @@ function full_validate_ipaddress($ip, $variable = 'ipaddress')
 	$global_dontlogshell = false;
 }
 
+/**
+ * @param $login
+ * @param $object
+ * @param $action
+ * @param $subaction
+ */
 function do_actionlog($login, $object, $action, $subaction)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -1200,6 +1503,10 @@ function do_actionlog($login, $object, $action, $subaction)
 }
 
 
+/**
+ * @param $email
+ * @return bool
+ */
 function validate_email($email)
 {
 	if(!preg_match("#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,5})$#", $email)){
@@ -1209,6 +1516,11 @@ function validate_email($email)
 }
 
 
+/**
+ * @param $ip
+ * @param $variable
+ * @throws lxException
+ */
 function validate_ipaddress_and_throw($ip, $variable)
 {
 	if (!validate_ipaddress($ip)) {
@@ -1217,6 +1529,11 @@ function validate_ipaddress_and_throw($ip, $variable)
 }
 
 
+/**
+ * @param $ip
+ * @return int
+ * @throws lxException
+ */
 function validate_ipaddress($ip)
 {
     if(strchr($ip, '.'))  // most likely IPV4
@@ -1228,6 +1545,10 @@ function validate_ipaddress($ip)
 }
 
 
+/**
+ * @param $ip
+ * @return int
+ */
 function validate_ipaddressV4($ip)
 {
 	$ind= explode(".",$ip);
@@ -1252,6 +1573,11 @@ function validate_ipaddressV4($ip)
 	}
 }
 
+/**
+ * @param $ip
+ * @return int
+ * @throws lxException
+ */
 function validate_ipaddressV6($ip)
 {
 	$ip = strtoupper($ip);
@@ -1275,6 +1601,10 @@ function validate_ipaddressV6($ip)
 	return 1;
 }
 
+/**
+ * @param $ip
+ * @return array
+ */
 function expandIP6ToArray($ip){
         //Make sure we have 8 parts
         while(count(explode(":",$ip)) < 8){
@@ -1290,6 +1620,11 @@ function expandIP6ToArray($ip){
 
 // !! we only check for . and : !!
 // NO validation done!
+/**
+ * @param $ip
+ * @return bool
+ * @throws lxException
+ */
 function isIPV6($ip)
 {
   if(strchr($ip, ':') && !strchr($ip, '.')) return true;
@@ -1299,11 +1634,18 @@ function isIPV6($ip)
     return false;  
 }
 
+/**
+ * @param $file
+ */
 function make_sure_directory_is_lxlabs($file)
 {
 
 }
 
+/**
+ * @param $ses
+ * @param $dbaction
+ */
 function addToUtmp($ses, $dbaction)
 {
 	$nname = implode('_', array($ses->nname, $ses->parent_clname));
@@ -1323,6 +1665,10 @@ function addToUtmp($ses, $dbaction)
 	$utmp->write();
 }
 
+/**
+ * @param $name
+ * @return string
+ */
 function getRealhostName($name)
 {
 	if ($name !== 'localhost') {
@@ -1338,6 +1684,10 @@ function getRealhostName($name)
 
 // This is mainly used for filserver. If the remote system is localhost, then return localhost itself, which means the whole thing is local. Otherwise return one of the ips that can be used to communicate with our server.
 // The $v is actually the remote server that we are sending to.
+/**
+ * @param $v
+ * @return mixed|null|string
+ */
 function getOneIPForLocalhost($v)
 {
 	if (isLocalhost($v)) {
@@ -1352,6 +1702,10 @@ function getOneIPForLocalhost($v)
 	
 }
 
+/**
+ * @param $v
+ * @return mixed|string
+ */
 function getInternalNetworkIp($v)
 {
 	$sql = new Sqlite(null, "pserver");
@@ -1366,21 +1720,37 @@ function getInternalNetworkIp($v)
 	return getFQDNforServer($v);
 }
 
+/**
+ * @param $descr
+ * @return mixed
+ */
 function get_form_variable_name($descr)
 {
 	return getNthToken($descr, 1);
 }
 
+/**
+ * @param $var
+ * @return bool
+ */
 function is_disabled($var)
 {
 	return ($var === '--Disabled--');
 }
 
+/**
+ * @param $var
+ * @return bool
+ */
 function is_disabled_or_null($var)
 {
 	return (!$var || $var === '--Disabled--');
 }
 
+/**
+ * @param $v
+ * @return mixed|string
+ */
 function getFQDNforServer($v)
 {
 	$sql = new Sqlite(null, "pserver");
@@ -1397,12 +1767,20 @@ function getFQDNforServer($v)
     return getHostNameFromIP($ServerIP);
 }
 
+/**
+ * @param $ip
+ * @return mixed
+ */
 function getHostNameFromIP($ip)
 {
     $host = `host $ip`;
     return (($host ? end ( explode (' ', $host)) : $ip));
 }
 
+/**
+ * @param $v
+ * @return null
+ */
 function getOneIPForServer($v)
 {
 	$sql = new Sqlite(null, "pserver");
@@ -1422,24 +1800,45 @@ function getOneIPForServer($v)
 	return null;
 }
 
+/**
+ * @param $dir
+ * @param $fillist
+ * @return mixed
+ * @throws lxException
+ */
 function zip_to_fileserv($dir, $fillist)
 {
 	$file = do_zip_to_fileserv('zip', array($dir, $fillist));
 	return cp_fileserv($file);
 }
 
+/**
+ * @param $dir
+ * @param $fillist
+ * @return mixed
+ * @throws lxException
+ */
 function tar_to_fileserv($dir, $fillist)
 {
 	$file = do_zip_to_fileserv('tar', array($dir, $fillist));
 	return cp_fileserv($file);
 }
 
+/**
+ * @param $dir
+ * @param $fillist
+ * @return mixed
+ * @throws lxException
+ */
 function tgz_to_fileserv($dir, $fillist)
 {
 	$file = do_zip_to_fileserv('tgz', array($dir, $fillist));
 	return cp_fileserv($file);
 }
 
+/**
+ * @return mixed
+ */
 function get_admin_license_var()
 {
 	$list = get_license_resource();
@@ -1451,12 +1850,20 @@ function get_admin_license_var()
 	return $res[0];
 }
 
+/**
+ * @return array
+ */
 function get_license_resource()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 	return array("vps_num");
 }
 
+/**
+ * @param $root
+ * @param $list
+ * @return mixed
+ */
 function cp_fileserv_list($root, $list)
 {
 	foreach($list as $l) {
@@ -1467,6 +1874,10 @@ function cp_fileserv_list($root, $list)
 }
 
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function cp_fileserv($file)
 {
 	lxfile_mkdir("__path_serverfile");
@@ -1496,6 +1907,12 @@ function cp_fileserv($file)
 
 }
 
+/**
+ * @param $type
+ * @param $arg
+ * @return string
+ * @throws lxException
+ */
 function do_zip_to_fileserv($type, $arg)
 {
 	lxfile_mkdir("__path_serverfile/tmp");
@@ -1536,6 +1953,9 @@ function do_zip_to_fileserv($type, $arg)
 }
 
 
+/**
+ * @param $file
+ */
 function fileserv_unlink_if_tmp($file)
 {
 	$base = dirname($file);
@@ -1546,7 +1966,13 @@ function fileserv_unlink_if_tmp($file)
 }
 
 
-
+/**
+ * @param $server
+ * @param $filepass
+ * @param $dt
+ * @param $p
+ * @throws lxException
+ */
 function getFromRemote($server, $filepass, $dt, $p)
 {
 	$bp = basename($p);
@@ -1561,6 +1987,9 @@ function getFromRemote($server, $filepass, $dt, $p)
 	}
 }
 
+/**
+ *
+ */
 function exit_if_not_system_user()
 {
 	if (!os_isSelfSystemUser()) {
@@ -1569,6 +1998,11 @@ function exit_if_not_system_user()
 	}
 }
 
+/**
+ * @param $serv
+ * @param $filepass
+ * @param $copyto
+ */
 function getFromFileserv($serv, $filepass, $copyto)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -1577,11 +2011,21 @@ function getFromFileserv($serv, $filepass, $copyto)
 }
 
 
+/**
+ * @param $serv
+ * @param $filepass
+ */
 function printFromFileServ($serv, $filepass)
 {
 	doRealGetFromFileServ("fileprint", $serv, $filepass);
 }
- 
+
+/**
+ * @param $cmd
+ * @param $serv
+ * @param $filepass
+ * @param null $copyto
+ */
 function doRealGetFromFileServ($cmd, $serv, $filepass, $copyto = null)
 {
 
@@ -1633,6 +2077,13 @@ function doRealGetFromFileServ($cmd, $serv, $filepass, $copyto = null)
 	if ($fd) { fclose($fd); }
 }
 
+/**
+ * @param $serv
+ * @param $filepass
+ * @param $type
+ * @param $fd
+ * @throws lxException
+ */
 function doGetOrPrintFromFileServ($serv, $filepass, $type, $fd)
 {
 
@@ -1654,6 +2105,10 @@ function doGetOrPrintFromFileServ($serv, $filepass, $type, $fd)
 
 }
 
+/**
+ * @param $val
+ * @return mixed|string
+ */
 function trimSpaces($val)
 {
 	$val = trim($val);
@@ -1663,6 +2118,12 @@ function trimSpaces($val)
 }
 
 
+/**
+ * @param $filename
+ * @param $tot
+ * @param $inc
+ * @param $out
+ */
 function execRrdTraffic($filename, $tot, $inc, $out)
 {
 	global $global_dontlogshell;
@@ -1677,6 +2138,9 @@ function execRrdTraffic($filename, $tot, $inc, $out)
 }
 
 
+/**
+ *
+ */
 function set_login_skin_to_feather()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -1694,6 +2158,9 @@ function set_login_skin_to_feather()
 	$obj->write();
 }
 
+/**
+ *
+ */
 function redirect_to_https()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -1730,6 +2197,12 @@ include_once "htmllib/phplib/lib/generallib.php";
 	exit;
 }
 
+/**
+ * @param $name
+ * @param $func
+ * @param $filename
+ * @param $tot
+ */
 function execRrdSingle($name, $func, $filename, $tot)
 {
 	global $global_dontlogshell;
@@ -1745,12 +2218,23 @@ function execRrdSingle($name, $func, $filename, $tot)
 }
 
 
+/**
+ * @param $month
+ * @return mixed
+ */
 function get_num_for_month($month)
 {
 	$list = array("", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");
 	return array_search(strtolower($month), $list);
 }
 
+/**
+ * @param $type
+ * @param $file
+ * @param $time
+ * @return mixed
+ * @throws lxexception
+ */
 function rrd_graph_single($type, $file, $time)
 {
 	global $global_dontlogshell;
@@ -1785,6 +2269,13 @@ function rrd_graph_single($type, $file, $time)
 	return $content;
 }
 
+/**
+ * @param $type
+ * @param $file
+ * @param $time
+ * @return mixed
+ * @throws lxexception
+ */
 function rrd_graph_vps($type, $file, $time)
 {
 	global $global_dontlogshell;
@@ -1826,6 +2317,13 @@ function rrd_graph_vps($type, $file, $time)
 	return $content;
 }
 
+/**
+ * @param $type
+ * @param $list
+ * @param $time
+ * @return mixed
+ * @throws lxexception
+ */
 function rrd_graph_server($type, $list, $time)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -1903,6 +2401,9 @@ function rrd_graph_server($type, $list, $time)
 }
 
 
+/**
+ * @param $file
+ */
 function slow_print($file)
 {
 	$fp = lfopen($file, "rb");
@@ -1916,6 +2417,12 @@ function slow_print($file)
 	fclose($fp);
 }
 
+/**
+ * @param $dir
+ * @param $name
+ * @return string
+ * @throws lxException
+ */
 function createTempDir($dir, $name)
 {
 	$dir = expand_real_root($dir);
@@ -1929,6 +2436,11 @@ function createTempDir($dir, $name)
 	return $vd;
 }
 
+/**
+ * @param $file
+ * @return mixed
+ * @throws lxException
+ */
 function getObjectFromFileWithThrow($file)
 {
 	$rem = unserialize(lfile_get_contents($file));
@@ -1940,6 +2452,13 @@ function getObjectFromFileWithThrow($file)
 }
 
 
+/**
+ * @param $p
+ * @param $param
+ * @param $v
+ * @param $list
+ * @throws lxException
+ */
 function checkIfVariablesSetOr($p, &$param, $v, $list)
 {
 
@@ -1953,6 +2472,11 @@ function checkIfVariablesSetOr($p, &$param, $v, $list)
 	throw new lxException ("need_{$list[0]}", '');
 }
 
+/**
+ * @param $p
+ * @param $list
+ * @throws lxException
+ */
 function checkIfVariablesSet($p, $list)
 {
 	foreach($list as $l) {
@@ -1963,6 +2487,10 @@ function checkIfVariablesSet($p, $list)
 	}
 }
 
+/**
+ * @param $list
+ * @return null
+ */
 function get_variable($list)
 {
 	$vlist = null;
@@ -1975,6 +2503,10 @@ function get_variable($list)
 }
 
 
+/**
+ * @param $argv
+ * @return null
+ */
 function parse_opt($argv)
 {
 	unset($argv[0]);
@@ -1997,6 +2529,9 @@ function parse_opt($argv)
 	return $ret;
 }
 
+/**
+ *
+ */
 function fix_rhn_sources_file()
 {
 	$os = findOperatingSystem('pointversion');
@@ -2024,6 +2559,11 @@ function fix_rhn_sources_file()
 	lfile_put_contents("/etc/yum.repos.d/lxcenter.repo", $cont);
 }
 
+/**
+ * @param $opt
+ * @param $var
+ * @return bool
+ */
 function opt_get_single_flag($opt, $var)
 {
 	$ret = false;
@@ -2034,6 +2574,12 @@ function opt_get_single_flag($opt, $var)
 }
 
 
+/**
+ * @param $opt
+ * @param $val
+ * @param $def
+ * @return mixed
+ */
 function opt_get_default_or_set($opt, $val, $def)
 {
 	if (!isset($opt[$val])) {
@@ -2043,13 +2589,18 @@ function opt_get_default_or_set($opt, $val, $def)
 	}
 }
 
+/**
+ * @return mixed
+ */
 function is_running_secondary()
 {
 	return lxfile_exists("../etc/running_secondary");
 }
 
 
-
+/**
+ *
+ */
 function exit_if_running_secondary()
 {
 	if (is_running_secondary()) {
@@ -2058,11 +2609,17 @@ function exit_if_running_secondary()
 	}
 }
 
+/**
+ * @return mixed
+ */
 function is_secondary_master()
 {
 	return lxfile_exists("../etc/secondary_master");
 }
 
+/**
+ *
+ */
 function exit_if_secondary_master()
 {
 	if (is_secondary_master()) {
@@ -2070,7 +2627,11 @@ function exit_if_secondary_master()
 		exit;
 	}
 }
-function exit_if_another_instance_running()
+
+/**
+ * @desc Check if we are already running or not
+ */
+function OS_PID_Instance_Check()
 {
 	if (lx_core_lock()) {
 		print("Another Copy of the same program is currently Running on pid\n");
@@ -2079,6 +2640,10 @@ function exit_if_another_instance_running()
 }
 
 
+/**
+ * @param null $file
+ * @return bool
+ */
 function lx_core_lock($file = null)
 {
 	global $argv;
@@ -2127,6 +2692,11 @@ function lx_core_lock($file = null)
 	return true;
 }
 
+/**
+ * @param $prog
+ * @param null $file
+ * @return bool
+ */
 function lx_core_lock_check_only($prog, $file = null)
 {
 	lxfile_mkdir("../pid");
@@ -2170,6 +2740,11 @@ function lx_core_lock_check_only($prog, $file = null)
 }
 
 
+/**
+ * @param $inputfile
+ * @param $outputfile
+ * @param $cont
+ */
 function appvault_dbfilter($inputfile, $outputfile, $cont)
 {
 
@@ -2231,6 +2806,11 @@ function appvault_dbfilter($inputfile, $outputfile, $cont)
 	lfile_put_contents($outputfile, $val);
 }
 
+/**
+ * @param $server
+ * @param $var
+ * @return bool
+ */
 function lightyApacheLimit($server, $var)
 {
 	if (!$server) { return true; }
@@ -2262,6 +2842,9 @@ function lightyApacheLimit($server, $var)
 }
 
 
+/**
+ * @param $servar
+ */
 function createRestartFile($servar)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2281,6 +2864,10 @@ function createRestartFile($servar)
 	lfile_put_contents($file, "a");
 }
 
+/**
+ * @param $list
+ * @return null
+ */
 function getLastFromList(&$list)
 {
 	if (!$list) {
@@ -2291,6 +2878,10 @@ function getLastFromList(&$list)
 	return $l;
 }
 
+/**
+ * @param $list
+ * @return int|null|string
+ */
 function getFirstKeyFromList(&$list)
 {
 	if (!$list) {
@@ -2302,6 +2893,10 @@ function getFirstKeyFromList(&$list)
 }
 
 
+/**
+ * @param $list
+ * @return null
+ */
 function getFirstFromList(&$list)
 {
 	if (!$list) {
@@ -2312,11 +2907,19 @@ function getFirstFromList(&$list)
 	}
 }
 
+/**
+ * @param $server
+ * @param $list
+ */
 function getBestLocationFromServer($server, $list)
 {
 	return rl_exec_get(null, $server, 'get_best_location', array($list));
 }
 
+/**
+ * @param $list
+ * @return array
+ */
 function get_best_location($list)
 {
 	dprintr($list);
@@ -2348,6 +2951,9 @@ function get_best_location($list)
 	}
 }
 
+/**
+ * @return array|null|void
+ */
 function vg_complete()
 {
         if (is_centosfive()) {
@@ -2378,6 +2984,10 @@ function vg_complete()
 	return $ret;
 }
 
+/**
+ * @param $vgname
+ * @return float|void
+ */
 function vg_diskfree($vgname)
 {
         if (is_centosfive()) {
@@ -2400,6 +3010,10 @@ function vg_diskfree($vgname)
 	return ($per * $num)/1024;
 }
 
+/**
+ * @param $lvmpath
+ * @return float
+ */
 function lvm_disksize($lvmpath)
 {
 	//$out = exec_with_all_closed_output("lvdisplay -c /dev/$vgname/$lvmname");
@@ -2413,16 +3027,28 @@ function lvm_disksize($lvmpath)
 
 }
 
+/**
+ * @param $loop
+ */
 function lo_remove($loop)
 {
 	lxshell_return("losetup", "-d", $loop);
 }
 
+/**
+ * @param $lvmpath
+ */
 function lvm_remove($lvmpath)
 {
 	lxshell_return("lvremove", "-f", $lvmpath);
 }
 
+/**
+ * @param $vgname
+ * @param $lvmname
+ * @param $size
+ * @return mixed
+ */
 function lvm_create($vgname, $lvmname, $size)
 {
 	$vgname = fix_vgname($vgname);
@@ -2430,6 +3056,10 @@ function lvm_create($vgname, $lvmname, $size)
 	return lxshell_return("lvcreate", "-L{$size}M", "-n$lvmname", $vgname);
 }
 
+/**
+ * @param $lvpath
+ * @param $size
+ */
 function lvm_extend($lvpath, $size)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2446,6 +3076,10 @@ function lvm_extend($lvpath, $size)
 }
 
 
+/**
+ * @param $file
+ * @return array|null
+ */
 function curl_get_file($file)
 {
 	$res = curl_get_file_contents($file);
@@ -2457,6 +3091,10 @@ function curl_get_file($file)
 	return $data;
 }
 
+/**
+ * @param $file
+ * @return null|string
+ */
 function curl_get_file_contents($file)
 {
 	$server = getDownloadServer();
@@ -2479,6 +3117,10 @@ function curl_get_file_contents($file)
 	return $retrievedhtml;
 }
 
+/**
+ * @param $package
+ * @return mixed
+ */
 function install_if_package_not_exist($package)
 {
 	$ret = lxshell_return("rpm", "-q", $package);
@@ -2489,7 +3131,12 @@ function install_if_package_not_exist($package)
 }
 
 // New function since HyperVM 2.1.0
-function replace_rpm_package($replace,$replacewith)
+/**
+ * @param $replace
+ * @param $replacewith
+ * @return mixed
+ */
+function replace_rpm_package($replace, $replacewith)
 {
     $ret = lxshell_return("rpm", "-q", "yum-plugin-replace");
     if ($ret)
@@ -2505,6 +3152,10 @@ function replace_rpm_package($replace,$replacewith)
 }
 
 
+/**
+ * @param $url
+ * @return null|string
+ */
 function curl_general_get($url)
 {
 	$ch = curl_init($url);
@@ -2527,6 +3178,11 @@ function curl_general_get($url)
 }
 
 
+/**
+ * @param null $till
+ * @return array
+ * @throws lxException
+ */
 function getFullVersionList($till = null)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2567,6 +3223,11 @@ function getFullVersionList($till = null)
 	return $list;
 }
 
+/**
+ * @param null $till
+ * @return array
+ * @throws lxException
+ */
 function getVersionList($till = null)
 {
 	$list = getFullVersionList($till);
@@ -2580,6 +3241,9 @@ function getVersionList($till = null)
 	return $nlist;
 }
 
+/**
+ * @return bool
+ */
 function checkIfLatest()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2587,6 +3251,9 @@ function checkIfLatest()
 	return ($latest === $sgbl->__ver_major_minor_release);
 }
 
+/**
+ * @return mixed
+ */
 function getLatestVersion()
 {
 	$nlist = getVersionList();
@@ -2594,6 +3261,9 @@ function getLatestVersion()
 
 }
 
+/**
+ * @return string
+ */
 function getDownloadServer()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2625,6 +3295,9 @@ function getDownloadServer()
 	return $server;
 }
 
+/**
+ * @param $file
+ */
 function download_source($file)
 {
 	
@@ -2632,6 +3305,14 @@ function download_source($file)
 	download_file("$server/$file");
 }
 
+/**
+ * @param $ftp_server
+ * @param $ftp_user
+ * @param $ftp_pass
+ * @param $file
+ * @param $localfile
+ * @throws lxException
+ */
 function download_from_ftp($ftp_server, $ftp_user, $ftp_pass, $file, $localfile)
 {
 	$fn = ftp_connect($ftp_server);
@@ -2648,6 +3329,13 @@ function download_from_ftp($ftp_server, $ftp_user, $ftp_pass, $file, $localfile)
 }
 
 
+/**
+ * @param $table
+ * @param $var
+ * @param $min
+ * @param $increment
+ * @return mixed
+ */
 function incrementVar($table, $var, $min, $increment)
 {
 	$sq = new Sqlite(null, $table);
@@ -2664,6 +3352,10 @@ function incrementVar($table, $var, $min, $increment)
 }
 
 
+/**
+ * @param $url
+ * @param null $localfile
+ */
 function download_file($url, $localfile = null)
 {
 	log_log("download", "$url $localfile");
@@ -2688,7 +3380,11 @@ function download_file($url, $localfile = null)
 }
 
 
-
+/**
+ * @param $contact
+ * @param $dom
+ * @param $email
+ */
 function se_submit($contact, $dom, $email)
 {
 	$tmpfile = lx_tmp_file("se_submit_$dom");
@@ -2705,6 +3401,10 @@ function se_submit($contact, $dom, $email)
 	lfile_put_contents("/tmp/mine", $var);
 }
 
+/**
+ * @param $dir
+ * @param int $day
+ */
 function remove_if_older_than_a_day_dir($dir, $day = 1)
 {
 	if (!lis_dir($dir)) { return; }
@@ -2714,6 +3414,10 @@ function remove_if_older_than_a_day_dir($dir, $day = 1)
 	}
 }
 
+/**
+ * @param $file
+ * @param int $day
+ */
 function remove_if_older_than_a_day($file, $day = 1)
 {
 	$stat = llstat($file);
@@ -2723,6 +3427,10 @@ function remove_if_older_than_a_day($file, $day = 1)
 	}
 }
 
+/**
+ * @param $dir
+ * @param int $day
+ */
 function remove_directory_if_older_than_a_day($dir, $day = 1)
 {
 	$stat = llstat($dir);
@@ -2732,6 +3440,9 @@ function remove_directory_if_older_than_a_day($dir, $day = 1)
 	}
 }
 
+/**
+ * @param $dir
+ */
 function remove_if_older_than_a_minute_dir($dir)
 {
 	$list = lscandir_without_dot($dir);
@@ -2740,6 +3451,9 @@ function remove_if_older_than_a_minute_dir($dir)
 	}
 }
 
+/**
+ * @param $file
+ */
 function remove_if_older_than_a_minute($file)
 {
 	$stat = llstat($file);
@@ -2749,6 +3463,13 @@ function remove_if_older_than_a_minute($file)
 	}
 }
 
+/**
+ * @param $from
+ * @param $to
+ * @param $subject
+ * @param $message
+ * @param null $extra
+ */
 function lx_mail($from, $to, $subject, $message, $extra = null)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2769,6 +3490,10 @@ function lx_mail($from, $to, $subject, $message, $extra = null)
 	mail($to, $subject, $message, $header);
 }
 
+/**
+ * @param $server
+ * @param $file
+ */
 function download_and_print_file($server, $file)
 {
 	$ch = curl_init("$server/$file");
@@ -2780,6 +3505,9 @@ function download_and_print_file($server, $file)
 }
 
 
+/**
+ * @return null|string
+ */
 function get_title()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2812,6 +3540,10 @@ function get_title()
 	return $title;
 }
 
+/**
+ * @param $subject
+ * @param $message
+ */
 function send_mail_to_admin($subject, $message)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2824,6 +3556,9 @@ function send_mail_to_admin($subject, $message)
 	callInBackground("lx_mail", array($progname, $email, $subject, $message));
 }
 
+/**
+ *
+ */
 function save_admin_email()
 {
 	$a = null;
@@ -2833,6 +3568,11 @@ function save_admin_email()
 }
 
 
+/**
+ * @param $func
+ * @param $arglist
+ * @return mixed
+ */
 function callInChild($func, $arglist)
 {
 	$res = new Remote();
@@ -2847,6 +3587,10 @@ function callInChild($func, $arglist)
 	return $rmt;
 }
 
+/**
+ * @param $func
+ * @param $arglist
+ */
 function callInBackground($func, $arglist)
 {
 	$res = new Remote();
@@ -2859,6 +3603,10 @@ function callInBackground($func, $arglist)
 	lxshell_background("__path_php_path", "../bin/common/background.php", $name);
 }
 
+/**
+ * @param $object
+ * @param $func
+ */
 function callObjectInBackground($object, $func)
 {
 	$res = new Remote();
@@ -2872,6 +3620,11 @@ function callObjectInBackground($object, $func)
 }
 
 
+/**
+ * @param $file
+ * @param $cmdarglist
+ * @return mixed
+ */
 function get_with_cache($file, $cmdarglist)
 {
 	global $global_shell_out, $global_shell_error, $global_shell_ret;
@@ -2895,6 +3648,9 @@ function get_with_cache($file, $cmdarglist)
 //
 // Initialize the /script/ dir
 //
+/**
+ *
+ */
 function copy_script()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2922,12 +3678,19 @@ function copy_script()
 	lxfile_unix_chmod_rec("/script", "0755");
 }
 
+/**
+ * @return string
+ */
 function getAdminDbPass()
 {
 	$pass = lfile_get_contents("__path_admin_pass");
 	return trim($pass);
 }
 
+/**
+ * @param $var
+ * @return string
+ */
 function change_underscore($var)
 {
 	$var = str_replace("_", " ", $var);
@@ -2939,6 +3702,11 @@ function change_underscore($var)
 	return ucwords($var);
 }
 
+/**
+ * @param $master
+ * @param $servername
+ * @return array
+ */
 function getIpaddressList($master, $servername)
 {
 	$sql = new Sqlite($master, 'ipaddress');
@@ -2953,6 +3721,9 @@ function getIpaddressList($master, $servername)
 }
 
 
+/**
+ *
+ */
 function if_customer_complain_and_exit()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -2973,16 +3744,28 @@ function if_customer_complain_and_exit()
 
 }
 
+/**
+ * @param $name
+ * @return array
+ */
 function getClassAndName($name)
 {
 	return getParentNameAndClass($name);
 }
 
+/**
+ * @param $pclname
+ * @return array
+ */
 function getParentNameAndClass($pclname)
 {
 	return dogetParentNameAndClass($pclname);
 }
 
+/**
+ * @param $pclname
+ * @return array
+ */
 function dogetParentNameAndClass($pclname)
 {
 	if (csa($pclname, "-")) { $string = "-"; } else { $string = "_s_vv_p_"; }
@@ -2999,6 +3782,10 @@ function dogetParentNameAndClass($pclname)
 
 }
 
+/**
+ * @param $pclname
+ * @return array
+ */
 function doOldgetParentNameAndClass($pclname)
 {
 	if (csa($pclname, "_s_vv_p_")) { $string = "_s_vv_p_"; } else { $string = "-"; }
@@ -3015,6 +3802,9 @@ function doOldgetParentNameAndClass($pclname)
 
 }
 
+/**
+ *
+ */
 function if_not_admin_complain_and_exit()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3036,7 +3826,9 @@ function if_not_admin_complain_and_exit()
 }
 
 
-
+/**
+ * @param null $ctype
+ */
 function initProgram($ctype = NULL)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -3044,6 +3836,10 @@ function initProgram($ctype = NULL)
 }
 
 
+/**
+ * @param $val
+ * @return string
+ */
 function getKBOrMB($val)
 {
 	if ($val > 1014) {
@@ -3052,6 +3848,10 @@ function getKBOrMB($val)
 	return "$val KB";
 }
 
+/**
+ * @param $val
+ * @return string
+ */
 function getGBOrMB($val)
 {
 	if ($val > 1014) {
@@ -3060,12 +3860,23 @@ function getGBOrMB($val)
 	return "$val MB";
 }
 
+/**
+ * @param $class
+ * @param $name
+ * @return string
+ */
 function createClName($class, $name)
 {
 	return "{$class}-$name";
 	//return "{$class}_s_vv_p_$name";
 
 }
+
+/**
+ * @param $class
+ * @param $name
+ * @return string
+ */
 function createParentName($class, $name)
 {
 	return $class . "-" . $name;
@@ -3073,11 +3884,19 @@ function createParentName($class, $name)
 
 }
 
+/**
+ * @param $cmlist
+ * @param $name
+ * @return bool
+ */
 function exists_in_coma($cmlist, $name)
 {
 	return (csa($cmlist, ",$name,"));
 }
 
+/**
+ *
+ */
 function exit_program()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3087,6 +3906,9 @@ function exit_program()
 	exit_programlib();
 }
 
+/**
+ * @param $value
+ */
 function install_general($value)
 {
 	$value = implode(" ", $value);
@@ -3095,8 +3917,12 @@ function install_general($value)
 }
 
 
-
-
+/**
+ * @param $fp
+ * @param $pos
+ * @param $size
+ * @return string
+ */
 function readlastline($fp, $pos, $size)
 {
 
@@ -3115,6 +3941,10 @@ function readlastline($fp, $pos, $size)
 	return $t ;
 }
 
+/**
+ * @param $vlist
+ * @return mixed
+ */
 function getMainQuotaVar($vlist)
 {
 	$vlist['disk_usage'] = "";      
@@ -3135,6 +3965,10 @@ function getMainQuotaVar($vlist)
 	return $vlist;
 }
 
+/**
+ * @param $class
+ * @return array
+ */
 function get_domain_client_temp_list($class)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3146,6 +3980,10 @@ function get_domain_client_temp_list($class)
 	return $temp;
 }
 
+/**
+ * @param $service
+ * @param $state
+ */
 function manage_service($service, $state)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3155,6 +3993,9 @@ function manage_service($service, $state)
 	lxshell_return("/etc/init.d/$program", $state);
 }
 
+/**
+ * @param $directory
+ */
 function recursively_remove($directory)
 {
 	$directory = trim($directory);
@@ -3167,6 +4008,13 @@ function recursively_remove($directory)
 	lxfile_rm_rec($directory);
 
 }
+
+/**
+ * @param $time
+ * @param $first
+ * @param $second
+ * @return int
+ */
 function checkIfRightTime($time, $first, $second)
 {
 
@@ -3183,6 +4031,11 @@ function checkIfRightTime($time, $first, $second)
 	}
 }
 
+/**
+ * @param $ipf
+ * @param $ip
+ * @return bool
+ */
 function is_ip($ipf, $ip)
 {
 	$if = explode(".", $ipf);
@@ -3198,18 +4051,32 @@ function is_ip($ipf, $ip)
 	return true;
 }
 
+/**
+ * @return string
+ */
 function get_star_password()
 {
 	return "****";
 }
 
+/**
+ * @param $pass
+ * @return bool
+ */
 function is_star_password($pass)
 {
 	return ($pass === "****");
 }
 
 
-
+/**
+ * @param $fp
+ * @param $fsize
+ * @param $oldtime
+ * @param $newtime
+ * @param $func
+ * @return int
+ */
 function FindRightPosition($fp, $fsize, $oldtime, $newtime, $func) 
 {
 	$cur = $fsize/2;
@@ -3291,6 +4158,10 @@ function FindRightPosition($fp, $fsize, $oldtime, $newtime, $func)
 	}
 }
 
+/**
+ * @param $fp
+ * @return null|string
+ */
 function lxlabs_marker_fgets($fp)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3304,6 +4175,10 @@ function lxlabs_marker_fgets($fp)
 	return null;
 }
 
+/**
+ * @param $string
+ * @return string
+ */
 function lxlabs_marker_getime($string)
 {
 	$str = strtilfirst($string, " ");
@@ -3311,6 +4186,9 @@ function lxlabs_marker_getime($string)
 	return $str;
 }
 
+/**
+ * @param $fp
+ */
 function lxlabs_marker_firstofline($fp)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3327,6 +4205,13 @@ function lxlabs_marker_firstofline($fp)
 }
 
 
+/**
+ * @param $fp
+ * @param $fsize
+ * @param $oldtime
+ * @param $newtime
+ * @return int
+ */
 function lxlabsFindRightPosition($fp, $fsize, $oldtime, $newtime)
 {
 	$cur = $fsize/2;
@@ -3418,7 +4303,10 @@ function lxlabsFindRightPosition($fp, $fsize, $oldtime, $newtime)
 }
 
 
-
+/**
+ * @param $month
+ * @return string
+ */
 function monthToInt($month) 
  {
 	 $t ="";
@@ -3455,7 +4343,11 @@ function monthToInt($month)
  }
 
 
- function intToMonth($month) 
+/**
+ * @param $month
+ * @return int|string
+ */
+function intToMonth($month) 
  {
 
 	 $mon = 0;
@@ -3513,9 +4405,13 @@ function monthToInt($month)
 
    return $mon;
 
- } 
+ }
 
 
+/**
+ * @param $file
+ * @return string
+ */
 function readfirstline($file){
 	 $firstline   = fgets($file);
 	 fclose($fp);
@@ -3523,6 +4419,11 @@ function readfirstline($file){
  }
 
 
+/**
+ * @param $dir
+ * @param $file
+ * @return string
+ */
 function getNotexistingFile($dir, $file)
 {
 	foreach(range(1, 100) as $i) {
@@ -3535,6 +4436,9 @@ function getNotexistingFile($dir, $file)
 }
 
 
+/**
+ * @param $backup
+ */
 function clearLxbackup($backup)
 {
 	$backup->setUpdateSubaction();
@@ -3542,8 +4446,10 @@ function clearLxbackup($backup)
 }
 
 
-
-
+/**
+ * @param $list
+ * @return array
+ */
 function createrows($list)
 {
 	$fields = lx_array_merge(array(get_default_fields(), $list));
@@ -3554,12 +4460,18 @@ function createrows($list)
 	return $fields;
 }
 
+/**
+ *
+ */
 function initDbLoginPre()
 {
 	$log_pre = "<p> Welcome to <%programname%>  </p><p>Use a valid username and password to gain access to the console. </p> ";
 	db_set_default('general', 'login_pre', $log_pre);
 }
 
+/**
+ *
+ */
 function fixResourcePlan()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3596,6 +4508,10 @@ function fixResourcePlan()
 	}
 }
 
+/**
+ * @param $v
+ * @return bool
+ */
 function is_default_quota_flag_on($v)
 {
 	if ($v === 'mailonly_flag') {
@@ -3606,6 +4522,12 @@ function is_default_quota_flag_on($v)
 }
 
 
+/**
+ * @param $table
+ * @param $variable
+ * @param $default
+ * @param null $extra
+ */
 function db_set_default($table, $variable, $default, $extra = null)
 {
 	$sq = new Sqlite(null, $table);
@@ -3616,6 +4538,12 @@ function db_set_default($table, $variable, $default, $extra = null)
 	$sq->rawQuery("update $table set $variable = '$default' where $variable is null $extra");
 }
 
+/**
+ * @param $table
+ * @param $variable
+ * @param $default
+ * @param null $extra
+ */
 function db_set_default_variable_diskusage($table, $variable, $default, $extra = null)
 {
 	$sq = new Sqlite(null, $table);
@@ -3628,6 +4556,12 @@ function db_set_default_variable_diskusage($table, $variable, $default, $extra =
 }
 
 
+/**
+ * @param $table
+ * @param $variable
+ * @param $default
+ * @param null $extra
+ */
 function db_set_default_variable($table, $variable, $default, $extra = null)
 {
 	$sq = new Sqlite(null, $table);
@@ -3640,7 +4574,13 @@ function db_set_default_variable($table, $variable, $default, $extra = null)
 }
 
 
-
+/**
+ * @param $__db
+ * @param $table
+ * @param $rr
+ * @param $content
+ * @return bool
+ */
 function updateTableProperly($__db, $table, $rr, $content)
 {
 
@@ -3665,6 +4605,10 @@ function updateTableProperly($__db, $table, $rr, $content)
 }
 
 
+/**
+ * @param $url
+ * @return string
+ */
 function add_http_if_not_exist($url)
 {
 	if (!csb($url, "http:/") && !csb($url, "https:/")) {
@@ -3673,6 +4617,9 @@ function add_http_if_not_exist($url)
 	return $url;
 }
 
+/**
+ * @return array
+ */
 function getAllIpaddress()
 {
 	$mydb = new Sqlite(null, 'ipaddress');
@@ -3685,6 +4632,9 @@ function getAllIpaddress()
 }
 
 
+/**
+ *
+ */
 function updateDatabaseProperly()
 {
 	$var = parse_sql_data();
@@ -3704,6 +4654,9 @@ function updateDatabaseProperly()
 
 }
 
+/**
+ *
+ */
 function dofixParentClname()
 {
 	$var = parse_sql_data();
@@ -3747,6 +4700,10 @@ function dofixParentClname()
 	}
 }
 
+/**
+ * @param $v
+ * @return array|bool
+ */
 function fix_getParentNameAndClass($v)
 {
 	if (csa($v, "___") && !csa($v, "__last_access_")) {
@@ -3766,6 +4723,10 @@ function fix_getParentNameAndClass($v)
 
 }
 
+/**
+ * @param $class
+ * @return mixed
+ */
 function get_table_from_class($class)
 {
 	$table =  get_class_variable($class, "__table");
@@ -3775,6 +4736,10 @@ function get_table_from_class($class)
 	return $table;
 }
 
+/**
+ * @param $table
+ * @return array|null
+ */
 function get_class_for_table($table)
 {
 	if ($table === 'domain') {
@@ -3783,6 +4748,9 @@ function get_class_for_table($table)
 	return null;
 }
 
+/**
+ * @return bool
+ */
 function is_centosfive()
 {
         $find = find_os_pointversion();
@@ -3796,6 +4764,9 @@ function is_centosfive()
         }
 }
 
+/**
+ * @return bool
+ */
 function is_centossix()
 {
         $find = find_os_pointversion();
@@ -3809,6 +4780,9 @@ function is_centossix()
         }
 }
 
+/**
+ * @return bool
+ */
 function is_centosseven()
 {
 	$find = find_os_pointversion();
@@ -3823,6 +4797,9 @@ function is_centosseven()
 }
 
 
+/**
+ * @param $class
+ */
 function migrateResourceplan($class)
 {
 	$ss = new Sqlite(null, "resourceplan");
@@ -3847,6 +4824,10 @@ function migrateResourceplan($class)
 	}
 }
 
+/**
+ * @param $var
+ * @param int $type
+ */
 function fprint($var, $type = 0)
 {
 	global $sgbl ;
@@ -3858,7 +4839,9 @@ function fprint($var, $type = 0)
 }
 
 
-
+/**
+ * @param $rem
+ */
 function print_and_exit($rem)
 {
 	$val = base64_encode(serialize($rem));
@@ -3869,6 +4852,10 @@ function print_and_exit($rem)
 }
 
 
+/**
+ * @param $servername
+ * @return mixed
+ */
 function getOsForServer($servername)
 {
 	if (!$servername) {
@@ -3881,6 +4868,12 @@ function getOsForServer($servername)
 	return $res[0]['ostype'];
 }
 
+/**
+ * @param $parent
+ * @param $class
+ * @param $function
+ * @param $arglist
+ */
 function rl_exec_in_driver($parent, $class, $function, $arglist)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3890,11 +4883,20 @@ function rl_exec_in_driver($parent, $class, $function, $arglist)
 	return $res;
 }
 
+/**
+ * @param $domain
+ * @return string
+ */
 function vpopmail_get_path($domain)
 {
 	return trim(lxshell_output("__path_mail_root/bin/vdominfo", "-d", $domain));
 }
 
+/**
+ * @param $filename
+ * @param $searchpattern
+ * @param $pattern
+ */
 function addLineIfNotExistPattern($filename, $searchpattern, $pattern)
 {
 	$cont = lfile_get_contents($filename);
@@ -3909,6 +4911,10 @@ function addLineIfNotExistPattern($filename, $searchpattern, $pattern)
 
 }
 
+/**
+ * @param $filename
+ * @param $pattern
+ */
 function remove_line($filename, $pattern)
 {
 	$list = lfile($filename);
@@ -3921,11 +4927,20 @@ function remove_line($filename, $pattern)
 	lfile_put_contents($filename, implode("", $list));
 }
 
+/**
+ * @param $filename
+ * @param $pattern
+ */
 function add_line($filename, $pattern)
 {
 	lfile_put_contents($filename, "$pattern\n", FILE_APPEND);
 }
 
+/**
+ * @param $filename
+ * @param $pattern
+ * @param $comment
+ */
 function addLineIfNotExistInside($filename, $pattern, $comment)
 {
 	$cont = lfile_get_contents($filename);
@@ -3944,6 +4959,9 @@ function addLineIfNotExistInside($filename, $pattern, $comment)
 
 }
 
+/**
+ *
+ */
 function fix_all_mysql_root_password()
 {
 	$rs = get_all_pserver();
@@ -3952,6 +4970,9 @@ function fix_all_mysql_root_password()
 	}
 }
 
+/**
+ * @param $server
+ */
 function fix_mysql_root_password($server)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -3987,6 +5008,10 @@ function fix_mysql_root_password($server)
 }
 
 
+/**
+ * @param $file
+ * @param $list
+ */
 function slave_save_db($file, $list)
 {
 	$rmt = new Remote();
@@ -3996,6 +5021,13 @@ function slave_save_db($file, $list)
 }
 
 
+/**
+ * @param $table
+ * @param $nname
+ * @param $variable
+ * @param $func
+ * @param $arglist
+ */
 function securityBlanketExec($table, $nname, $variable, $func, $arglist)
 {
 	$rem = new Remote();
@@ -4011,6 +5043,9 @@ function securityBlanketExec($table, $nname, $variable, $func, $arglist)
 }
 
 
+/**
+ *
+ */
 function checkClusterDiskQuota()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -4049,6 +5084,9 @@ function checkClusterDiskQuota()
 	lxfile_generic_chown("..", "lxlabs");
 }
 
+/**
+ * @return int|null|string
+ */
 function find_closest_mirror()
 {
 
@@ -4078,6 +5116,10 @@ function find_closest_mirror()
 
 }
 
+/**
+ * @param $l
+ * @return float
+ */
 function find_hop($l)
 {
 	global $global_dontlogshell;
@@ -4095,6 +5137,11 @@ function find_hop($l)
 }
 
 
+/**
+ * @param $fd
+ * @param $string
+ * @return bool|void
+ */
 function file_server($fd, $string)
 {
 	$string = strfrom($string, "__file::");
@@ -4106,6 +5153,11 @@ function file_server($fd, $string)
 }
 
 
+/**
+ * @param $fd
+ * @param $buff
+ * @return int
+ */
 function print_or_write($fd, $buff)
 {
 	if ($fd) {
@@ -4119,6 +5171,11 @@ function print_or_write($fd, $buff)
 	}
 }
 
+/**
+ * @param $o
+ * @param $psi
+ * @return string
+ */
 function get_warning_for_server_info($o, $psi)
 {
 	if ($o->isAdmin()) {
@@ -4127,11 +5184,24 @@ function get_warning_for_server_info($o, $psi)
 	return $psi;
 }
 
+/**
+ * @param $dbtype
+ * @param $dbhost
+ * @param $dbname
+ * @param $dbuser
+ * @param $dbpass
+ * @param $dbfile
+ */
 function load_database_file($dbtype, $dbhost, $dbname, $dbuser, $dbpass, $dbfile)
 {
 	system("$dbtype -h $dbhost -u $dbuser -p$dbpass $dbname < $dbfile");
 }
 
+/**
+ * @param $fd
+ * @param $rem
+ * @return bool
+ */
 function do_serve_file($fd, $rem)
 {
 	$file = $rem->filename;
@@ -4198,6 +5268,11 @@ function do_serve_file($fd, $rem)
 }
 
 
+/**
+ * @param $action
+ * @param $parent
+ * @param $child
+ */
 function notify_admin($action, $parent, $child)
 {
 	$cclass = $child->get__table();
@@ -4216,6 +5291,13 @@ function notify_admin($action, $parent, $child)
 }
 
 
+/**
+ * @param $list
+ * @param $firstofmonth
+ * @param $today
+ * @param $name
+ * @return int
+ */
 function trafficGetIndividualObjectTotal($list, $firstofmonth, $today, $name) 
 {
 	
@@ -4241,6 +5323,9 @@ function trafficGetIndividualObjectTotal($list, $firstofmonth, $today, $name)
 	return $tot;
 }
 
+/**
+ * @return array
+ */
 function get_last_month_and_year()
 {
 	$month = @ date("n");
@@ -4255,6 +5340,9 @@ function get_last_month_and_year()
 }
 
 
+/**
+ * @param $file
+ */
 function add_to_log($file)
 {
 	$string = time();
@@ -4263,6 +5351,9 @@ function add_to_log($file)
 	lfile_put_contents($file, $string, FILE_APPEND);
 }
 
+/**
+ *
+ */
 function findServerTraffic()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -4285,6 +5376,9 @@ function findServerTraffic()
 
 }
 
+/**
+ * @param $param
+ */
 function createMultipLeVps($param)
 {
 	$adminpass = $param['vps_admin_password_f'];
@@ -4295,16 +5389,27 @@ function createMultipLeVps($param)
 	lxshell_background("__path_php_path", "../bin/multicreate.php", "--admin-password=$adminpass", "--v-template_name=$template", "--count=$count", "--basename=$base", "--v-one_ipaddress=$one_ip");
 }
 
+/**
+ *
+ */
 function collect_quota_later()
 {
 	createRestartFile("lxcollectquota");
 }
 
+/**
+ *
+ */
 function exec_justdb_collectquota()
 {
 	lxshell_background("__path_php_path", "../bin/collectquota.php", "--just-db=true");
 }
 
+/**
+ * @param $source
+ * @param $destination
+ * @param $actualname
+ */
 function setup_ssh_channel($source, $destination, $actualname)
 {
 	$cont = rl_exec_get(null, $source, "get_scpid", array());
@@ -4313,6 +5418,12 @@ function setup_ssh_channel($source, $destination, $actualname)
 }
 
 
+/**
+ * @param $vpsid
+ * @param $newserver
+ * @param $ssh_port
+ * @return array
+ */
 function exec_vzmigrate($vpsid, $newserver, $ssh_port)
 {
 	global $global_shell_out, $global_shell_error, $global_shell_ret;
@@ -4331,6 +5442,10 @@ function exec_vzmigrate($vpsid, $newserver, $ssh_port)
 }
 
 
+/**
+ * @param $vlist
+ * @param string $ttype
+ */
 function getResourceOstemplate(&$vlist, $ttype = 'all')
 {
 	$olist = vps::getVpsOsimage(null, "openvz");
@@ -4345,6 +5460,9 @@ function getResourceOstemplate(&$vlist, $ttype = 'all')
 	}
 }
 
+/**
+ * @return mixed
+ */
 function get_scpid()
 {
 	$home = os_get_home_dir("root");
@@ -4355,12 +5473,19 @@ function get_scpid()
 	return lfile_get_contents("$file.pub");
 }
 
+/**
+ * @param $cont
+ */
 function setup_knownhosts($cont)
 {
 	$home = os_get_home_dir("root");
 	lfile_put_contents("$home/.ssh/known_hosts", "$cont\n", FILE_APPEND);
 }
 
+/**
+ * @param $cont
+ * @return mixed
+ */
 function setup_scpid($cont)
 {
 	global $global_dontlogshell;
@@ -4376,6 +5501,9 @@ function setup_scpid($cont)
 	return lfile_get_contents("/etc/ssh/ssh_host_rsa_key.pub");
 }
 
+/**
+ * @param $cont
+ */
 function remove_scpid($cont)
 {
 	$home = os_get_home_dir("root");
@@ -4392,12 +5520,19 @@ function remove_scpid($cont)
 	lfile_put_contents($file, implode("\n", $nlist) . "\n");
 }
 
+/**
+ * @param $list
+ */
 function lxguard_clear($list)
 {
 
 }
 
-function lxguard_main($clearflag = false)
+/**
+ * @param bool $clearflag
+ * @return mixed|null
+ */
+function OS_LxGuard($clearflag = false)
 {
 
 include_once "htmllib/lib/lxguardincludelib.php";
@@ -4465,6 +5600,9 @@ include_once "htmllib/lib/lxguardincludelib.php";
 	
 }
 
+/**
+ * @param $hl
+ */
 function lxguard_save_hitlist($hl)
 {
 include_once "htmllib/lib/lxguardincludelib.php";
@@ -4474,9 +5612,12 @@ include_once "htmllib/lib/lxguardincludelib.php";
 	$rmt->hl = $hl;
 	$rmt->ddate = time();
 	lfile_put_serialize("$lxgpath/hitlist.info", $rmt);
-	lxguard_main();
+	OS_LxGuard();
 }
 
+/**
+ * @return bool|mixed
+ */
 function getHIBversion()
 {
    $string = file_get_contents("http://download.lxcenter.org/download/version/hib");
