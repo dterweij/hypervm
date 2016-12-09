@@ -1,6 +1,22 @@
 <?php 
-
-// this file is called by ???
+/*
+  * ToDo: fix this file with no PHP notices/errors
+  * 
+  * this file is called by ???
+  * 
+  * this file has static ports
+  * 
+  * this file has a static loop time value
+  * 
+  * this file runs in a endless loop
+  * 
+  * grabs server/port data monitored servers
+  * checks them
+  * update status
+  * sends to localhost some data to monitordata.php
+  * 
+  * dterweij dec 2016
+  */
 
 class Remote { }
 
