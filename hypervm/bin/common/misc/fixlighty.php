@@ -10,7 +10,7 @@ $list = parse_opt($argv);
 if (!isset($list['default-port']) && !lxfile_exists("__path_slave_db")) {
 
 	initProgram('admin');
-	$gen = $login->getObject('general')->portconfig_b;
+	$gen = (isset($login->getObject('general')->portconfig_b));
 	if ($gen) {
 		if ($gen->isOn('nonsslportdisable_flag')) {
 			$nonsslhash = "";
