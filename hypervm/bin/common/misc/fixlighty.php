@@ -12,13 +12,13 @@ if (!isset($list['default-port']) && !lxfile_exists("__path_slave_db")) {
 	initProgram('admin');
 	$gen = (isset($login->getObject('general')->portconfig_b));
 	if ($gen) {
-		if ($gen->isOn('nonsslportdisable_flag')) {
+		if (isset($gen->isOn('nonsslportdisable_flag'))) {
 			$nonsslhash = "";
 		}
-		if ($gen->sslport) {
+		if (isset($gen->sslport)) {
 			$sslport = $gen->sslport;
 		}
-		if ($gen->nonsslport) {
+		if (isset($gen->nonsslport)) {
 			$nonsslport = $gen->nonsslport;
 		}
 	}
