@@ -145,7 +145,7 @@ static function defaultSortDir() { return "desc"; }
 
 static function getDataFromServer($syncserver)
 {
-	$list = rl_exec_get(null, $syncserver, "lxguard_main", array(true));
+	$list = rl_exec_get(null, $syncserver, "OS_LxGuard", array(true));
 	foreach($list as $k => $v) {
 		foreach($v as $kk => $vv) {
 			$l['nname'] = "{$k}___$kk";

@@ -1,12 +1,31 @@
-<?php 
-
-function lxserver_main()
+<?php
+//
+//    HyperVM, Server Virtualization GUI for OpenVZ and Xen
+//
+//    Copyright (C) 2000-2009       LxLabs
+//    Copyright (C) 2009-2016       LxCenter
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU Affero General Public License as
+//    published by the Free Software Foundation, either version 3 of the
+//    License, or (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU Affero General Public License for more details.
+//
+//    You should have received a copy of the GNU Affero General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+/**
+ *
+ */
+function startServer()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 	global $argv, $argc;
-	// Set time limit to indefinite execution
-
-
+	
 	if ($argv[1] === 'slave') {
 		$login = new Client(null, null, 'slave');
 		//Initthisdef uses the db to load the drivers. NO longer callable in slave.
@@ -26,21 +45,23 @@ function lxserver_main()
 		print("Wrong arguments\n");
 		exit;
 	}
+    
 	$login->cttype = 'admin';
 
 	//set_error_handler("lx_error_handler");
 	//set_exception_handler("lx_exception_handler");
-
-	set_time_limit (0);
-	some_server();
-
-
+    
+    // Set PHP execution time limit to unlimited 
+	set_time_limit(0);
+    
+	createServerstream();
 
 }
 
-
-
-function do_server_stuff()
+/**
+ *
+ */
+function checkCronScavenge()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 	//dprint("in Do server stuff\n");
@@ -57,9 +78,9 @@ function do_server_stuff()
 			$scminute = $login->getObject('general')->generalmisc_b->scavengeminute; 
 			//dprint("Cron exec $schour, $scminute\n");
 			if ($schour) {
-				cron_exec($schour, $scminute, "exec_scavenge");
+				cronExec($schour, $scminute, "startScavenge");
 			} else {
-				cron_exec("3", "57", "exec_scavenge");
+				cronExec("3", "57", "startScavenge");
 			}
 		}
 	} catch (exception $e) {
@@ -69,7 +90,12 @@ function do_server_stuff()
 	}
 }
 
-function cron_exec($hour, $minute, $func)
+/**
+ * @param $hour
+ * @param $minute
+ * @param $func
+ */
+function cronExec($hour, $minute, $func)
 {
 	static $localvar;
 
@@ -90,12 +116,16 @@ function cron_exec($hour, $minute, $func)
 
 	if ($now > $time && $now < $time + 2* 60) {
 		$localvar[$func] = true;
-		log_log("cron_exec", "Execing $func");
+		log_log("cronExec", "Executing $func");
 		$func();
 	}
 }
 
-function timed_exec($time, $func)
+/**
+ * @param $time
+ * @param $func
+ */
+function timedExec($time, $func)
 {
 	$v = "global_v$func";
 	global $$v;
@@ -107,7 +137,10 @@ function timed_exec($time, $func)
 	}
 }
 
-function exec_scavenge()
+/**
+ *
+ */
+function startScavenge()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 	dprint("Executing collect quota\n");
@@ -117,6 +150,9 @@ function exec_scavenge()
 	lchdir($olddir);
 }
 
+/**
+ *
+ */
 function checkRestart()
 {
 	
@@ -156,29 +192,33 @@ function checkRestart()
 	}
 }
 
+/**
+ *
+ */
 function exec_openvz_tc()
 {
 	lxshell_background("sh", "__path_program_etc/openvz_tc.sh");
 }
 
+/**
+ * @param $cmd
+ */
 function special_bind_restart($cmd)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
-	if (WindowsOs()) {
-		return;
-	}
+
 	if (myPcntl_fork() === 0) {
-		socket_close($sgbl->__local_socket);
-		exec("/etc/init.d/$cmd restart  </dev/null >/dev/null 2>&1 &");
+	@	socket_close($sgbl->__local_socket);
+	@	exec("/etc/init.d/$cmd restart  </dev/null >/dev/null 2>&1 &");
 		exit;
 	} else {
-		myPcntl_wait();
+	@	myPcntl_wait();
 	}
-
-
 }
 
-
+/**
+ *
+ */
 function reload_lxserver_password()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -193,9 +233,12 @@ function reload_lxserver_password()
 		$login->password = $rmt;
 		$time = $cur;
 	}
-
 }
 
+/**
+ * @param $d
+ * @return Remote
+ */
 function root_main($d)
 {
 	reload_lxserver_password();
@@ -212,6 +255,10 @@ function root_main($d)
 	return $res;
 }
 
+/**
+ * @param $data
+ * @return Remote
+ */
 function do_root_main($data)
 {
 
@@ -220,4 +267,35 @@ function do_root_main($data)
 	return  do_remote($data);
 }
 
+/**
+ *
+ */
+function timed_execution()
+{
+	global $global_dontlogshell;
+
+	$global_dontlogshell = true;
+	timedExec(2,  "checkRestart");
+	timedExec(10, "VM_CollectData");
+	$global_dontlogshell = false;
+}
+
+/**
+ * @desc Collect VM data like lxguard, VM traffic/CPU/memory, Tickets
+ */
+function VM_CollectData()
+{
+	dprint("Starting VM data collection\n");
+	lxshell_background("__path_php_path", "../bin/sisinfoc.php");
+}
+
+/**
+ *
+ */
+function start_portmonitor()
+{
+	dprint("Starting portmonitor\n");
+	system("pkill -f lxportmonitor.php");
+	lxshell_background("__path_php_path", "../bin/common/lxportmonitor.php", "--data-server=localhost");
+}
 

@@ -5,7 +5,7 @@ include_once "htmllib/lib/include.php";
 initprogram('admin');
 $sgbl->__var_collectquota_run = true;
 
-exit_if_another_instance_running();
+OS_PID_Instance_Check();
 
 $global_dontlogshell = true;
 

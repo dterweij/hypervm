@@ -1,7 +1,7 @@
 <?php 
 include_once "htmllib/lib/include.php";
 		$global_dontlogshell = true;
-	exit_if_another_instance_running();
+	OS_PID_Instance_Check();
 // Selfbackup
 	passthru("$sgbl->__path_php_path ../bin/common/mebackup.php");
 	passthru("$sgbl->__path_php_path ../bin/gettraffic.php");

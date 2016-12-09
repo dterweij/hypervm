@@ -5,7 +5,7 @@ include_once "htmllib/lib/include.php";
 $global_dontlogshell = true;
 
 
-//collectdata_main();
+//VM_UsageCollect();
 
 function collectdata_main()
 {

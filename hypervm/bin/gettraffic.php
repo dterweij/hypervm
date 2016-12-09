@@ -1,7 +1,7 @@
 <?php 
 include_once "htmllib/lib/include.php";
 
-debug_for_backend();
+DEBUG_Settings();
 print_time("gettraffic");
 gettraffic_main();
 $val = print_time("gettraffic", "Get Traffic ");

@@ -149,7 +149,7 @@ function update_main()
 	global $argc, $argv;
 	global $gbl, $sgbl, $login, $ghtml; 
 
-	debug_for_backend();
+	DEBUG_Settings();
 	$prognameNice = $sgbl->__var_program_name_nice;
 	$login = new Client(null, null, 'upgrade');
 

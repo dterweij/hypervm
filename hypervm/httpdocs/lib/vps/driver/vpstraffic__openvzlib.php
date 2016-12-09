@@ -107,7 +107,6 @@ static function findTotaltrafficUsage($list, $oldtime, $newtime)
 	}
 
 	self::iptables_delete();
-	self::iptables_delete();
 	self::iptables_create();
 
 	$stat = stat($file);
@@ -158,7 +157,7 @@ static function getEachfileqouta($file, $vpsid, $oldtime, $newtime)
 
 	print("Opening File name is :$file\n");
 
-	error_reporting(0);
+//	error_reporting(0);
 
 	if(!$fp){
 		return 0;

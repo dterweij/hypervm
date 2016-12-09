@@ -3,7 +3,7 @@
 include_once "htmllib/lib/include.php";
 
 include_once "lib/vpsbackuplib.php";
-exit_if_another_instance_running();
+OS_PID_Instance_Check();
 
 $vpb = new vpsbackup();
 

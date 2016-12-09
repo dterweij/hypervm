@@ -1,16 +1,48 @@
 <?php
+//
+//    HyperVM, Server Virtualization GUI for OpenVZ and Xen
+//
+//    Copyright (C) 2000-2009       LxLabs
+//    Copyright (C) 2009-2016       LxCenter
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU Affero General Public License as
+//    published by the Free Software Foundation, either version 3 of the
+//    License, or (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU Affero General Public License for more details.
+//
+//    You should have received a copy of the GNU Affero General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
 
-date_default_timezone_set("UTC");
+// TODO SET THIS IN php.ini
+date_default_timezone_set("Europe/Amsterdam");
 
 include_once "htmllib/lib/linuxlib.php";
 include_once "lib/linuxproglib.php";
 
+/**
+ *
+ */
 function remotetestfunc()
 {
 }
 
+/**
+ *
+ */
 define('S_IFDIR', 00040000);
+/**
+ *
+ */
 define('S_ISUID', 00004000);
+/**
+ *
+ */
 define('S_ISGID', 00002000);
 
 // This is the only function that executes during the initialization...
@@ -20,6 +52,9 @@ define('S_ISGID', 00002000);
 
 init_global();
 
+/**
+ *
+ */
 function init_global()
 {
 	global $gbl, $sgbl, $ghtml;
@@ -40,7 +75,7 @@ function init_global()
 		$g_demo = 1;
 	}
 
-	check_for_debug("/usr/local/lxlabs/hypervm/httpdocs/commands.php");
+	DEBUG_Mode("/usr/local/lxlabs/hypervm/httpdocs/commands.php");
     $sgbl->method = ($sgbl->dbg >= 1) ? "get" : "post";
 
 //
@@ -58,18 +93,27 @@ function init_global()
 
 }
 
-function debug_for_backend()
+/**
+ * @return null
+ * @desc Read and check debug settings
+ */
+function DEBUG_Settings()
 {
 	global $gbl, $sgbl, $login, $ghtml;
-    check_for_debug("/usr/local/lxlabs/hypervm/httpdocs/commands.php");
+    DEBUG_Mode("/usr/local/lxlabs/hypervm/httpdocs/commands.php");
 	if ($sgbl->isDebug()) {
 		return null;
 	}
-    check_for_debug("/usr/local/lxlabs/hypervm/httpdocs/backend.php");
+    DEBUG_Mode("/usr/local/lxlabs/hypervm/httpdocs/backend.php");
     return null;
 }
 
-function check_for_debug($file)
+/**
+ * @param $file
+ * @return null
+ * @desc Set debug mode 
+ */
+function DEBUG_Mode($file)
 {
 	global $gbl, $sgbl, $login, $ghtml;
 	if (lfile_exists($file)) {
@@ -93,25 +137,55 @@ function check_for_debug($file)
     return null;
 }
 
+/**
+ * @return bool
+ */
 function isUpdating()
 {
 	return lx_core_lock_check_only("update.php");
 }
 
+/**
+ * Class lxException
+ */
 class lxException extends Exception
 {
-	public $syncserver;
-	public $class;
-	public $variable;
-	public $error;
-	public $message;
+    /**
+     * @var
+     */
+    public $syncserver;
+    /**
+     * @var
+     */
+    public $class;
+    /**
+     * @var string
+     */
+    public $variable;
+    /**
+     * @var
+     */
+    public $error;
+    /**
+     * @var string
+     */
+    public $message;
 
-	function getClass()
+    /**
+     * @return string
+     */
+    function getClass()
 	{
 		return lget_class($this);
 	}
 
-	function __construct($message, $variable = 'nname', $value = null)
+    /**
+     * lxException constructor.
+     * @param string $message
+     * @param string $variable
+     * @param null $value
+     */
+    function __construct($message, $variable = 'nname', $value = null)
 	{
 		$this->message = $message;
 		$this->variable = $variable;
@@ -120,12 +194,18 @@ class lxException extends Exception
 		//log_log("exception", "$message: $variable: $value");
 	}
 
-	function getlMessage()
+    /**
+     * @return string
+     */
+    function getlMessage()
 	{
 		return "$this->message: $this->variable: $this->value";
 	}
 }
 
+/**
+ * @return mixed
+ */
 function getAllOperatingSystemDetails()
 {
 	$ret = findOperatingSystem();
@@ -134,28 +214,13 @@ function getAllOperatingSystemDetails()
 	return $ret;
 }
 
+/**
+ * @param null $type
+ * @return mixed
+ */
 function findOperatingSystem($type = null)
 {
-
-    /*
-    if (windowsOs()) {
-
-		$ret['os'] = 'windows';
-		try {
-			$obj = new COM("Winmgmts://./root/cimv2");
-		} catch (exception $e) {
-			//throw new lxException("com_failed", '');
-			return null;
-		}
-
-		$list = $obj->execQuery("select Caption from Win32_OperatingSystem");
-		foreach ($list as $l) {
-			$ret['version'] = $l->Caption;
-			$ret['pointversion'] = $l->Caption;
-		}
-		return $ret;
-	}
-    */
+   
 	if (file_exists("/etc/fedora-release")) {
 		$ret['os'] = 'fedora';
 		$ret['version'] = file_get_contents("/etc/fedora-release");
@@ -177,35 +242,18 @@ function findOperatingSystem($type = null)
 	return $ret;
 }
 
+/**
+ * @return mixed|string
+ */
 function find_os_pointversion()
 {
-/*
-	if (file_exists("/etc/fedora-release")) {
-		$release = trim(file_get_contents("/etc/fedora-release"));
-		$osv = explode(" ", $release);
-		if (strtolower($osv[1]) === 'core') {
-			$osversion = "fedora-" . $osv[3];
-		} else {
-			$osversion = "fedora-" . $osv[2];
-		}
-		return $osversion;
-	}
-
-	if (file_exists("/etc/redhat-release")) {
-		$release = trim(file_get_contents("/etc/redhat-release"));
-		$osv = explode(" ", $release);
-		if (isset($osv[6])) {
-			$osversion = "rhel-" . $osv[6];
-		} else {
-			$oss = explode(".", $osv[2]);
-			$osversion = "centos-" . $oss[0];
-		}
-		return $osversion;
-	}
-*/
 	return find_os_selecttype('pointversion');
 }
 
+/**
+ * @param $select
+ * @return mixed|string
+ */
 function find_os_selecttype($select)
 {
         // list os support
@@ -251,6 +299,11 @@ function find_os_selecttype($select)
         }
 }
 
+/**
+ * @param $arg
+ * @param bool $dotflag
+ * @return mixed
+ */
 function lscandir_without_dot($arg, $dotflag = false)
 {  
 	$list = lscandir($arg);
@@ -270,6 +323,11 @@ function lscandir_without_dot($arg, $dotflag = false)
 	return $list;
 }
 
+/**
+ * @param $arg
+ * @param bool $dotflag
+ * @return mixed
+ */
 function lscandir_without_dot_or_underscore($arg, $dotflag = false)
 {
 	$list = lscandir($arg);
@@ -292,26 +350,45 @@ function lscandir_without_dot_or_underscore($arg, $dotflag = false)
 	return $list;
 }
 
+/**
+ * @param $arg
+ * @return mixed
+ */
 function lscandir($arg)
 {
 	return lx_redefine_func("scandir", $arg);
 }
 
+/**
+ * @param $arg
+ * @return mixed
+ */
 function lunlink($arg)
 {
 	return lx_redefine_func("unlink", $arg);
 }
 
+/**
+ * @param $arg
+ * @return mixed
+ */
 function ltouch($arg)
 {
 	return lx_redefine_func("touch", $arg);
 }
 
+/**
+ * @param $arg
+ * @return mixed
+ */
 function lchdir($arg)
 {
 	return lx_redefine_func("chdir", $arg);
 }
 
+/**
+ * @param $fp
+ */
 function takeToStartOfLine($fp)
 {
 	while (fgetc($fp) == "\n" && ftell($fp) != 1 && ftell($fp) != 0) {
@@ -323,6 +400,11 @@ function takeToStartOfLine($fp)
 	}
 }
 
+/**
+ * @param $file
+ * @param $lines
+ * @return null|string
+ */
 function tail_func($file, $lines)
 {
 	$fp = fopen($file, "r");
@@ -356,6 +438,10 @@ function tail_func($file, $lines)
 	return implode("", array_reverse($arr));
 }
 
+/**
+ * @param $file
+ * @return mixed|null
+ */
 function lfile_get_json_unserialize($file)
 {
 	if (!lxfile_exists($file)) {
@@ -364,11 +450,20 @@ function lfile_get_json_unserialize($file)
 	return json_decode(lfile_get_contents($file), true);
 }
 
+/**
+ * @param $file
+ * @param $var
+ * @return bool
+ */
 function lfile_put_json_serialize($file, $var)
 {
 	return lfile_put_contents($file, json_encode($var));
 }
 
+/**
+ * @param $file
+ * @return mixed|null
+ */
 function lfile_get_unserialize($file)
 {
 	if (!lxfile_exists($file)) {
@@ -377,36 +472,69 @@ function lfile_get_unserialize($file)
 	return unserialize(lfile_get_contents($file));
 }
 
+/**
+ * @param $file
+ * @param $var
+ * @return bool
+ */
 function lfile_put_serialize($file, $var)
 {
 	return lfile_put_contents($file, serialize($var));
 }
 
+/**
+ * @param $arg
+ * @return mixed
+ */
 function lfile_get_contents($arg)
 {
 	return lx_redefine_func("file_get_contents", $arg);
 }
 
+/**
+ * @param $arg1
+ * @param $arg2
+ * @return mixed
+ */
 function lrename($arg1, $arg2)
 {
 	return lx_redefine_func("rename", $arg1, $arg2);
 }
 
+/**
+ * @param $arg1
+ * @param $arg2
+ * @return mixed
+ */
 function lfopen($arg1, $arg2)
 {
 	return lx_redefine_func("fopen", $arg1, $arg2);
 }
 
+/**
+ * @param $arg
+ * @return mixed
+ */
 function lfilesize($arg)
 {
 	return lx_redefine_func("filesize", $arg);
 }
 
+/**
+ * @param $arg1
+ * @param $arg2
+ * @return mixed
+ */
 function ltempnam($arg1, $arg2)
 {
 	return lx_redefine_func("tempnam", $arg1, $arg2);
 }
 
+/**
+ * @param $file
+ * @param $data
+ * @param $user
+ */
 function lfile_write_content($file, $data, $user)
 {
 	if (csa($user, ":")) {
@@ -422,6 +550,11 @@ function lfile_write_content($file, $data, $user)
 	lxfile_unix_chown($file, $user);
 }
 
+/**
+ * @param $filename
+ * @param $username
+ * @throws lxException
+ */
 function check_file_if_owned_by_and_throw($filename, $username)
 {
 	if (!check_file_if_owned_by($filename, $username)) {
@@ -429,6 +562,10 @@ function check_file_if_owned_by_and_throw($filename, $username)
 	}
 }
 
+/**
+ * @param $file
+ * @return bool
+ */
 function lis_hardlink($file)
 {
 	$file = expand_real_root($file);
@@ -442,6 +579,10 @@ function lis_hardlink($file)
 	return false;
 }
 
+/**
+ * @param $file
+ * @return bool
+ */
 function is_soft_or_hardlink($file)
 {
 	if (!lxfile_exists($file)) {
@@ -454,6 +595,11 @@ function is_soft_or_hardlink($file)
 	return false;
 }
 
+/**
+ * @param $user
+ * @param $src
+ * @param $dst
+ */
 function new_process_mv_rec($user, $src, $dst)
 {
 	$src = expand_real_root($src);
@@ -461,6 +607,11 @@ function new_process_mv_rec($user, $src, $dst)
 	new_process_cmd($user, null, "mv $src $dst");
 }
 
+/**
+ * @param $user
+ * @param $file
+ * @param $perm
+ */
 function new_process_chmod_rec($user, $file, $perm)
 {
 	$file = expand_real_root($file);
@@ -468,6 +619,11 @@ function new_process_chmod_rec($user, $file, $perm)
 	new_process_cmd($user, null, $cmd);
 }
 
+/**
+ * @param $user
+ * @param $src
+ * @param $dst
+ */
 function new_process_cp_rec($user, $src, $dst)
 {
 	$src = expand_real_root($src);
@@ -476,6 +632,12 @@ function new_process_cp_rec($user, $src, $dst)
 	new_process_cmd($user, null, $cmd);
 }
 
+/**
+ * @param $user
+ * @param $dir
+ * @param $cmd
+ * @return mixed
+ */
 function new_process_cmd($user, $dir, $cmd)
 {
 	global $sgbl;
@@ -512,6 +674,12 @@ function new_process_cmd($user, $dir, $cmd)
 	return $retval;
 }
 
+/**
+ * @param $file
+ * @param $data
+ * @param null $flag
+ * @return bool|void
+ */
 function lfile_put_contents($file, $data, $flag = null)
 {
 	$file = expand_real_root($file);
@@ -585,31 +753,55 @@ function lmkdir($dir)
 	return lx_redefine_func("mkdir", $dir);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lis_executable($file)
 {
 	return lx_redefine_func("is_executable", $file);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lis_readable($file)
 {
 	return lx_redefine_func("is_readable", $file);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lreadlink($file)
 {
 	return lx_redefine_func("readlink", $file);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lis_link($file)
 {
 	return lx_redefine_func("is_link", $file);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lis_dir($file)
 {
 	return lx_redefine_func("is_dir", $file);
 }
 
+/**
+ * @param $src
+ * @param $dst
+ */
 function cp_if_not_exists($src, $dst)
 {
 	if (lxfile_exists($dst)) {
@@ -621,6 +813,10 @@ function cp_if_not_exists($src, $dst)
 	lxfile_cp($src, $dst);
 }
 
+/**
+ * @param $src
+ * @param $dst
+ */
 function cp_rec_if_not_exists($src, $dst)
 {
 	if (lxfile_exists($dst)) {
@@ -632,6 +828,10 @@ function cp_rec_if_not_exists($src, $dst)
 	lxfile_cp_rec($src, $dst);
 }
 
+/**
+ * @param $src
+ * @param $dst
+ */
 function mv_rec_if_not_exists($src, $dst)
 {
 	if (lxfile_exists($dst)) {
@@ -643,11 +843,19 @@ function mv_rec_if_not_exists($src, $dst)
 	lxfile_mv_rec($src, $dst);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function llstat($file)
 {
 	return lx_redefine_func("lstat", $file);
 }
 
+/**
+ * @param $arg
+ * @return array
+ */
 function lx_merge_good($arg)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -681,6 +889,10 @@ function lx_merge_good($arg)
 	return $ret;
 }
 
+/**
+ * @param $list
+ * @return array
+ */
 function lx_array_merge($list)
 {
 	foreach ($list as &$l) {
@@ -700,36 +912,62 @@ function lx_array_merge($list)
 	return $ret;
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_switch($mess, $id = 1)
 {
 	log_log('switch', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_error($mess, $id = 1)
 {
 	log_log('error', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_bdatabase($mess, $id = 1)
 {
 	log_log('bdatabase', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_restore($mess, $id = 1)
 {
 	log_log('restore', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_database($mess, $id = 1)
 {
 	log_log('database', $mess, $id);
 }
 
+/**
+ *
+ */
 function myPcntl_reaper()
 {
 	pcntl_wait($status, WNOHANG);
 }
 
+/**
+ *
+ */
 function myPcntl_wait()
 {
 	if (!WindowsOs()) {
@@ -737,6 +975,9 @@ function myPcntl_wait()
 	}
 }
 
+/**
+ * @return int
+ */
 function myPcntl_fork()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -749,6 +990,11 @@ function myPcntl_fork()
 	return $pid;
 }
 
+/**
+ * @param $file
+ * @param $mess
+ * @param null $id
+ */
 function log_log($file, $mess, $id = null)
 {
 	if (!is_string($mess)) {
@@ -760,21 +1006,37 @@ function log_log($file, $mess, $id = null)
 	lfile_put_contents($rf, @ date("H:i M/d/Y") . ": $mess" . PHP_EOL, FILE_APPEND);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_ajax($mess, $id = 1)
 {
 	log_log('ajax', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_redirect($mess, $id = 1)
 {
 	log_log('redirect_error', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_message($mess, $id = 1)
 {
 	log_log('message', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_security($mess, $id = 1)
 {
 	// get IP
@@ -794,11 +1056,19 @@ function log_security($mess, $id = 1)
 	log_log('security', $mess . " IP: $ip; User agent: $user_agent", $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_filesys_err($mess, $id = 1)
 {
 	log_log('filesyserr', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_filesys($mess, $id = 1)
 {
 	global $global_dontlogshell;
@@ -809,16 +1079,28 @@ function log_filesys($mess, $id = 1)
 	}
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_shell($mess, $id = 1)
 {
 	log_log('shell_exec', $mess, $id);
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_shell_error($mess, $id = 1)
 {
 	log_log('shell_error', $mess, $id);
 }
 
+/**
+ * @param $arg
+ * @return mixed
+ */
 function lfile_trim($arg)
 {
 	$list = lfile($arg);
@@ -828,26 +1110,47 @@ function lfile_trim($arg)
 	return $list;
 }
 
+/**
+ * @param $src
+ * @param $dst
+ * @return mixed
+ */
 function lcopy($src, $dst)
 {
 	return lx_redefine_func("copy", $src, $dst);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lreadfile($file)
 {
 	return lx_redefine_func("readfile", $file);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lmd5_file($file)
 {
 	return lx_redefine_func("md5_file", $file);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lfile_exists($file)
 {
 	return lx_redefine_func("file_exists", $file);
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function lsqlite_open($file)
 {
 	return lx_redefine_func("sqlite_open", $file);
@@ -875,29 +1178,39 @@ function expand_real_root($root)
 }
 
 /**
-* @return void
-* @param unknown
-* @param unknown
-* @desc the function that does the redefining of fundamental file access functions. Note the double use of 'eval'. hey hey, nothing is impossible in php. Never ever repeat the code; Make it unreadable instead. :-)
-*/
-function kill_and_save_pid($name)
+ * @param $name
+ * @desc Kill old running PID process and save a new PID
+ */
+function OS_PID_Kill_and_Save($name)
 {
-	kill_pid($name);
+	OS_PID_Kill($name);
 	usleep(100);
-	save_pid($name);
+	OS_PID_Save($name);
 }
 
-function save_pid($name)
+/**
+ * @param $name
+ * @desc Save actual PID to file
+ */
+function OS_PID_Save($name)
 {
 	lfile_put_contents("__path_program_root/pid/$name.pid", os_getpid());
 }
 
-function kill_pid($name)
+/**
+ * @param $name
+ * @desc Read PID from file and Kill it
+ */
+function OS_PID_Kill($name)
 {
 	$pid = lfile_get_contents("__path_program_root/pid/$name.pid");
-	os_killpid($pid);
+	os_killpid($pid); // linuxlib.php
 }
 
+/**
+ * @param $func
+ * @return mixed
+ */
 function lx_redefine_func($func)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -911,6 +1224,9 @@ function lx_redefine_func($func)
 	return call_user_func_array($func, $arglist);
 }
 
+/**
+ * @param $stat
+ */
 function remove_unnecessary_stat(&$stat)
 {
 	foreach ($stat as $k => $v) {
@@ -920,6 +1236,11 @@ function remove_unnecessary_stat(&$stat)
 	}
 }
 
+/**
+ * @param $cmd
+ * @param $arglist
+ * @return mixed|string|void
+ */
 function getShellCommand($cmd, $arglist)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -947,6 +1268,9 @@ function getShellCommand($cmd, $arglist)
 	return $cmd;
 }
 
+/**
+ * Class Remote
+ */
 class Remote
 {
 	/*
@@ -956,6 +1280,10 @@ public $exception;
 */
 }
 
+/**
+ * @param $var
+ * @param int $type
+ */
 function dprintoa($var, $type = 0)
 {
 	global $sgbl, $login, $ghtml;
@@ -972,6 +1300,10 @@ function dprintoa($var, $type = 0)
 	}
 }
 
+/**
+ * @param $var
+ * @param int $type
+ */
 function dprinto($var, $type = 0)
 {
 	global $sgbl;
@@ -989,6 +1321,10 @@ function dprinto($var, $type = 0)
 	dprintr($newob);
 }
 
+/**
+ * @param $var
+ * @param int $type
+ */
 function dprintr($var, $type = 0)
 {
 	global $sgbl;
@@ -1021,6 +1357,10 @@ function dprintr($var, $type = 0)
 	}
 }
 
+/**
+ * @param $var
+ * @param int $type
+ */
 function dprint($var, $type = 0)
 {
 	global $sgbl;
@@ -1037,6 +1377,10 @@ function dprint($var, $type = 0)
 	}
 }
 
+/**
+ * @param $var
+ * @param int $type
+ */
 function dprint_r($var, $type = 0)
 {
 	global $sgbl;
@@ -1045,17 +1389,33 @@ function dprint_r($var, $type = 0)
 	}
 }
 
+/**
+ * @param $socket
+ * @return string
+ */
 function lx_local_socket_read($socket)
 {
 	return @ socket_read($socket, 2048);
 	//$res=socket_recv($MsgSock,$buffer,1024,0);
 }
 
+/**
+ * @param $haystack
+ * @param $needle
+ * @param int $insensitive
+ * @return bool
+ */
 function csa($haystack, $needle, $insensitive = 0)
 {
 	return char_search_a($haystack, $needle, $insensitive);
 }
 
+/**
+ * @param $haystack
+ * @param $needle
+ * @param int $insensitive
+ * @return bool
+ */
 function char_search_a($haystack, $needle, $insensitive = 1)
 {
 
@@ -1075,6 +1435,11 @@ function char_search_a($haystack, $needle, $insensitive = 1)
 	}
 }
 
+/**
+ * @param $string
+ * @param $needle
+ * @return string
+ */
 function strtil($string, $needle)
 {
 	if (strrpos($string, $needle) !== false) {
@@ -1084,6 +1449,11 @@ function strtil($string, $needle)
 	}
 }
 
+/**
+ * @param $string
+ * @param $needle
+ * @return string
+ */
 function strtilfirst($string, $needle)
 {
 	if (strpos($string, $needle)) {
@@ -1093,6 +1463,11 @@ function strtilfirst($string, $needle)
 	}
 }
 
+/**
+ * @param $string
+ * @param $needle
+ * @return string
+ */
 function strfrom($string, $needle)
 {
 	if (!csa($string, $needle)) {
@@ -1101,6 +1476,11 @@ function strfrom($string, $needle)
 	return substr($string, strpos($string, $needle) + strlen($needle));
 }
 
+/**
+ * @param $array
+ * @param $value
+ * @return array
+ */
 function array_push_unique($array, $value)
 {
 	if (!$array) {
@@ -1115,6 +1495,11 @@ function array_push_unique($array, $value)
 	return $array;
 }
 
+/**
+ * @param $array
+ * @param $element
+ * @return array|null
+ */
 function array_remove($array, $element)
 {
 	$ret = null;
@@ -1126,11 +1511,23 @@ function array_remove($array, $element)
 	return $ret;
 }
 
+/**
+ * @param $haystack
+ * @param $needle
+ * @param int $insensitive
+ * @return bool
+ */
 function csb($haystack, $needle, $insensitive = 1)
 { /* Char Search Begin */
 	return char_search_beg($haystack, $needle, $insensitive);
 }
 
+/**
+ * @param $haystack
+ * @param $needle
+ * @param int $insensitive
+ * @return bool
+ */
 function char_search_beg($haystack, $needle, $insensitive = 1)
 {
 	if (is_array($haystack)) {
@@ -1142,11 +1539,23 @@ function char_search_beg($haystack, $needle, $insensitive = 1)
 	return false;
 }
 
+/**
+ * @param $haystack
+ * @param $needle
+ * @param int $insensitive
+ * @return bool
+ */
 function cse($haystack, $needle, $insensitive = 1)
 { /* Char Search End */
 	return char_search_end($haystack, $needle, $insensitive);
 }
 
+/**
+ * @param $haystack
+ * @param $needle
+ * @param int $insensitive
+ * @return bool
+ */
 function char_search_end($haystack, $needle, $insensitive = 1)
 {
 	if (strpos($haystack, $needle) === false) {
@@ -1160,6 +1569,12 @@ function char_search_end($haystack, $needle, $insensitive = 1)
 	}
 }
 
+/**
+ * @param $needle
+ * @param $haystack
+ * @param bool $strict
+ * @return bool
+ */
 function array_search_bool($needle, $haystack, $strict=false)
 {
 	if (!$haystack) {
@@ -1172,6 +1587,10 @@ function array_search_bool($needle, $haystack, $strict=false)
 	return false;
 }
 
+/**
+ * @param $var
+ * @return bool
+ */
 function isLicensed($var)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1187,17 +1606,28 @@ function isLicensed($var)
 	return isOn($lic->$var);
 }
 
+/**
+ * @param $class
+ * @return bool
+ */
 function is_composite($class)
 {
 	return false;
 }
 
+/**
+ * @param $class
+ * @return array
+ */
 function get_composite($class)
 {
 	return array(null, null, $class);
 }
 
 // Set unlicensed to Unlimited usage
+/**
+ *
+ */
 function setLicenseTodefault()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1214,6 +1644,10 @@ function setLicenseTodefault()
 	$license->write();
 }
 
+/**
+ * @param $list
+ * @return mixed
+ */
 function remove_dot_dot($list)
 {
 	foreach ($list as $k => $v) {
@@ -1224,6 +1658,10 @@ function remove_dot_dot($list)
 	return $list;
 }
 
+/**
+ * @param $file
+ * @return string
+ */
 function lx_tmp_file($file)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1233,6 +1671,10 @@ function lx_tmp_file($file)
 	//return "/tmp/" . $n;
 }
 
+/**
+ * @param $list
+ * @return array
+ */
 function lx_array_keys($list)
 {
 	if (!$list) {
@@ -1241,6 +1683,11 @@ function lx_array_keys($list)
 	return array_keys($list);
 }
 
+/**
+ * @param $full
+ * @param $need
+ * @return mixed
+ */
 function array_filter_key($full, $need)
 {
 	if (!$need) {
@@ -1255,21 +1702,35 @@ function array_filter_key($full, $need)
 	return $ret;
 }
 
+/**
+ *
+ */
 function gethtmllibversion()
 {
 }
 
+/**
+ * @param $var
+ * @return bool
+ */
 function isOn($var)
 {
 	return (($var === 'on') || ($var === 'On')) ? true : false;
 }
 
 // Function that is called to test whther the remote server is working fine or not. Used while adding.
+/**
+ * @return bool
+ */
 function test_remote_func()
 {
 	return true;
 }
 
+/**
+ * @param $mess
+ * @param int $id
+ */
 function log_clicks($mess, $id = 1)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1283,6 +1744,11 @@ function log_clicks($mess, $id = 1)
 }
 
 // Version Comparison Returns 1 if version1 is greater, and -1 if version2 is greater.
+/**
+ * @param $version1
+ * @param $version2
+ * @return int
+ */
 function version_cmp($version1, $version2)
 {
 	$l1 = explode(".", $version1);
@@ -1301,6 +1767,11 @@ function version_cmp($version1, $version2)
 	}
 }
 
+/**
+ * @param $version1
+ * @param $version2
+ * @return int
+ */
 function app_version_cmp($version1, $version2)
 {
 	$l1 = explode(".", $version1);
@@ -1331,11 +1802,20 @@ function app_version_cmp($version1, $version2)
 	}
 }
 
+/**
+ * @param $file
+ * @param $string
+ */
 function fput_content_with_lock($file, $string)
 {
 	lfile_put_contents($file, $string);
 }
 
+/**
+ * @param $list
+ * @param $rule
+ * @return null
+ */
 function filter_object_list($list, $rule)
 {
 	$nlist = null;
@@ -1347,6 +1827,10 @@ function filter_object_list($list, $rule)
 	return $nlist;
 }
 
+/**
+ * @param $var
+ * @return bool
+ */
 function is_assoc_array($var)
 {
 	if (!is_array($var)) {
@@ -1355,6 +1839,12 @@ function is_assoc_array($var)
 	return array_keys($var) !== range(0, sizeof($var) - 1);
 }
 
+/**
+ * @param $ol
+ * @param null $key
+ * @param null $val
+ * @return array|void
+ */
 function get_namelist_from_objectlist($ol, $key = null, $val = null)
 {
 	if (!$ol) {
@@ -1379,12 +1869,22 @@ function get_namelist_from_objectlist($ol, $key = null, $val = null)
 	return $name;
 }
 
+/**
+ * @param $ar
+ * @return mixed
+ */
 function convert_to_associate($ar)
 {
 	foreach ($ar as $k => $v)  $ret[$v] = $v;
 	return $ret;
 }
 
+/**
+ * @param $ol
+ * @param null $key
+ * @param null $val
+ * @return array
+ */
 function get_namelist_from_arraylist($ol, $key = null, $val = null)
 {
 	$name = array();
@@ -1401,6 +1901,11 @@ function get_namelist_from_arraylist($ol, $key = null, $val = null)
 	return $name;
 }
 
+/**
+ * @param $used
+ * @param $priv
+ * @return bool
+ */
 function isQuotaGreaterThanOrEq($used, $priv)
 {
 	if (is_unlimited($priv)) {
@@ -1418,6 +1923,11 @@ function isQuotaGreaterThanOrEq($used, $priv)
 	return ($used >= $priv) ? true : false;
 }
 
+/**
+ * @param $used
+ * @param $priv
+ * @return bool
+ */
 function isQuotaGreaterThan($used, $priv)
 {
 	if (is_unlimited($priv)) {
@@ -1447,6 +1957,9 @@ function is_unlimited($resource)
 	return strtolower($resource) === 'unlimited' || strtolower($resource) === 'na';
 }
 
+/**
+ * @throws lxException
+ */
 function if_demo_throw()
 {
 	if (if_demo()) {
@@ -1454,12 +1967,18 @@ function if_demo_throw()
 	}
 }
 
+/**
+ * @return mixed
+ */
 function if_demo()
 {
 	global $gbl, $sgbl, $g_demo;
 	return $g_demo;
 }
 
+/**
+ *
+ */
 function lx_phpdebug()
 {
 	global $gbl, $sgbl;
@@ -1485,6 +2004,10 @@ function lx_phpdebug()
 	$ghtml->print_input("hidden", "debug_no_cache", "1095197145");
 }
 
+/**
+ * @param $arglist
+ * @return Remote
+ */
 function create_simpleObject($arglist)
 {
 	$obj = new Remote();
@@ -1495,18 +2018,29 @@ function create_simpleObject($arglist)
 	return $obj;
 }
 
+/**
+ *
+ */
 function lx_sync()
 {
 	global $gbl, $sgbl, $login;
 	$login->was();
 }
 
+/**
+ * @return string
+ */
 function get_current_file()
 {
 	$n = basename(dirname($_SERVER['PHP_SELF']));
 	return $n;
 }
 
+/**
+ * @param $a
+ * @param null $pref
+ * @return array
+ */
 function array_flatten($a, $pref = null)
 {
 	$ret = array();
@@ -1520,6 +2054,9 @@ function array_flatten($a, $pref = null)
 	return $ret;
 }
 
+/**
+ * @param null $v
+ */
 function get_general_image_path($v = null)
 {
 
@@ -1537,6 +2074,10 @@ function add_http_host($elem)
 	return $elem;
 }
 
+/**
+ * @param null $path
+ * @return string
+ */
 function get_image_path($path = null)
 {
 	global $gbl, $sgbl, $login;
@@ -1546,6 +2087,10 @@ function get_image_path($path = null)
 	return "/img/image/{$login->getSpecialObject('sp_specialplay')->icon_name}/$path";
 }
 
+/**
+ * @param $length
+ * @return string
+ */
 function randomString($length)
 {
 	$randstr = '';
@@ -1557,6 +2102,10 @@ function randomString($length)
 	return $randstr;
 }
 
+/**
+ * @param $traceArr
+ * @return string|void
+ */
 function DBG_GetBacktrace($traceArr)
 {
 	if ($sgbl->dbg < 0) {
@@ -1614,6 +2163,10 @@ function DBG_GetBacktrace($traceArr)
 	return $s;
 }
 
+/**
+ * @param $b
+ * @return string
+ */
 function getInfo($b)
 {
 	if (is_object($b) && is_subclass_of($b, 'lxclass')) {
@@ -1623,6 +2176,9 @@ function getInfo($b)
 	}
 }
 
+/**
+ * @return null|string|void
+ */
 function backtrace_once()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1668,6 +2224,10 @@ function backtrace_once()
 	return $string;
 }
 
+/**
+ * @param bool $flag
+ * @return null|string|void
+ */
 function debugBacktrace($flag = false)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1707,6 +2267,10 @@ function debugBacktrace($flag = false)
 	dprintr($string);
 }
 
+/**
+ * @param $str
+ * @return mixed|string
+ */
 function lx_strip_tags($str)
 {
 	$nstr = strip_tags($str);
@@ -1715,11 +2279,17 @@ function lx_strip_tags($str)
 	return $nstr;
 }
 
+/**
+ * Class Language_Mes
+ */
 class Language_Mes
 {
 
 }
 
+/**
+ * @return string
+ */
 function get_language()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1731,6 +2301,9 @@ function get_language()
 	return $lan;
 }
 
+/**
+ * @return mixed|string
+ */
 function get_charset()
 {
 	$lang = get_language();
@@ -1739,6 +2312,9 @@ function get_charset()
 	return $charset;
 }
 
+/**
+ *
+ */
 function initLanguageCharset()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1753,6 +2329,9 @@ function initLanguageCharset()
 	}
 }
 
+/**
+ *
+ */
 function initLanguage()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1802,6 +2381,12 @@ function initLanguage()
 
 }
 
+/**
+ * @param $errno
+ * @param $errstr
+ * @param $file
+ * @param $line
+ */
 function lx_error_handler($errno, $errstr, $file, $line)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1840,6 +2425,11 @@ function createEncName($name)
 	return $name;
 }
 
+/**
+ * @param $unenc
+ * @param $enc
+ * @return bool
+ */
 function check_password($unenc, $enc)
 {
 	//Old Stuff Not reached
@@ -1850,6 +2440,9 @@ function check_password($unenc, $enc)
 	return false;
 }
 
+/**
+ * @param $e
+ */
 function lx_exception_handler($e)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1875,6 +2468,12 @@ function lx_exception_handler($e)
 	lfile_put_contents($sgbl->__var_error_file, $trace);
 }
 
+/**
+ * @param $class
+ * @param $client
+ * @param $pass
+ * @return bool
+ */
 function check_raw_password($class, $client, $pass)
 {
 	//return true;
@@ -1925,6 +2524,9 @@ function check_if_disabled_and_exit()
 	}
 }
 
+/**
+ *
+ */
 function delete_expired_ssessions()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -1944,6 +2546,16 @@ function delete_expired_ssessions()
 	}
 }
 
+/**
+ * @param $name
+ * @param $img
+ * @param $imgstr
+ * @param $url
+ * @param $open
+ * @param $help
+ * @param $alt
+ * @return Tree
+ */
 function createTreeObject($name, $img, $imgstr, $url, $open, $help, $alt)
 {
 	static $val;
@@ -2141,6 +2753,9 @@ if (isset($login)) {
 	addToUtmp($sessobj, 'update');
 }
 
+/**
+ *
+ */
 function clear_all_cookie()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2158,6 +2773,11 @@ function clear_all_cookie()
 	}
 }
 
+/**
+ * @param $string
+ * @param $encrypted_string
+ * @return bool
+ */
 function checkPublicKey($string, $encrypted_string)
 {
 	$res = lfile_get_contents("__path_program_root/etc/authorized_keys");
@@ -2171,6 +2791,12 @@ function checkPublicKey($string, $encrypted_string)
 	return false;
 }
 
+/**
+ * @param $object
+ * @param $ssl_param
+ * @param $consuming_parent
+ * @return Ssession
+ */
 function initSession($object, $ssl_param, $consuming_parent)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2233,6 +2859,11 @@ function initSession($object, $ssl_param, $consuming_parent)
 	return $sessobj;
 }
 
+/**
+ * @param $classname
+ * @param $cgi_clientname
+ * @param null $ssl_param
+ */
 function do_login($classname, $cgi_clientname, $ssl_param = null)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2259,6 +2890,9 @@ function do_login($classname, $cgi_clientname, $ssl_param = null)
 	delete_expired_ssessions();
 }
 
+/**
+ * @return bool
+ */
 function ifSplashScreen()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2268,6 +2902,9 @@ function ifSplashScreen()
 	return false;
 }
 
+/**
+ * @return bool
+ */
 function isModifyAction()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2277,11 +2914,18 @@ function isModifyAction()
 	return true;
 }
 
+/**
+ * @param $object
+ * @return string
+ */
 function lget_class($object)
 {
 	return strtolower(get_class($object));
 }
 
+/**
+ *
+ */
 function exit_programlib()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2303,6 +2947,10 @@ function exit_programlib()
 	$gbl->c_session->was();
 }
 
+/**
+ * @param null $cttype
+ * @return array|int|null
+ */
 function getAllclients($cttype = null)
 {
 	$db = new Sqlite(null, 'client');
@@ -2312,6 +2960,9 @@ function getAllclients($cttype = null)
 	return $list;
 }
 
+/**
+ *
+ */
 function delete_login()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2319,18 +2970,20 @@ function delete_login()
 }
 
 /**
-* @return void
-* @param
-* @param
-* @desc  Saves teh whole login info. Login is 'Was'ed; (Write and synced). Any exception is caught and the script is returned to the previous web page, with the error message string returned by the exception. Works EXceptionally well.. :-)
-*/
+ * @return void
+ * @param
+ * @param
+ * @desc  Function can be removed
+ */
 function save_login()
 {
-	// Function removed by Ligesh earlier. (was saving login info)
-	// Deleted the code after the first return.
 	return;
 }
 
+/**
+ * @param $var
+ * @return bool
+ */
 function isLocalhost($var)
 {
 	if ($var && $var !== "localhost") {
@@ -2339,6 +2992,11 @@ function isLocalhost($var)
 	return true;
 }
 
+/**
+ * @param $classname
+ * @param $clientname
+ * @return int
+ */
 function get_savedlogin($classname, $clientname)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2358,6 +3016,11 @@ function get_savedlogin($classname, $clientname)
 	return 0;
 }
 
+/**
+ * @param $classname
+ * @param $clientname
+ * @return mixed
+ */
 function get_login($classname, $clientname)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2382,6 +3045,10 @@ function get_login($classname, $clientname)
 	return $ret;
 }
 
+/**
+ * @param $word
+ * @return mixed
+ */
 function create_name($word)
 {
 	$word = str_replace("_", $word);
@@ -2406,6 +3073,10 @@ function fix_nname_to_be_variable($var)
 	return preg_replace("/[-\W ]/i", "_", $var);
 }
 
+/**
+ * @param $var
+ * @return mixed|void
+ */
 function fix_nname_to_be_variable_without_lowercase($var)
 {
 	if (!$var) {
@@ -2417,6 +3088,10 @@ function fix_nname_to_be_variable_without_lowercase($var)
 	return preg_replace("/[-\W ]/i", "_", $var);
 }
 
+/**
+ * @param $stuff
+ * @return mixed
+ */
 function get_description($stuff)
 {
 	if (is_object($stuff)) {
@@ -2429,6 +3104,11 @@ function get_description($stuff)
 	return $descr[2];
 }
 
+/**
+ * @param $class
+ * @param null $var
+ * @return mixed|null
+ */
 function get_classvar_description($class, $var = null)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2484,6 +3164,10 @@ function get_classvar_description($class, $var = null)
 	return $ret;
 }
 
+/**
+ * @param $var
+ * @return mixed
+ */
 function get_var_help($var)
 {
 	global $g_language_mes, $g_language_desc;
@@ -2494,6 +3178,11 @@ function get_var_help($var)
 	return $var;
 }
 
+/**
+ * @param $class
+ * @param $var
+ * @return mixed|null
+ */
 function get_real_class_variable($class, $var)
 {
 	//$var = fix_nname_to_be_variable($var);
@@ -2510,6 +3199,11 @@ function get_real_class_variable($class, $var)
 	return eval(" if (isset($variable)) { return $variable ; }  ");
 }
 
+/**
+ * @param $class
+ * @param $var
+ * @return mixed
+ */
 function get_class_variable($class, $var)
 {
 	//list($iclass, $mclass, $rclass) = get_composite($class);
@@ -2528,6 +3222,12 @@ function get_class_variable($class, $var)
 	return eval(" if (isset($variable)) { return $variable ; }  ");
 }
 
+/**
+ * @param $class
+ * @param $var
+ * @param $val
+ * @return mixed
+ */
 function set_class_variable($class, $var, $val)
 {
 	$var = fix_nname_to_be_variable($var);
@@ -2536,6 +3236,10 @@ function set_class_variable($class, $var, $val)
 	return eval(" $variable = \$val ; ");
 }
 
+/**
+ * @param $n
+ * @return string
+ */
 function createZeroString($n)
 {
 	$string = "";
@@ -2575,6 +3279,10 @@ function exec_class_method($class, $func)
 	return call_user_func_array(array($class, $func), $arglist);
 }
 
+/**
+ * @param $time
+ * @return string
+ */
 function lxgettimewithoutyear($time)
 {
 	$curd = @ getdate(time());
@@ -2603,6 +3311,10 @@ function lxgettimewithoutyear($time)
 	return $string;
 }
 
+/**
+ * @param $time
+ * @return string
+ */
 function lxgettime($time)
 {
 	$curd = @ getdate(time());
@@ -2632,6 +3344,10 @@ function lxgettime($time)
 	return $string;
 }
 
+/**
+ * @param $obj
+ * @return int
+ */
 function if_search_continue($obj)
 {
 	global $gbl, $sgbl, $ghtml;
@@ -2642,6 +3358,10 @@ function if_search_continue($obj)
 	}
 }
 
+/**
+ * @param $list
+ * @return array
+ */
 function add_select_one($list)
 {
 	$newlist[] = "--Select One--";
@@ -2649,6 +3369,10 @@ function add_select_one($list)
 	return $newlist;
 }
 
+/**
+ * @param $list
+ * @return array
+ */
 function add_disabled($list)
 {
 	$newlist[] = "--Disabled--";
@@ -2656,6 +3380,11 @@ function add_disabled($list)
 	return $newlist;
 }
 
+/**
+ * @param $value
+ * @param $disabled_val
+ * @return mixed
+ */
 function fix_disabled($value, $disabled_val)
 {
 	if ($value === "--Disabled--") {
@@ -2665,6 +3394,10 @@ function fix_disabled($value, $disabled_val)
 	}
 }
 
+/**
+ * @param $array
+ * @param $element
+ */
 function array_remove_assoc(&$array, $element)
 {
 	foreach ($array as $key => $value) {
@@ -2673,6 +3406,12 @@ function array_remove_assoc(&$array, $element)
 	}
 }
 
+/**
+ * @param $objectlist
+ * @param $variable
+ * @param $value
+ * @return mixed
+ */
 function array_remove_object($objectlist, $variable, $value)
 {
 	foreach ($objectlist as $object) {
@@ -2683,6 +3422,9 @@ function array_remove_object($objectlist, $variable, $value)
 	return $ret;
 }
 
+/**
+ * @param $pass
+ */
 function add_superadmin($pass)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2703,6 +3445,9 @@ function add_superadmin($pass)
 	}
 }
 
+/**
+ * @param $pass
+ */
 function add_slave($pass)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2722,6 +3467,9 @@ function add_slave($pass)
 	}
 }
 
+/**
+ * @param $pass
+ */
 function init_supernode($pass)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2730,6 +3478,9 @@ function init_supernode($pass)
 	add_superadmin($pass);
 }
 
+/**
+ * @param $pass
+ */
 function init_slave($pass)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2738,11 +3489,19 @@ function init_slave($pass)
 	lfile_put_contents('__path_slave_db', serialize($rm));
 }
 
+/**
+ * @param $socket
+ */
 function lx_socket_read($socket)
 {
 	//$res=socket_recv($MsgSock,$buffer,1024,0);
 }
 
+/**
+ * @param $var
+ * @param $len
+ * @return string
+ */
 function pad_to_length($var, $len)
 {
 	$times = round(strlen($var) / $len) + 1;
@@ -2750,6 +3509,13 @@ function pad_to_length($var, $len)
 	return $in;
 }
 
+/**
+ * @param $server
+ * @param $port
+ * @param $rmt
+ * @return mixed
+ * @throws
+ */
 function remote_http_exec($server, $port, $rmt)
 {
 	$var = base64_encode(serialize($rmt));
@@ -2763,6 +3529,13 @@ function remote_http_exec($server, $port, $rmt)
 	return $res->ddata;
 }
 
+/**
+ * @param $raddress
+ * @param $socket_type
+ * @param $port
+ * @param $var
+ * @return mixed|string
+ */
 function send_to_some_http_server($raddress, $socket_type, $port, $var)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2781,17 +3554,32 @@ function send_to_some_http_server($raddress, $socket_type, $port, $var)
 	return $totalout;
 }
 
+/**
+ * @param $user
+ * @param $pass
+ * @return bool
+ */
 function check_remote_pass($user, $pass)
 {
 	global $gbl, $sgbl, $login, $ghtml;
 	return check_password($pass, $login->password);
 }
 
+/**
+ * @param $arg
+ * @return mixed
+ */
 function lfile($arg)
 {
 	return lx_redefine_func("file", $arg);
 }
 
+/**
+ * @param $string
+ * @param $num
+ * @param string $delim
+ * @return mixed
+ */
 function getNthToken($string, $num, $delim = ':')
 {
 	if (csa($string, $delim)) {
@@ -2830,6 +3618,10 @@ function recurse_dir($dir, $func, $arglist = null)
 	}
 }
 
+/**
+ * @param $dir
+ * @param $func
+ */
 function do_recurse_dir($dir, $func)
 {
 	$list = lscandir($dir);
@@ -2848,6 +3640,12 @@ function do_recurse_dir($dir, $func)
 	}
 }
 
+/**
+ * @param $list
+ * @param $class
+ * @param $name
+ * @return null
+ */
 function getFromAny($list, $class, $name)
 {
 	$v = null;
@@ -2864,12 +3662,22 @@ function getFromAny($list, $class, $name)
 	return $v;
 }
 
+/**
+ * @param $list
+ * @return mixed
+ */
 function arrayGetFirstObject($list)
 {
 	foreach ($list as $k => $v) break;
 	return $list[$k];
 }
 
+/**
+ * @param $objectlist
+ * @param $variable
+ * @param $value
+ * @return null
+ */
 function array_get_object($objectlist, $variable, $value)
 {
 	foreach ($objectlist as $object)
@@ -2880,6 +3688,9 @@ function array_get_object($objectlist, $variable, $value)
 	return NULL;
 }
 
+/**
+ * @return array
+ */
 function getBasicServiceList()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2892,6 +3703,11 @@ function getBasicServiceList()
 	return array($serv, $descr);
 }
 
+/**
+ * @param $listvar
+ * @param $mainvar
+ * @return null
+ */
 function getDbvariable($listvar, $mainvar)
 {
 	static $var;
@@ -2908,6 +3724,11 @@ function getDbvariable($listvar, $mainvar)
 	}
 }
 
+/**
+ * @param $file
+ * @param $user
+ * @return bool
+ */
 function check_file_if_owned_by($file, $user)
 {
 	if (!lxfile_exists($file)) {
@@ -2929,6 +3750,9 @@ function check_file_if_owned_by($file, $user)
 	return false;
 }
 
+/**
+ * @return bool
+ */
 function critical_change_db_pass()
 {
 	$c = trim(lfile_get_contents("__path_admin_pass"));
@@ -2943,6 +3767,9 @@ function critical_change_db_pass()
     return false;
 }
 
+/**
+ * @throws lxException
+ */
 function change_db_pass()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2968,6 +3795,9 @@ function change_db_pass()
 	}
 }
 
+/**
+ *
+ */
 function create_database()
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -2977,12 +3807,18 @@ function create_database()
 	}
 }
 
+/**
+ * @return array
+ */
 function get_default_fields()
 {
 	$fields = array("nname", "parent_clname", "parent_cmlist");
 	return $fields;
 }
 
+/**
+ * @return null
+ */
 function parse_sql_data()
 {
 	global $gbl, $sgbl, $argc, $argv;
@@ -3112,6 +3948,11 @@ function parse_sql_data()
 	return $_return_value;
 }
 
+/**
+ * @param $__db
+ * @param $tbl_name
+ * @param $fields
+ */
 function mssql_do_create_table($__db, $tbl_name, $fields)
 {
 	foreach ($fields as $f)
@@ -3131,6 +3972,10 @@ function mssql_do_create_table($__db, $tbl_name, $fields)
 	$__db->rawQuery($query);
 }
 
+/**
+ * @param $tbl_name
+ * @param $list
+ */
 function create_table_with_drop($tbl_name, $list)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -3139,6 +3984,11 @@ function create_table_with_drop($tbl_name, $list)
 	create_table($__db, $tbl_name, $list);
 }
 
+/**
+ * @param $__db
+ * @param $tbl_name
+ * @param $list
+ */
 function create_table($__db, $tbl_name, $list)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -3177,6 +4027,11 @@ function create_table($__db, $tbl_name, $list)
 	}
 }
 
+/**
+ * @param $__db
+ * @param $tbl_name
+ * @param $fields
+ */
 function sqlite_do_create_table($__db, $tbl_name, $fields)
 {
 	$fields = implode(', ', $fields);
@@ -3192,6 +4047,11 @@ function sqlite_do_create_table($__db, $tbl_name, $fields)
 	//$query = "create index parent_clname_$tbl_name on $tbl_name (parent_clname (255));"; $__db->rawQuery($query);
 }
 
+/**
+ * @param $__db
+ * @param $tbl_name
+ * @param $fields
+ */
 function mysql_do_create_table($__db, $tbl_name, $fields)
 {
 	$fields = implode(', ', $fields);
@@ -3207,6 +4067,11 @@ function mysql_do_create_table($__db, $tbl_name, $fields)
 
 // string_main();
 
+/**
+ * @param $stuff
+ * @param null $res
+ * @return mixed
+ */
 function getQuotaListForClass($stuff, $res = null)
 {
 	if (is_object($stuff)) {
@@ -3223,6 +4088,9 @@ function getQuotaListForClass($stuff, $res = null)
 	return $ob->getQuotaVariableList();
 }
 
+/**
+ *
+ */
 function lx_xdebug_break()
 {
 	if (function_exists('xdebug_break')) {
@@ -3230,11 +4098,19 @@ function lx_xdebug_break()
 	}
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function remove_extra_slash($file)
 {
 	return preg_replace("/\/+/", "/", $file);
 }
 
+/**
+ * @param null $where
+ * @throws lxException
+ */
 function if_demo_throw_exception($where = null)
 {
 	global $gbl, $sgbl, $login, $ghtml;
@@ -3248,12 +4124,20 @@ function if_demo_throw_exception($where = null)
 	}
 }
 
+/**
+ * @param $name
+ * @return string
+ */
 function get_package_version($name)
 {
 	$cont = curl_general_get("http://download.lxcenter.org/download/version/$name");
 	return trim($cont);
 }
 
+/**
+ * @param $cgi_clientname
+ * @return string
+ */
 function getClassFromName($cgi_clientname)
 {
 	$classname = "client";
@@ -3275,3 +4159,4 @@ function getClassFromName($cgi_clientname)
 */
 	return $classname;
 }
+

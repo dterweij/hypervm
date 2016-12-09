@@ -24,7 +24,7 @@ static function watchRun()
 			print("{$l['servicename']} is disabled\n");
 			continue;
 		}
-		if (check_if_port_on($l['port'])) {
+		if (OS_Check_Port($l['port'])) {
 			continue;
 		}
 

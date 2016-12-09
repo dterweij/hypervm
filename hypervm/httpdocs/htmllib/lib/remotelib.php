@@ -1,5 +1,27 @@
-<?php 
-
+<?php
+//
+//    HyperVM, Server Virtualization GUI for OpenVZ and Xen
+//
+//    Copyright (C) 2000-2009       LxLabs
+//    Copyright (C) 2009-2016       LxCenter
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU Affero General Public License as
+//    published by the Free Software Foundation, either version 3 of the
+//    License, or (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU Affero General Public License for more details.
+//
+//    You should have received a copy of the GNU Affero General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+/**
+ * @param $rmt
+ * @return Remote
+ */
 function do_remote($rmt)
 {
 
@@ -32,7 +54,9 @@ function do_remote($rmt)
 }
 
 
-
+/**
+ * @param $rmt
+ */
 function update_from_master($rmt)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -47,12 +71,21 @@ function update_from_master($rmt)
 	
 }
 
+/**
+ * @param $rmt
+ * @return mixed
+ */
 function do_do_the_action($rmt)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 	return do_local_action($rmt);
 }
 
+/**
+ * @param $rmt
+ * @param $res
+ * @return mixed
+ */
 function do_the_action($rmt, $res)
 {
 
@@ -80,6 +113,10 @@ function do_the_action($rmt, $res)
 	return $res;
 }
 
+/**
+ * @param $rmt
+ * @return Remote
+ */
 function check_for_remote($rmt)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -149,6 +186,16 @@ function check_for_remote($rmt)
 }
 
 
+/**
+ * @param $machine
+ * @param $rmt
+ * @param $cmdtype
+ * @param $nname
+ * @param $dbaction
+ * @return array|int|mixed|null
+ * @throws
+ * @throws lxException
+ */
 function do_remote_exec($machine, $rmt, $cmdtype, $nname, $dbaction)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -302,39 +349,28 @@ function remote_exec($machine, $cmd)
 	if (!$rmt) {
 		return null;
 	}
-	// If the slave server is upgrading try once more. Don't!!!!!!!!!!!!!!
-	/*
-	if ($rmt->state === 'upgrade') {
-		print("Slave Server Upgraded. Trying Again....<br> ");
-		flush();
-		sleep(20);
-		$rmt = do_remote_exec($machine, $password, $cmd, $cmdtype, $nname, $dbaction);
-	}
-	if (!$rmt) {
-		return null;
-	}
-	if ($rmt->state === 'upgrade') {
-		dprint("Slave Server Upgrade. Has failed...<br> ");
-		throw new lxException("slave_server_upgrade_failed");
-	}
-*/
-
+	
 	if ($rmt->exception) {
-		//$exc = new Exception("syncserver:$machine <br> " . $rmt->exception->getMessage());
 		$rmt->exception->syncserver = $machine;
 		throw $rmt->exception;
-		//throw $exc;
 	}
 
 
 	return $rmt->ddata;
 }
 
+/**
+ * @param $variable
+ */
 function get_from_master($variable)
 {
 	return send_to_master($variable);
 }
 
+/**
+ * @param $object
+ * @throws lxException
+ */
 function send_to_master($object)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -354,12 +390,27 @@ function send_to_master($object)
 }
 
 
+/**
+ * @param $raddress
+ * @param $var
+ * @return int|null|string
+ * @throws lxException
+ */
 function send_to_some_server($raddress, $var)
 {
 	return send_to_some_stream_server("cmd", null, $raddress, $var, null);
 	//return send_to_some_http_server($raddress, $socket_type, "7777", $rmt);
 }
 
+/**
+ * @param $type
+ * @param $size
+ * @param $raddress
+ * @param $var
+ * @param $fd
+ * @return int|null|string
+ * @throws lxException
+ */
 function send_to_some_stream_server($type, $size, $raddress, $var, $fd)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -472,6 +523,9 @@ function send_to_some_stream_server($type, $size, $raddress, $var, $fd)
 
 }
 
+/**
+ * @return resource
+ */
 function createSslStream()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -495,6 +549,9 @@ function createSslStream()
 	return $sockr;
 }
 
+/**
+ * @return resource
+ */
 function createLocalStream()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -506,6 +563,9 @@ function createLocalStream()
 	return $sockl;
 }
 
+/**
+ *
+ */
 function do_ssl()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -520,6 +580,9 @@ function do_ssl()
 }
 
 
+/**
+ *
+ */
 function do_local()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -527,23 +590,21 @@ function do_local()
 	do_socket(array($sockl), "process_server_input");
 }
 
-function some_server()
+/**
+ *
+ */
+function createServerstream()
 {
-
-	/*
-	$pid = myPcntl_fork();
-	if (!$pid) {
-		do_ssl();
-	} else {
-		do_local();
-	}
-*/
 	$sockr = createSslStream();
 	$sockl = createLocalStream();
 	do_socket(array($sockr, $sockl), "process_server_input");
 }
 
 
+/**
+ * @param $socklist
+ * @param $processfunc
+ */
 function do_socket($socklist, $processfunc)
 {
 
@@ -562,7 +623,7 @@ function do_socket($socklist, $processfunc)
 
 		// Server stuff must be executed not merely when it is timed out. But always.
 		if (os_isSelfSystemUser()) {
-			do_server_stuff();
+			checkCronScavenge();
 		}
 		if ($ready === 0) {
 
@@ -602,6 +663,10 @@ function do_socket($socklist, $processfunc)
 	fclose($sock);
 }
 
+/**
+ * @param $mchildsock
+ * @param $processfunc
+ */
 function process_single_command($mchildsock, $processfunc)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -646,11 +711,18 @@ function process_single_command($mchildsock, $processfunc)
 	}
 }
 
+/**
+ * @param $total
+ * @return int|null|string
+ */
 function process_nonlocal_input($total)
 {
 	return send_to_some_server("localhost", $total);
 }
 
+/**
+ * @param $o
+ */
 function save_slave_name($o)
 {
 	if (!lxfile_exists("__path_slave_db")) { return; }
@@ -664,6 +736,10 @@ function save_slave_name($o)
 }
 
 
+/**
+ * @param $total
+ * @return string
+ */
 function process_in_master($total)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -681,6 +757,9 @@ function process_in_master($total)
 
 }
 
+/**
+ * @param $rmt
+ */
 function master_get_data($rmt)
 {
 	dprint("Got master request for {$rmt->cmd}\n");
@@ -689,6 +768,10 @@ function master_get_data($rmt)
 	}
 }
 
+/**
+ * @param $var
+ * @return null
+ */
 function do_master_get_data($var)
 {
 	switch($var) {
@@ -702,6 +785,10 @@ function do_master_get_data($var)
 }
 
 
+/**
+ * @param $total
+ * @return string
+ */
 function process_server_input($total)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -751,6 +838,10 @@ function process_server_input($total)
 }
 
 
+/**
+ * @param $rmt
+ * @return mixed
+ */
 function do_local_action($rmt)
 {
 	if ($rmt->action === "set") {
@@ -772,7 +863,12 @@ function do_local_action($rmt)
 }
 
 
-
+/**
+ * @param $masterserver
+ * @param $slaveserver
+ * @param $func
+ * @param null $arglist
+ */
 function rl_exec_get($masterserver, $slaveserver, $func, $arglist = null)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -787,6 +883,11 @@ function rl_exec_get($masterserver, $slaveserver, $func, $arglist = null)
 	return rl_exec($masterserver, $slaveserver, $rmt);
 }
 
+/**
+ * @param $masterserver
+ * @param $slaveserver
+ * @param $object
+ */
 function rl_exec_set($masterserver, $slaveserver, $object)
 {
 	$rmt = new Remote();
@@ -797,6 +898,10 @@ function rl_exec_set($masterserver, $slaveserver, $object)
 
 // CLone is fucking buggy. SO now just serializing and unserializing the object.
 
+/**
+ * @param $object
+ * @return mixed
+ */
 function myclone($object)
 {
 	return clone $object;
@@ -842,6 +947,9 @@ function rl_exec($masterserver, $slaveserver, $cmd)
 }
 
 
+/**
+ *
+ */
 function reload_slave_password()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -863,6 +971,9 @@ function reload_slave_password()
 
 }
 
+/**
+ *
+ */
 function remote_main()
 {
 	global $gbl, $sgbl, $login, $ghtml, $g_dbf; 

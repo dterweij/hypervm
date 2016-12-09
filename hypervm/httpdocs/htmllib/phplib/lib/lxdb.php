@@ -95,7 +95,7 @@ static function initThisListRule($parent, $class)
 	else
 	{
 		dprint('Warning ' . $class . ' have a missing parent<br />');
-		debug_for_backend();
+		DEBUG_Settings();
 	} 
 	
 	return $ret;
