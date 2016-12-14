@@ -63,7 +63,6 @@ cd $lxdir
 		cp /usr/local/lxlabs/ext/lxlighttpd/sbin/lighttpd /usr/local/lxlabs/ext/lxlighttpd/sbin/$prog.httpd 2>/dev/null
 		(cd /usr/local/lxlabs/$prog/httpdocs ; lphp.exe ../bin/common/misc/fixlighty.php "$1" )
 		daemon --pidfile=${pidfile} $httpd $OPTIONS
-		(cd /usr/local/lxlabs/$prog/httpdocs ; lphp.exe ../bin/execatinit.php)
 
         RETVAL=$?
         echo
