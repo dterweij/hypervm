@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-# Is this file used?
+# Used by hypervm-wrapper.sh
+# Started by init.d/hypervm (hypervm.init.program)
 #
 #
 __path_php_path="/usr/local/lxlabs/ext/php/php";
@@ -24,7 +25,7 @@ save_pid() {
 kill_pid() {
 	name=$1
 	pid=`cat $__path_program_root/pid/$name.pid`;
-	kill -9 $pid 2>/dev/null
+	kill -9 $pid &>/dev/null
 }
 
 wrapper_main() {
@@ -36,16 +37,16 @@ wrapper_main() {
 	fi
 
 
-	mkdir ../log 2>/dev/null
-	mkdir ../pid 2>/dev/null
+	mkdir ../log &>/dev/null
+	mkdir ../pid &>/dev/null
 	while : ; do
 
 		if [ -f $__path_low_memory_file ] ; then
-			/bin/cp $__path_server_exe.core $__path_server_exe
+			/bin/cp $__path_server_exe.core $__path_server_exe &>/dev/null
 			chmod 755 $__path_server_exe
-			$__path_server_exe $string >/dev/null 2>&1
+			$__path_server_exe $string &>/dev/null
 		else 
-			$__path_php_path $__path_server_path $string >/dev/null 2>&1;
+			$__path_php_path $__path_server_path $string &>/dev/null
 	 	fi
 			sleep 10;
 	done
