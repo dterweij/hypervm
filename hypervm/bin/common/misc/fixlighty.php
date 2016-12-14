@@ -33,9 +33,11 @@ if (!isset($list['default-port']) && !lxfile_exists("__path_slave_db")) {
 		if ($gen->isOn('nonsslportdisable_flag')) {
 			$nonsslhash = "";
 		}
+		// TODO: ### Notice: Undefined property: portconfig_b::$sslport
 		if ($gen->sslport) {
 			$sslport = $gen->sslport;
 		}
+		//TODO: ### Notice: Undefined property: portconfig_b::$nonsslport
 		if ($gen->nonsslport) {
 			$nonsslport = $gen->nonsslport;
 		}
