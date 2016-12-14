@@ -21,6 +21,14 @@
 
 /*
  *  This is the main startup of HyperVM
+ *  Starting communication between master and slave(s) though sockets (forked as child)
+ *  Starting Port Monitoring (Executes every 30 mins)
+ *  Starting Scavenge Cron (Check time to execute (default is 03:57))
+ *  Collecting VM data (forked to the background) (sisinfoc,php)
+ *  - Check system load
+ *  - Check for intruders and block them
+ *  - Check if local mailserver is reachable
+ *  - Fetch mail for tickets
  */
 
 include_once "htmllib/lib/include.php";
