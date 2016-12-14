@@ -1,6 +1,14 @@
 # HyperVM
 - **Special Home version for own usage do not use it.**
 
+
+- **Needs the following Software:**
+- mysql 5.5
+- yum-plugin-replace
+- hypervm-core-php (PHP version is 5.6.x)
+- hypervm-core-lighttpd
+- Uses a lot default OS packages and installs it when not installed.
+
 ##### Licensing - AGPLv3
 
     HyperVM, Server Virtualization GUI for OpenVZ and Xen

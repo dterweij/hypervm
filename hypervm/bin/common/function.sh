@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Is this file used?
+#
+#
 __path_php_path="/usr/local/lxlabs/ext/php/php";
 __path_program_root="/usr/local/lxlabs/$progname/";
 __path_slave_db="/usr/local/lxlabs/$progname/etc/conf/slave-db.db";
@@ -20,8 +24,6 @@ save_pid() {
 kill_pid() {
 	name=$1
 	pid=`cat $__path_program_root/pid/$name.pid`;
-	kill $pid 2>/dev/null
-	usleep 10000
 	kill -9 $pid 2>/dev/null
 }
 
