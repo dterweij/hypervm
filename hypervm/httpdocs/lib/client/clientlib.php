@@ -358,11 +358,11 @@ function createShowAlist(&$alist, $subaction = null)
 
 		$alist['__v_dialog_hack'] = "o=general&a=updateform&sa=hackbuttonconfig";
 		$alist['__v_dialog_rev'] = "o=general&a=updateform&sa=reversedns";
-		$alist['__v_dialog_cust'] = "o=general&a=updateform&sa=customaction";
+		//$alist['__v_dialog_cust'] = "o=general&a=updateform&sa=customaction";
 		$alist['__v_dialog_orph'] = "a=updateform&sa=deleteorphanedvps";
 		$alist['__v_dialog_lxc'] = "o=general&a=updateform&sa=kloxo_config";
 		//$alist[] = "a=show&o=ostemplatelist";
-		$alist[] = "a=list&c=customaction";
+		$alist[] = "a=list";
 
 
 	}
@@ -405,10 +405,6 @@ function createShowAlist(&$alist, $subaction = null)
 	}
 	if ($this->isLogin()) {
 		$alist['__v_dialog_login'] = "o=sp_specialplay&a=updateform&sa=login_options";
-	}
-
-	if ($this->isAdmin()) {
-		$alist[] = "a=updateform&sa=license&o=license";
 	}
 
 

@@ -1,5 +1,19 @@
-<?php 
-function print_time($var, $mess = null, $dbg = 2) 
+<?php
+
+/*
+ * Core functions
+ * Could be moved in some other file
+ */
+
+
+// TODO: Change debug output to a better output with a new function
+/**
+ * @param $var
+ * @param null $mess
+ * @param int $dbg
+ * @return string|void
+ */
+function print_time($var, $mess = null, $dbg = 2)
 {
 	static $last;
 
@@ -26,7 +40,10 @@ function print_time($var, $mess = null, $dbg = 2)
 
 print_time('full');
 
-function windowsOs() 
+/**
+ * @return bool
+ */
+function windowsOs()
 {
 	if (getOs() == "Windows") {
 		return true;
@@ -34,6 +51,9 @@ function windowsOs()
 	return false;
 }
 
+/**
+ * @return string
+ */
 function getOs()
 {
 	return (substr(php_uname(), 0, 7) == "Windows")? "Windows": "Linux";
@@ -58,11 +78,18 @@ if (WindowsOs()) {
 	ini_set("include_path", "{$_SERVER['DOCUMENT_ROOT']}");
 }
 
+/**
+ * @param $vpath
+ * @return string
+ */
 function getreal($vpath)
 {
      return  $_SERVER["DOCUMENT_ROOT"] . "/". $vpath; 
 }
 
+/**
+ * @param $vpath
+ */
 function readvirtual($vpath)
 {
      readfile($_SERVER["DOCUMENT_ROOT"] . $vpath);

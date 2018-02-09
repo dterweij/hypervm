@@ -30,7 +30,7 @@ function __construct($readserver, $table, $force = false)
 		$db = $sgbl->__var_dbf;
 		$pass = getAdminDbPass();
 
-	        // TODO: REPLACE MYSQL_CONNECT
+
 		if ($sgbl->__var_database_type === 'mysql') {
 
             	$gbl->$fdbvar = mysqli_connect($readserver, $user, $pass,$db);
@@ -40,9 +40,9 @@ function __construct($readserver, $table, $force = false)
 	                print("\nMySQL-ERROR: Can not connect to the MySQL server at ($readserver): ".mysqli_connect_error().".\n");
 	                exit;
 	            }
-
+		// TODO: Realy needed to set the charset?
 		mysqli_query($gbl->$fdbvar,"SET CHARACTER SET 'utf8'");
-	        mysqli_query($gbl->$fdbvar,"SET character_set_connection= 'utf8'");
+		mysqli_query($gbl->$fdbvar,"SET character_set_connection= 'utf8'");
 		mysqli_select_db($gbl->$fdbvar,$db);
 
 		self::$__database = 'mysql';
@@ -78,7 +78,7 @@ function reconnect()
 
 	log_log("database_reconnect", "Reconnecting again");
 
-    // TODO: REPLACE MYSQL_CONNECT
+
 	if ($sgbl->__var_database_type === 'mysql') {
 		$gbl->$fdbvar = mysqli_connect($readserver, $user, $pass, $db);
 		mysqli_select_db($gbl->$fdbvar,$db);
@@ -135,7 +135,7 @@ function database_query($res, $string)
     if (self::$__database == 'mysql') {
 		$res = mysqli_query($gbl->$fdbvar,$string);
 		if (!$res) {
-			dprint("MySQL connection is broken. Reconnecting..\n");
+			dprint("<br>[sqlite.php] MySQL connection is broken. Reconnecting..<br>");
 			debugBacktrace();
 			$this->reconnect();
 			$res = mysqli_query($gbl->$fdbvar,$string);
@@ -173,6 +173,7 @@ function database_fetch_array($query)
 
 static function close()
 {
+	// TODO: remove this function? is doing nothing...
 	global $gbl, $sgbl, $login, $ghtml; 
 	$fdbvar = "__fdb_" . $this->__readserver;
 	if (self::$__database == 'mysql') {
@@ -308,7 +309,7 @@ function getColumnTypes()
             $query = "SHOW COLUMNS FROM $this->__sqtable";
 			$result = mysqli_query($gbl->$fdbvar,$query);
 			if (!$result) {
-				dprint("MySQL connection is broken. Reconnecting.\n");
+				dprint("<br>[sqlite.php] MySQL connection is broken. Reconnecting.<br>");
 				$this->reconnect();
                 $result = mysqli_query($gbl->$fdbvar,$query);
 			}
@@ -556,7 +557,7 @@ function addRow($array)
 	$insert = "INSERT INTO $this->__sqtable $string ;";
 
 	if ($ins = $this->database_query($gbl->$fdbvar, $insert)) {
-		dprint("DB-Record: Inserted in $this->__sqtable for {$array['nname']}\n", 1);
+		dprint("<br>[sqlite.php] DB-Record: Inserted in $this->__sqtable for {$array['nname']}<br>", 1);
 	} else {
 		log_database("DB-Error: Insert Failed for {$this->__sqtable}:{$array['nname']}");
 		log_bdatabase("DB-Error: Insert Failed for {$this->__sqtable}:{$array['nname']} $insert");
@@ -580,7 +581,7 @@ function delRow($nname, $value)
 	 if(!$delresult) {
 		 log_database("DB-Error: Delete Failed for $delete");
 	 } else {
-		 dprint("Record deleted from $this->__sqtable for $nname <br>.");
+		 dprint("<br>[sqlite.php] Record deleted from $this->__sqtable for $nname <br>.");
 	 }
  
 }

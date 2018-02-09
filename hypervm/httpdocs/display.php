@@ -1,19 +1,13 @@
 <?php 
-
+#
+# Show the page in browser
+#
 include_once "htmllib/coredisplaylib.php";
 
-//setcookie("XDEBUG_SESSION", "sess", time () +  36000);
-//setcookie("XDEBUG_SESSION", "sess");
-print_time("start");
+print_time("Start");
 display_init();
-print_time("start", "Start");
-
-
-
-//dprint($gbl->__c_object->username);
-//$list = $gbl->__c_object->getList('domaintemplate');
-//$gbl->__c_object->__parent_o = null;
-//dprintr($gbl->__c_object->ls);
-//dprintr($gbl->__c_object->priv);
+print_time("Start", "[display.php] Display page after init took");
 display_exec();
+print_time("Start", "[display.php] Display page after execution took");
+dprint("<br><b>[display.php] --- end debug ---</b>");
 

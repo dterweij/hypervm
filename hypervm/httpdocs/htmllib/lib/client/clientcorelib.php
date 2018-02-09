@@ -444,24 +444,6 @@ function updateform($subaction, $param)
 			return $vlist;
 
 
-		case "license":
-			{
-				$lic = $login->getObject('license')->licensecom_b;
-				if ($login->isAdmin()) {
-					$vlist['lic_pserver_num_f'] = array('M', $lic->lic_pserver_num);
-					$vlist['lic_client_num_f'] = array('M', $lic->lic_client_num);
-					$vlist['lic_maindomain_num_f'] = array('M', $lic->lic_maindomain_num);
-				} else {
-					$vlist['lic_node_num_f'] = array('M', $lic->node_num);
-				}
-				$vlist['lic_live_support_f'] = array('M', $lic->lic_live_support);
-				//$vlist['lic_ipaddress_f'] = array('M', $lic->lic_ipaddress);
-				$vlist['lic_client_f'] = array('M', $lic->lic_client);
-				//$vlist['lic_current_f'] = array('t', lfile_get_contents('__path_program_etc/license.txt'));
-				$vlist['license_upload_f'] = null;
-				return $vlist;
-
-			}
 
 		case "ipaddress":
 			$parent = $this->getParentO();

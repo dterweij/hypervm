@@ -1,5 +1,7 @@
 <?php 
 
+// Also defines to show the buttons on the pages
+
 $gl_class_array["dnsbase"] = "htmllib/lib/dns/dnsbaselib.php";
 $gl_class_array["dnstemplate"] = "htmllib/lib/dns//dnstemplatelib.php";
 $gl_class_array["dns"] = "htmllib/lib/dns/dnslib.php";
@@ -36,8 +38,8 @@ $gl_class_array["sshauthorizedkey__sync"] = "htmllib/lib/pserver/driver/sshautho
 $gl_class_array["ssession"] = "htmllib/phplib/lib/ssession.php";
 $gl_class_array["ssessionlist"] = "htmllib/phplib/lib/ssession.php";
 $gl_class_array["ticketconfig"] = "htmllib/phplib/lib/ticket/ticketconfiglib.php";
-$gl_class_array["license"] = "htmllib/phplib/lib/licenselib.php";
-$gl_class_array["licensecom_b"] = "htmllib/phplib/lib/licenselib.php";
+//$gl_class_array["license"] = "htmllib/phplib/lib/licenselib.php";
+//$gl_class_array["licensecom_b"] = "htmllib/phplib/lib/licenselib.php";
 $gl_class_array["module"] = "htmllib/phplib/lib/modulelib.php";
 $gl_class_array["sp_childspecialplay"] = "htmllib/phplib/lib/client/appearancelib.php";
 $gl_class_array["sp_specialplay"] = "htmllib/phplib/lib/client/appearancelib.php";
@@ -112,7 +114,7 @@ $gl_class_array['lxguard'] = "htmllib/lib/pserver/lxguardlib.php";
 $gl_class_array['lxguardhitdisplay'] = "htmllib/lib/pserver/lxguardhitlib.php";
 $gl_class_array['lxguardhit'] = "htmllib/lib/pserver/lxguardhitlib.php";
 $gl_class_array['sshconfig'] = "htmllib/lib/pserver/sshconfiglib.php";
-$gl_class_array['customaction'] = "htmllib/lib/customactionlib.php";
+//$gl_class_array['customaction'] = "htmllib/lib/customactionlib.php";
 $gl_class_array['custombutton'] = "htmllib/lib/custombuttonlib.php";
 $gl_class_array['lxguardwhitelist'] = "htmllib/lib/pserver/lxguardwhitelistlib.php";
 $gl_class_array['browsebackup'] = "htmllib/lib/browsebackuplib.php";

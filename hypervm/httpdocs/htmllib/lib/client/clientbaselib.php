@@ -282,7 +282,7 @@ function getResourceChildList()
 	if ($this->isAdmin() && !$this->isAuxiliary()) {
 		$list[] = 'pserver_l';
 	}
-	if ($this->isCustomer() || !isLicensed('lic_client')) {
+	if ($this->isCustomer()) {
 		array_remove_assoc($list, 'client_l');
 	}
 		
@@ -370,11 +370,11 @@ function createShowAlistConfig(&$alist, $subaction = null)
 		if ($sgbl->isHyperVm()) {
 			$alist['__v_dialog_hack'] = "o=general&a=updateform&sa=hackbuttonconfig";
 			$alist['__v_dialog_rev'] = "o=general&a=updateform&sa=reversedns";
-			$alist['__v_dialog_cust'] = "o=general&a=updateform&sa=customaction";
+//			$alist['__v_dialog_cust'] = "o=general&a=updateform&sa=customaction";
 			$alist['__v_dialog_orph'] = "a=updateform&sa=deleteorphanedvps";
 			$alist['__v_dialog_lxc'] = "o=general&a=updateform&sa=kloxo_config";
 			//$alist[] = "a=show&o=ostemplatelist";
-			$alist[] = "a=list&c=customaction";
+			$alist[] = "a=list";
 		} else {
 			$alist[] = "o=genlist&c=dirindexlist_a&a=list";
 		}

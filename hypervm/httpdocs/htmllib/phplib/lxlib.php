@@ -1587,24 +1587,6 @@ function array_search_bool($needle, $haystack, $strict=false)
 	return false;
 }
 
-/**
- * @param $var
- * @return bool
- */
-function isLicensed($var)
-{
-	global $gbl, $sgbl, $login, $ghtml;
-
-	if ($var == 'lic_client') {
-		return true;
-	}
-
-	$lic = $login->getObject('license')->licensecom_b;
-	if (!isset($lic->$var)) {
-		return false;
-	}
-	return isOn($lic->$var);
-}
 
 /**
  * @param $class
@@ -1624,25 +1606,6 @@ function get_composite($class)
 	return array(null, null, $class);
 }
 
-// Set unlicensed to Unlimited usage
-/**
- *
- */
-function setLicenseTodefault()
-{
-	global $gbl, $sgbl, $login, $ghtml;
-	$license = $login->getObject('license');
-	$license->parent_clname = $login->getClName();
-	$lic = $license->licensecom_b;
-	$def = array("maindomain_num" => "Unlimited", "vps_num" => "Unlimited", "pserver_num" => "Unlimited", "client_num" => "Unlimited");
-	$list = get_license_resource();
-	foreach ($list as $l) {
-		$licv = "lic_$l";
-		$lic->$licv = $def[$l];
-	}
-	$license->setUpdateSubaction();
-	$license->write();
-}
 
 /**
  * @param $list

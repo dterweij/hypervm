@@ -16,10 +16,7 @@ function __ac_desc_desktop($object)
 
 	$shediturl = $ghtml->getFullUrl('a=list&c=dskshortcut_a');
 	$ghtml->print_message();
-	//$ghtml->print_curvy_table_start();
-	//print("To add links to  <font style='font-weight:bold'>Favorites </font> , go to a particular page, and then click on the <font style='font-weight:bold'> Add to Favorites </font> link that appears on the top right.  <font style='font-weight:bold'>History </font>  is the list of last 20 pages you have visited.");
-	//$ghtml->print_curvy_table_end();
-	print("<table cellpadding=0  width=90% cellspacing=1 style='border:1px solid #$col;  background:#fffafa;'><tr></tr><tr height=50> <td align=center>"); 
+	print("<table cellpadding=0  width=90% cellspacing=1 style='border:1px solid #$col;  background:#fffafa;'><tr></tr><tr height=50> <td align=center>");
 	print("<form name=desktopsearch method=get action=/display.php>");
 	$ghtml->print_input("hidden", "frm_action", "desktop");
 	print("<table cellpadding=0 cellspacing=0 > <tr> <td> ");
@@ -30,30 +27,9 @@ function __ac_desc_desktop($object)
 	print("</td> </tr> </table>"); 
 
 	print("<table width=90% cellpadding=0 valign=top cellspacing=20 height=200> <tr> <td valign=top>\n");
-/*	
-<div id="debug"></div><div id="boundary"><div id="content">
-<h2 class=expanded align=center onMouseover="this.style.background='url(<?php echo $skindir?>/onexpand.gif)'" onMouseout="this.style.background='url(<?php echo $skindir?>/background1.gif)'"><code>  </code></h2> 
 
-	print("<table cellpadding=0 cellspacing=0 valign=top style=\"background:#f0f0f0;\" >\n");
-	$count = 0;*/
 	$iconpath = get_image_path() . "/button/";
-	/*
-	if ($shortcut) foreach($shortcut as $k => $h) {
-		$k = base64_decode($k);
-		$count++;
-		$ac_descr = $ghtml->getActionDetails($k, null, $iconpath, $path, $post, $_t_file, $_t_name, $_t_image, $__t_identity);
-		if (isset($h->description) && $h->description) {
-			$des = $h->description;
-		} else {
-			$des = "{$ac_descr['desc']} for $__t_identity";
-		}
 
-		print("<tr valign=center style=\"background:#f0f0f0;height:25px\" onMouseover=\"this.style.background='url($skindir/a.gif)'\" onMouseout=\"this.style.background='url($skindir/b.gif)'\"><td style=\"padding:0 0 0 20;\" nowrap><a href=$k><img src=$_t_image width=20 height=20></td><td width=100% nowrap><a href=$k>&nbsp; $des</td></tr><tr style=\"background:#ffffff;\"><td nowrap></td> <td nowrap> </td> </tr>\n");
-		
-	}
-
-	print("</table> </td> </div></div><td valign=top>");
-*/	
 	print("<div id=\"debug\"></div><div id=\"boundary\"><div id=\"content\"> <h2 class=expanded align=center onMouseover=\"this.style.background='url($skindir/onexpand.gif)'\" onMouseout=\"this.style.background='url($skindir/expand.gif)'\"><code>History</code></h2><table cellpadding=0 cellspacing=0 style=\"background:#f0f0f0;\">"); 
 	$count = 0;
 	foreach($history as $k => $h) {
@@ -126,29 +102,9 @@ function __ac_desc_show($object)
 	if (!$object) { return; }
 	$selflist = $object->getSelfList();
 
-	//print_time("show_select", "Show Select");
-
-	/*
-	$list = $object->createShowShowlist();
-	if ($list) {
-		foreach($list as $k => $l) {
-			$newobject = $object->getFromList($k, "/");
-			__ac_desc_show($newobject);
-		}
-	}
-*/
-	
 	$class = lget_class($object);
 
 	$subaction = $ghtml->frm_subaction;
-
-	if (!$login->isAdmin()) {
-		check_for_license();
-	}
-
-
-	//dprintr($gbl->c_session->ssession_vars);
-
 
 	$object->getAnyErrorMessage();
 
@@ -182,16 +138,10 @@ function __ac_desc_show($object)
 
 
 	$ghtml->print_message();
-	//if ($ilist) {
-		//$ghtml->print_info_block($object, $ilist);
-	//}
 
 	$cname = $object->getClass();
 	$extra = $object->getExtraId();
 	$ghtml->print_information('pre', 'show', $cname, $extra, "");
-
-
-
 
 	$ilist = $object->createShowInfolist($subaction);
 	$rlist = $object->createShowRlist($subaction);
@@ -203,16 +153,6 @@ function __ac_desc_show($object)
 		$class = $object->get__table();
 		$var = "{$class}_show_list";
 		$interf = null;
-		/*
-		$ift = $login->getSpecialObject('sp_specialplay')->interface_template;
-		if ($ift && $ift !== "--$progname-default--") {
-			$iob = new interface_template(null, null, $ift);
-			$iob->get();
-			if ($iob->dbaction !== 'add' && isset($iob->$var)) {
-				$interf = $iob->$var;
-			}
-		}
-	*/
 
 		$object->createShowAlist($showalist);
 		$object->createShowAlistConfig($advanced);
@@ -224,13 +164,10 @@ function __ac_desc_show($object)
 			unset($showalist['__v_message']);
 			$printed_message = true;
 			if (isset($showalist['__v_refresh'])) {
-				//print("<META HTTP-EQUIV=REFRESH CONTENT=7>");
 				unset($showalist['__v_refresh']);
 			}
 
 		}
-
-
 
 		$total = lx_merge_good($showalist, $advanced);
 
@@ -268,7 +205,6 @@ function __ac_desc_show($object)
 						$u = $a;
 					}
 					if (csb($k, "__title")) {
-						//$nnalist[$u] = $u;
 						continue;
 					}
 					$res = search_url_in_array($u, $interf);
@@ -306,16 +242,12 @@ function __ac_desc_show($object)
 		}
 		if (!$gottitle) {
 			$nalist['__title_resource'] = 'Advanced';
-			// Lighes changed Advanced to Resource
-			// Changed back to Advanced
 		}
 
 		foreach((array) $aalist as $k => $a) {
 			if (csb($k, "__title")) {
 				if (!$a) {
 					$a = 'Advanced';
-			// Lighes changed Advanced to Resource
-			// Changed back to Advanced
 				}
 				$nalist[$k] = $a;
 				continue;
@@ -462,10 +394,7 @@ function __ac_desc_graph($object)
 
 	$nalist = lx_merge_good($nalist, $alist['property']);
 
-	
-
 	remove_if_older_than_a_minute_dir("__path_program_htmlbase/tmp/");
-
 
 	$ghtml->print_tab_block($nalist);
 
@@ -502,7 +431,6 @@ function __ac_desc_graph($object)
 		return;
 	}
 	$object->dbaction = 'clean';
-		
 
 	lfile_put_contents($tmpgraph, $file);
 
@@ -575,18 +503,11 @@ function __ac_desc_delete($object)
 
 }
 
-function __ac_desc_backup($object)
-{
-	global $gbl, $sgbl, $login, $ghtml; 
-
-}
-
 function do_list_class($object, $cname)
 {
 
 	global $gbl, $sgbl, $login, $ghtml; 
 
-	//list($iclass, $mclass, $rclass) = get_composite($cname);
 	$rclass = $cname;
 	$blist = exec_class_method($rclass, "createListBlist", $object, $rclass);
 
@@ -601,25 +522,6 @@ function do_list_class($object, $cname)
 	$ghtml->print_information('post', 'list', $cname, "", "");
 }
 
-function check_for_license()
-{
-	global $gbl, $sgbl, $login, $ghtml; 
-
-	$lic = $login->getObject('license')->licensecom_b;
-
-	$prgm = $sgbl->__var_program_name;
-	$list = get_admin_license_var();
-
-	foreach($list as $k => $l) {
-		$res = strfrom($k, "used_q_");
-		$licv = "lic_$res";
-		if ($licv === "lic_maindomain_num" && !isset($lic->$licv)) {
-			$lic->$licv = $lic->lic_domain_num;
-		}
-	}
-
-}
-
 function __ac_desc_list($object, $cname = null)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -630,12 +532,10 @@ function __ac_desc_list($object, $cname = null)
 		$cname = $ghtml->frm_o_cname;
 	}
 
-	//list($iclass, $mclass, $rclass) = get_composite($cname);
 	$rclass = $cname;
 
 	$selflist = $object->getSelfList();
 
-	check_for_license();
 	$refresh = $ghtml->frm_list_refresh;
 	if ($refresh === 'yes') {
 		$object->clearList($cname);
@@ -724,11 +624,6 @@ function get_return_url($action)
 	return $url;
 }
 
-function __ac_desc_showform($object)
-{
-
-
-}
 
 function __ac_desc_Update($object)
 {
@@ -755,8 +650,6 @@ function __ac_desc_Update($object)
 	} else  {
 		$desc = get_classvar_description($class);
 		if (csa($desc[0], "P")) { 
-			//Special object... UPdation Happens only to the parent and not to the select ed children. Example is the ffile class... 
-
 			$subaction = "{$class}_$subaction";
 			$ret = do_update($object, $subaction, $list);
 		} else {
@@ -843,7 +736,6 @@ function do_search($object, $cname)
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 
-	//list($iclass, $mclass, $rclass) = get_composite($cname);
 	$rclass = $cname;
 	$nlist = exec_class_method($rclass, "createListSlist", $object);
 	if ($nlist) {
@@ -1779,60 +1671,6 @@ function print_warning()
 }
 
 
-
-function license_check()
-{
-	global $gbl, $sgbl, $login, $ghtml; 
-
-	// Don't check for license if you are currently doing license management. 
-	if (csb($ghtml->frm_action, 'update')  && $ghtml->frm_subaction === 'license') {
-		return;
-	}
-	if ($gbl->getSessionV('__v_not_first_time')) {
-		return;
-	}
-
-	// First time;
-	dprint("First time");
-	$time = getLicense('lic_expiry_date');
-	$iip = getLicense('lic_ipaddress');
-	$ipdb = new Sqlite(null, 'ipaddress');
-	$iplist = $ipdb->getRowsWhere("syncserver = 'localhost'", array('ipaddr'));
-	$match = false;
-	// Lack of ip should give a warning. Or allow people to reread the ip address.
-	foreach((array) $iplist as $ip) {
-		if ($ip['ipaddr'] === $iip) {
-			$match = true;
-		}
-	}
-	$time = intval($time);
-	if ($time < time()) {
-
-		$mess = "License Expired";
-		print('<br> <br> <br> <br> <br> ');
-		print($mess);
-		if ($login->isAdmin()) {
-			do_updateform($login, "license");
-		}
-		exit;
-	} 
-
-	if ($login->isAdmin()) {
-		if (($time - time()) < 24 * 3600 * 27) {
-			// Putting it into http error messaeg. Should actually move this to gbl.
-			$expire = ($time - time())/(24 * 3600);
-			$ghtml->__http_vars['frm_emessage'] = "license_will_expire";
-			$ghtml->__http_vars['frm_m_emessage_data'] = round($expire);
-		}
-
-		if (!$match) {
-			$ghtml->__http_vars['frm_emessage'] = "license_doesnt_match_ip";
-		}
-	}
-	$gbl->setSessionV('__v_not_first_time', 1);
-	$gbl->__v_first_time = 1;
-}
-
 function password_contact_check()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
@@ -1840,12 +1678,6 @@ function password_contact_check()
 	if (!$login->isAdmin()) {
 		return;
 	}
-
-	/*
-	if ($sgbl->dbg > 0) {
-		return;
-	}
-*/
 
 	if (csb($ghtml->frm_action, 'update')  && $ghtml->frm_subaction === 'password') {
 		return;
@@ -1894,9 +1726,7 @@ function do_display_init()
 		print("<script> top.topframe.window.location.reload() ; </script>");
 	}
 
-
 	createPrincipleObject();
-
 
 	initLanguageCharset();
 	$ghtml->print_real_beginning();
@@ -1905,15 +1735,6 @@ function do_display_init()
 		print_head_image();
 	}
 
-
-	// OA: Why only kloxo? Because of this there is no Logout text link on 
-	// simple skin for end users (with thin header) 
-	// anyway, I like the door icon better, so I leave this alone and enablo the door
-	if ($sgbl->isKloxo() && $gbl->c_session->ssl_param) {
-		$url = $gbl->c_session->ssl_param['backurl'];
-		$parent = $gbl->c_session->ssl_param['parent_clname'];
-		print("<table cellpadding=0 height=26 cellspacing=0 background=$skindir/expand.gif> <tr> <td nowrap> <a href=$url> Back to HyperVM ($parent) </a> </td>  <td width=10>&nbsp;|&nbsp;</td> <td > Kloxo </td> <td width=10>&nbsp;|&nbsp;</td><td ><a href=/display.php?frm_action=show>Home</a> </td> <td width=10>&nbsp;|&nbsp;</td>  <td > <a href=/display.php?frm_action=list&frm_o_cname=all_domain>All </a> </td> <td width=10>&nbsp;|&nbsp;</td><td > <a href=/display.php?frm_action=list&frm_o_cname=client>Clients</a></td><td width=100%></td> <td > <a href=/htmllib/phplib/logout.php> Logout </a> </td> </tr> </table> ");
-	}
 
 	if ($gbl->c_session->consuming_parent) {
 		print("<table cellpadding=0 cellspacing=0 bgcolor = $col > <tr> <td nowrap>  Consumed Login </td> <td > <a href=/display.php?frm_consumedlogin=true&frm_action=desktop>Desktop </a> </td>  <td width=100%> </td> <td > <a href=/htmllib/phplib/logout.php?frm_consumedlogin=true> Logout </a> </td> </tr> </table> ");
@@ -1926,15 +1747,9 @@ function do_display_init()
 		ob_start();
 	}
 
-
 	$ghtml->print_start();
 
-
 	$gbl->__this_redirect = null;
-
-
-
-
 }
 
 function __ac_desc_about()
@@ -1945,16 +1760,6 @@ function __ac_desc_about()
 
 }
 
-function main_system_lock()
-{
-	global $gbl, $sgbl, $login, $ghtml; 
-
-	// Not needed for hyperVM. HyperVM has more intelligent per vps locking.
-	if ($sgbl->isHyperVm()) {
-		return null;
-	}
-	return null;
-}
 
 function display_init()
 {
@@ -1970,20 +1775,9 @@ function display_init()
 		exit;
 	}
 
-
-
 	try {
 		do_display_init();
-		main_system_lock();
-
-
 		print_navigation($gbl->__navig);
-		if (if_demo()) {
-			//$url = $ghtml->get_get_from_current_post(null);
-			//log_clicks($url);
-		}
-
-
 		print_warning();
 		password_contact_check();
 
@@ -1999,7 +1793,6 @@ function display_init()
 		$ghtml->print_redirect_back($e->getMessage(), $evlist, $e->value);
 		exit;
 	}
-	//license_check();
 
 	if ($ghtml->frm_filter) {
 		$filtername = $gbl->__c_object->getFilterVariableForThis($ghtml->frm_o_cname);
@@ -2009,13 +1802,11 @@ function display_init()
 	}
 
 	if ($ghtml->frm_hpfilter) {
-		//dprintr($ghtml->frm_hpfilter);
 		$login->setupHpFilter($ghtml->frm_hpfilter);
 		$login->setUpdateSubaction();
 	}
 
 }
-
 
 
 function lx_frm_inc()
@@ -2067,12 +1858,9 @@ function lx_frm_inc()
 		}
 
 
-		if ($caction === 'add' || $caction === 'delete') {
-			//collect_quota_later();
-		}
 		$gbl->unsetSessionV('__tmp_redirect_var');
 	} catch (Exception $e) {
-		//save_login();
+
 		log_log("redirect_error", "exception");
 		$gbl->setSessionV('__tmp_redirect_var', $ghtml->__http_vars);
 		$gbl->c_session->write();
@@ -2081,14 +1869,10 @@ function lx_frm_inc()
 		} else {
 			$evlist = $e->variable;
 		}
-		//dprint("$e");
+
 		$ghtml->print_redirect_back($e->getMessage(), $evlist, $e->value);
 		exit;
 	}
-
-	//log_log("redirect_error", "here");
-
-// If redirecting, too, ssession wont be saved....
 
 
 	if ($gbl->__this_redirect) {
@@ -2106,8 +1890,6 @@ function lx_frm_inc()
 		$ghtml->print_redirect($gbl->__this_redirect, $windowurl);
 	}
 
-
-	// Thsi is a misnomer.. It jsut saves the lx_http_refer, ssession variables... And also saves the login, if it exists.
 	exit_program();
 
 	if (function_exists("after_exit_program")) {
@@ -2145,17 +1927,12 @@ function display_exec()
 	exit_if_under_maintenance();
 
 	try {
-		//log_redirect("Before form");
 		lx_frm_inc();
 	} catch (Exception $e) {
 		log_redirect("Caught except");
 		print("The resource you requested could not be retrieved..." . $e->getMessage());
 		print("\n");
 	}
-
-
-
-	//$ghtml->print_end();
 
 }
 

@@ -1103,13 +1103,6 @@ function check_if_many_server()
 {
 	global $gbl, $sgbl, $login, $ghtml; 
 
-	//if ($sgbl->isDebug()) { return true; }
-	//$lic = $login->getObject('license');
-	//$lic = $lic->licensecom_b;
-	//return ($lic->lic_pserver_num > 1);
-
-
-
 	$sql = new Sqlite(null, "pserver");
 	$res = $sql->getTable(array('nname'));
 	$rs = get_namelist_from_arraylist($res);
