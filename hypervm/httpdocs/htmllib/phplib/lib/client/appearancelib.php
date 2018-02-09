@@ -191,9 +191,9 @@ function updateform($subaction, $param)
 
 		case "upload_logo":
 			if ($login->priv->isOn('logo_manage_flag')) {
-				$vlist['specialplay_b-logo_image'] =array('I', array("width" => 20, "height" => 20, "value" => $this->specialplay_b->logo_image));
+				$vlist['specialplay_b-logo_image'] =array('I', array("width" => 136, "height" => 33, "value" => $this->specialplay_b->logo_image));
 				$vlist['logo_image_f'] = null;
-				$vlist['specialplay_b-logo_image_loading'] =array('I', array("width" => 20, "height" => 20, "value" => $this->specialplay_b->logo_image_loading));
+				$vlist['specialplay_b-logo_image_loading'] =array('I', array("width" => 136, "height" => 33, "value" => $this->specialplay_b->logo_image_loading));
 				$vlist['logo_image_loading_f'] = null;
 			}
 			return $vlist;
