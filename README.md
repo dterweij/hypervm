@@ -15,7 +15,7 @@
 
     Copyright (C) 2000-2009	LxLabs
     Copyright (C) 2009-2013	LxCenter
-    Copyright (C) 2013-2016	dterweij
+    Copyright (C) 2013-2018	dterweij
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
