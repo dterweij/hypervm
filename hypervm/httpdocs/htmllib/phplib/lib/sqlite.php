@@ -534,7 +534,7 @@ function setRow($nname, $value, $array)
 		log_database("DB-Error: Update Failed for $update");
 	else  {
 		if ($this->__sqtable !== 'utmp') {
-			dprint("DB-Success: Updated " .$this->__sqtable . " for " .  $array['nname'] . "\n", 1);
+			dprint("<br>[sqlite.php] DB: Updated: " .$this->__sqtable . " for " .  $array['nname'] . "<br>", 1);
 		}
 	}
 

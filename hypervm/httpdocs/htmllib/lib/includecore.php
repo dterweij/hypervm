@@ -18,7 +18,7 @@ function print_time($var, $mess = null, $dbg = 2)
 
 	if ($dbg <= -1) {
 	} else {
-		dprint("$mess: $diff <br> \n", $dbg);
+		dprint("<br>[debug] $mess $diff seconds<br>", $dbg);
 	}
 
 	return "$mess: $diff seconds";

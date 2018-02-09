@@ -5433,8 +5433,8 @@ class HtmlLib
 		$current_url = $this->get_get_from_current_post(null);
 
 		if (ifSplashScreen() || $windowurl) {
-			dprint("<br> <br> Redirect called with splash <br> ");
-			dprint(" <b> <br> <br>  Click <a href=\"$redirect_url\"> <b>  xhere to go Continue. </a> </b> \n");
+			dprint("<br>[htmllib.php] Redirect called with splash<br>");
+			dprint('<br>[htmllib.php] <b>Click <a href="$redirect_url"> to Continue.</a></b><br>');
 
 			if ($sgbl->dbg < 0 || (isset($gbl->__no_debug_redirect) && $gbl->__no_debug_redirect)) {
 				?>
@@ -5471,11 +5471,11 @@ class HtmlLib
 		if (($sgbl->dbg > 0) && !(isset($gbl->__no_debug_redirect) && $gbl->__no_debug_redirect)) {
 			$cont = ob_get_contents();
 			if ($gbl->__fvar_dont_redirect || csa($cont, "Notice") || csa($cont, "Warning") || csa($cont, "Parse error")) {
-				print_time('full', "Page Generation Took: ");
-				print(" <b> <br> <br>  Looks Like there are some errors... Or Been asked not to redirect Not redirecting... <br> Click <a href=\"$redirect_url\"> xHere to go there Anyways . </b> \n");
+				print_time('full', "<br>Page Generation Took: ");
+				print("<br>[htmllib.php] <b>Looks Like there are some errors.<br>Or Been asked not to redirect Not redirecting.<br>Click <a href=\"$redirect_url\"> to go there Anyways . </b><br>");
 			} else {
-				print_time('full', "Page Generation Took: ");
-				print(" <b> <br> <br>  Looks Like there are some errors... Or Been asked not to redirect Not redirecting... <br> Click <a href=\"$redirect_url\"> xHere to go there Anyways . </b> \n");
+				print_time('full', "<br>Page Generation Took: ");
+				print("<br>[htmllib.php] <b>Looks Like there are some errors.<br>Or Been asked not to redirect Not redirecting.<br>Click <a href=\"$redirect_url\"> to go there Anyways . </b><br>");
 			}
 		} else {
 			header("Location:$redirect_url");

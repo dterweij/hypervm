@@ -296,18 +296,18 @@ function syncToSystemCommon()
 
 	// Don't sync if there is no subactiion for update..
 	if ($this->dbaction === 'update' && !$this->subaction) {
-		dprint("No subaction for update not syncing anymore {$this->get__table()}\n <br> ");
+		dprint("<br>[lxclass.php] No subaction for update. Not syncing: {$this->get__table()}<br>");
 		return false;
 	}
 
 	if (lfile_exists("__path_program_etc/.writeonly")) {
-		dprintr("Global Writonly Mode... Not syncing... <br> \n");
+		dprintr("<br>[lxclass.php] Global Write only Mode. Not syncing.<br>");
 		return  false;
 	}
 
 
 	if ($this->isDisabled('syncserver')) {
-		dprint("syncserver disabled syncing anymore\n");
+		dprint("<br>[lxclass.php] Syncserver disabled. Not syncing.<br>");
 		return false;
 	}
 
@@ -327,7 +327,7 @@ function syncToSystem()
 		foreach($synclist as $s) {
 			$s = trim($s);
 			if ($s) {
-				dprint("doing the real sync this {$this->nname} on server {$s}  <br> \n");
+				dprint("<br>[lxclass.php] Sync this: {$this->nname} on server: {$s} <br>");
 				$this->__var_syncserver = $s;
 				$res = rl_exec_set(null, $s,  $this);
 			} else {
@@ -485,7 +485,7 @@ function isLogin()
 final static function calldriverappFunc($class, $func)
 {
 	global $gbl, $sgbl;
-	print("I shouldn't get called\n");
+	print("[lxclass.php] I shouldn't get called\n");
 	debugBacktrace();
 	exit;
 }
@@ -755,10 +755,11 @@ function writeEntireObject()
 	}
 
 	if ($this->get__table() === 'driver') {
-		dprint("<b> Driver  {$this->dbaction} <br> <br> </b>");
+		dprint("<br>[lxclass.php] Driver: {$this->dbaction}<br>");
 	}
 	if ($this->isUnclean()) {
-		dprint("Really Writing  {$this->get__table()} {$this->nname}...dbaction... {$this->dbaction} <br> \n");
+		dprint("<br>[lxclass.php] Writing: {$this->get__table()} {$this->nname}<br>");
+		dprint("<br>[lxclass.php] DB Action: {$this->dbaction}<br>");
 		$this->write();
 	}
 
@@ -3196,11 +3197,11 @@ final protected function writeAChildList($class, $flag = NULL)
 	$pclass = $this->get__table();
 	$desc = get_real_class_variable($pclass, $desc);
 	if (csa($desc[0], "r")) {
-		dprint("Readonly {$class} in {$this->get__table()} {$this->nname} <br> ");
+		dprint("<br>[lxclass.php] Readonly: {$class} in: {$this->get__table()} : {$this->nname}<br>");
 		return;
 	}
 
-	dprintr("Warning... Writing {$class} in {$this->get__table()} {$this->nname}...<br> ");
+	dprintr("<br>[lxclass.php] Warning! Writing: {$class} in: {$this->get__table()} : {$this->nname}<br>");
 	if (!$this->$list) {
 		return;
 	}

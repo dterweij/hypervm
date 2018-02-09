@@ -956,7 +956,7 @@ function do_updateform($object, $subaction)
 		$ghtml->do_resource($gbl->__var_restore_tree, $o, 0, false, $vlist['__v_resourcefunc'], true, false);
 
 		if ($vlist['__v_showcheckboxflag']) {
-			print_time('full', "Page Generation Took");
+			print_time('full', "Page Generation Took :");
 			return;
 		}
 	}

@@ -467,7 +467,7 @@ function send_to_some_stream_server($type, $size, $raddress, $var, $fd)
 		$out = fgets($socket, 8092);
 		if (!$out) {
 			if (!$totalout) {
-				dprint("Got Nothing\n");
+				dprint("[remotelib.php] Got Nothing\n");
 			}
 			break;
 		}
@@ -512,7 +512,7 @@ function send_to_some_stream_server($type, $size, $raddress, $var, $fd)
 		return null;
 	}
 
-	dprint("Got this much:" . strlen($totalout));
+	dprint("<br>[remotelib.php] Got this much : " . strlen($totalout) . "<br>");
 	//dprint($totalout);
 	$totalout = trim($totalout);
 	$size = round(strlen($totalout)/1024, 4);
